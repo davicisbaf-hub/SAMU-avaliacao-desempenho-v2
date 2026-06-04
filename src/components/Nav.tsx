@@ -25,16 +25,16 @@ export default function Nav() {
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
-            <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
+            <a href="/" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
                 Inicio
             </a>
-            <a href="login" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
+            <a href="/KPIs" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
                 Painel de KPIs
             </a>
             <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
                 Baixar Fichas (PDF)
             </a>
-            <a href="/como-avaliar" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
+            <a href="/instrucao" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 bg-[#cd0048] text-sidebar-[#cd0048]/70">
                 Como Avaliar
             </a>
         </nav>
