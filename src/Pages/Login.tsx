@@ -3,7 +3,7 @@ import '../App.css'
 function App() {
 
   return (
-    <div className="login text-center flex items-center justify-center p-4">
+    <div className="login w-[100vw] text-center flex items-center justify-center p-4">
       <div className='w-full max-w-md'>
         
         <div className='mb-8'>
