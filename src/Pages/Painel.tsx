@@ -69,6 +69,24 @@ export default function Painel() {
                 <h2 className='font-semibold text-foreground'>Painel de KPIs — Situação Atual</h2>
                 <a className='text-xs text-[#c1314a] hover:underline'>Ver todos →</a>
               </div>
+
+              <div className='grid grid-cols-3 gap-3'>
+                
+                <div className='rounded-xl border p-4 text-center bg-emerald-50 border-emerald-200'>
+                  <p className='text-2xl font-bold text-[#10b981]'>0</p>
+                  <p className='text-xs font-semibold mt-0.5 text-[#10b981]'>Bom</p>
+                </div>
+
+                <div className='rounded-xl border p-4 text-center bg-emerald-50 border-emerald-200'>
+                  <p className='text-2xl font-bold text-[#10b981]'>0</p>
+                  <p className='text-xs font-semibold mt-0.5 text-[#10b981]'>Bom</p>
+                </div>
+
+                <div className='rounded-xl border p-4 text-center bg-emerald-50 border-emerald-200'>
+                  <p className='text-2xl font-bold text-[#10b981]'>0</p>
+                  <p className='text-xs font-semibold mt-0.5 text-[#10b981]'>Bom</p>
+                </div>
+              </div>
             </div>
 
           </div>
