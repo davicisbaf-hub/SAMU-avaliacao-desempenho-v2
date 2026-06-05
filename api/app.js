@@ -71,20 +71,25 @@ app.get("/api/fluxos-avaliacao", async (req, res) => {
   }
 });
 
-app.get("/api/criterios-avaliacao/bp-team", async (req, res) => {
+app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
   try {
-    const { rows } = await pool.query(`
+    const { tipo } = req.params;
+
+    const { rows } = await pool.query(
+      `
       SELECT
-      id,
-      tipo,
-      categoria,
-      codigo,
-      criterio,
-      peso
+        id,
+        tipo,
+        categoria,
+        codigo,
+        criterio,
+        peso
       FROM criterios_avaliacao
-      WHERE tipo = 'BP-TEAM'
+      WHERE tipo = $1
       ORDER BY categoria, codigo;
-    `);
+      `,
+      [tipo]
+    );
 
     res.json(rows);
   } catch (err) {

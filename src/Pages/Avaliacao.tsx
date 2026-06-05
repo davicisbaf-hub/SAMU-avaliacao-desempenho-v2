@@ -13,6 +13,7 @@ type Criterios = {
 
 export default function AvaliacaoPage() {
 
+    const [tipoAvaliacao, setTipoAvaliacao] = useState("BP-TEAM");
     const [criterios, setCriterios] = useState<Criterios[]>([]);
     
     const carregar = async (url: string, setter: Function) => {
@@ -26,8 +27,11 @@ export default function AvaliacaoPage() {
     };
 
     useEffect(() => {
-    carregar("http://localhost:3001/api/criterios-avaliacao/bp-team", setCriterios);
-    }, []);
+        carregar(
+            `http://localhost:3001/api/criterios-avaliacao/${tipoAvaliacao}`,
+            setCriterios
+        );
+        }, [tipoAvaliacao]);
 
     const criteriosPorCategoria = criterios.reduce((acc, criterio) => {
         if (!acc[criterio.categoria]) {
@@ -69,12 +73,12 @@ export default function AvaliacaoPage() {
 
                         {/* selecao ficha */}
                         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-                            <button className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+                            <button onClick={() => setTipoAvaliacao("BP-TEAM")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
                                 <p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
                                 <p className='text-xs text-muted-foreground mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
                             </button>
-                            <button className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
-                                <p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
+                            <button onClick={() => setTipoAvaliacao("TESTE")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+                                <p className='font-semibold text-sm text-foreground'>teste</p>
                                 <p className='text-xs text-muted-foreground mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
                             </button>
                         </div>
