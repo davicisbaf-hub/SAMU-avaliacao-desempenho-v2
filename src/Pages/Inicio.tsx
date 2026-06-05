@@ -52,7 +52,7 @@ export default function Inicio() {
   useEffect(() => {
     carregar("http://localhost:3001/api/fichas", setFichas);
     carregar("http://localhost:3001/api/frequencias", setFrequencias);
-    carregar("http://localhost:3001/api/fluxos", setFluxos);
+    carregar("http://localhost:3001/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (
@@ -64,9 +64,9 @@ export default function Inicio() {
           <Header />
 
           {/* conteudo */}
-          <div className='p-[32px] overflow-y-auto'>
+          <div className='custom-scrollbar p-[32px] overflow-y-auto'>
             
-            {/* instrumento dedenpanho */}
+            {/* instrumento desempenho */}
             <div className='p-6 md:p-8 bg-[#0a1a30] text-white rounded-lg mb-8'>
               
               <div className='flex items-start gap-4'>

@@ -71,6 +71,29 @@ app.get("/api/fluxos-avaliacao", async (req, res) => {
   }
 });
 
+app.get("/api/criterios-avaliacao/bp-team", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+      id,
+      tipo,
+      categoria,
+      codigo,
+      criterio,
+      peso
+      FROM criterios_avaliacao
+      WHERE tipo = 'BP-TEAM'
+      ORDER BY categoria, codigo;
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
 console.log("API rodando na porta 3001");
 
 app.listen(port, () => {

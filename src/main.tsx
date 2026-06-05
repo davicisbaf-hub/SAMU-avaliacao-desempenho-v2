@@ -6,6 +6,7 @@ const root = document.getElementById("root");
 import App from './Pages/Login.tsx'
 import Inicio from './Pages/Inicio.tsx';
 import InstrucoesPage from './Pages/Como-avaliar.tsx'
+import AvaliacaoPage from './Pages/Avaliacao.tsx';
 
 
 ReactDOM.createRoot(root!).render(
@@ -14,6 +15,7 @@ ReactDOM.createRoot(root!).render(
       <Route path="/login" element={<App />} />
       <Route path="/" element={<Inicio />} />
       <Route path="/instrucao" element={<InstrucoesPage />} />
+      <Route path="/avaliacao" element={<AvaliacaoPage />} />
     </Routes>
   </BrowserRouter>,
 );

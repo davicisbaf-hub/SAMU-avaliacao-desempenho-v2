@@ -12,7 +12,7 @@ export default function InstrucoesPage() {
           <Header />
 
           {/* conteudo */}
-          <div className='p-[32px] overflow-y-auto text-left'>
+          <div className='custom-scrollbar p-[32px] overflow-y-auto text-left'>
             
             {/* titulo */}
             <div className='mb-6'>
