@@ -2,10 +2,11 @@ type Criterios = {
     codigo: string;
     criterio: string;
     peso: number;
+    indicador: string;
 };
 
 
-export default function TableAvaliacao({codigo, criterio, peso}: Criterios) {
+export default function TableAvaliacao({codigo, criterio, peso, indicador}: Criterios) {
   return (
     <tr className="border-t hover:bg-muted/30 transition-colors group">
         <td className="py-3 px-4 w-32">
@@ -17,6 +18,9 @@ export default function TableAvaliacao({codigo, criterio, peso}: Criterios) {
         <td className="py-3 px-4">
         <p className="text-sm text-foreground leading-snug">
             {criterio}
+            <span className="block text-xs my-2 text-muted-foreground italic">
+                {indicador}
+            </span>
         </p>
         </td>
 

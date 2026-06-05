@@ -9,6 +9,7 @@ type Criterios = {
   criterio: string;
   peso: number;
   id: number;
+  indicador: string;
 };
 
 export default function AvaliacaoPage() {
@@ -77,9 +78,21 @@ export default function AvaliacaoPage() {
                                 <p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
                                 <p className='text-xs text-muted-foreground mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
                             </button>
-                            <button onClick={() => setTipoAvaliacao("TESTE")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
-                                <p className='font-semibold text-sm text-foreground'>teste</p>
-                                <p className='text-xs text-muted-foreground mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
+                            <button onClick={() => setTipoAvaliacao("Condutor")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+                                <p className='font-semibold text-sm text-foreground'>Autoavaliação: Condutor</p>
+                                <p className='text-xs text-muted-foreground mt-1'>O condutor avalia sua própria performance técnica e comportamental</p>
+                            </button>
+                            <button onClick={() => setTipoAvaliacao("Técnico de Enfermagem")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+                                <p className='font-semibold text-sm text-foreground'>Autoavaliação: Tecnico de Enfermagem</p>
+                                <p className='text-xs text-muted-foreground mt-1'>O técnico de enfermagem avalia sua própria performance</p>
+                            </button>
+                            <button onClick={() => setTipoAvaliacao("Enfermeiro")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+                                <p className='font-semibold text-sm text-foreground'>Autoavaliação: Enfermeiro</p>
+                                <p className='text-xs text-muted-foreground mt-1'>O enfermeiro avalia sua própria performance assistencial e de liderança</p>
+                            </button>
+                            <button onClick={() => setTipoAvaliacao("Médico")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+                                <p className='font-semibold text-sm text-foreground'>Autoavaliação: Médico</p>
+                                <p className='text-xs text-muted-foreground mt-1'>O médico intervencionista avalia sua própria performance clínica</p>
                             </button>
                         </div>
 
@@ -184,7 +197,7 @@ export default function AvaliacaoPage() {
                             </div>
                         </div>
                         
-                        
+                        {/* PErguntas */}
                         {Object.entries(criteriosPorCategoria).map(
                             ([categoria, itens]) => (
                                 <div key={categoria} className="bg-card border border-border rounded-xl overflow-hidden">
@@ -225,6 +238,7 @@ export default function AvaliacaoPage() {
                                                     codigo={criterio.codigo}
                                                     criterio={criterio.criterio}
                                                     peso={criterio.peso}
+                                                    indicador={criterio.indicador}
                                                 />
                                                 ))}
                                             </tbody>
@@ -241,3 +255,10 @@ export default function AvaliacaoPage() {
     </div>
   )
 }
+
+
+
+ 
+ 
+ 
+ 

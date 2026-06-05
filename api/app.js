@@ -83,7 +83,8 @@ app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
         categoria,
         codigo,
         criterio,
-        peso
+        peso,
+        indicador
       FROM criterios_avaliacao
       WHERE tipo = $1
       ORDER BY categoria, codigo;
@@ -98,6 +99,7 @@ app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
     });
   }
 });
+
 
 console.log("API rodando na porta 3001");
 
