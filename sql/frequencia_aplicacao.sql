@@ -6,7 +6,7 @@ CREATE TABLE frequencia_aplicacao (
     ordem INTEGER NOT NULL,
     ativo BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW()
-)
+);
     
     
 INSERT INTO frequencia_aplicacao (

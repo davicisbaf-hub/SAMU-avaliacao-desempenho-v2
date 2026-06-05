@@ -12,6 +12,14 @@ type Criterios = {
   indicador: string;
 };
 
+const iconByTipo: Record<string, string> = {
+  "BP-TEAM": "⚕️",
+  "Condutor": "🚑",
+  "Técnico de Enfermagem": "💉",
+  "Enfermeiro": "🩺",
+  "Médico": "⚕️",
+};
+
 export default function AvaliacaoPage() {
 
     const [tipoAvaliacao, setTipoAvaliacao] = useState("BP-TEAM");
@@ -54,6 +62,7 @@ export default function AvaliacaoPage() {
 
                 {/* conteudo */}
                 <div className='custom-scrollbar p-[32px] overflow-y-auto text-left'>
+                    
                     <div className='space-y-6'>
 
                         {/* titulo */}
@@ -100,14 +109,16 @@ export default function AvaliacaoPage() {
                         <div className='bg-[#0a1a30] text-white rounded-lg mb-8'>
                             <div className='flex items-center gap-4 p-5'>
                                 <div className='w-14 h-14 rounded-xl bg-[#cd0048] flex items-center justify-center shrink-0'>
-                                    <span className='text-2xl'>🩺</span>
+                                    <span className="text-2xl">
+                                        {iconByTipo[tipoAvaliacao]}
+                                    </span>
                                 </div>
                                 <div className='flex-1'>
                                     <div className='flex items-center gap-2 flex-wrap'>
                                         <h1 className='text-lg font-bold text-secondary-foreground'>Ficha de Avaliação de Desempenho</h1>
-                                        <span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Autoavaliação: Enfermeiro</span>
+                                        <span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Autoavaliação: {tipoAvaliacao}</span>
                                     </div>
-                                    <p className='text-secondary-foreground/70 text-sm mt-0.5'>Enfermeiro — SAMU 192 / CRUR-BF / CISBAF</p>
+                                    <p className='text-secondary-foreground/70 text-sm mt-0.5'>{tipoAvaliacao} — SAMU 192 / CRUR-BF / CISBAF</p>
                                 </div>
                                 <div className='text-right hidden sm:block'>
                                     <p className='text-secondary-foreground/60 text-xs'>Data</p>
