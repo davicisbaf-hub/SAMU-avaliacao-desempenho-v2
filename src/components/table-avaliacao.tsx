@@ -1,54 +1,73 @@
-type Criterios = {
-    codigo: string;
-    criterio: string;
-    peso: number;
-    indicador: string;
+
+
+type Props = {
+  codigo: string;
+  criterio: string;
+  peso: number;
+  indicador: string;
+
+  onSelecionarNota: (criterio: string, nota: number) => void;
+  notaSelecionada: number;
 };
 
 
-export default function TableAvaliacao({codigo, criterio, peso, indicador}: Criterios) {
+export default function TableAvaliacao({
+  codigo,
+  criterio,
+  peso,
+  indicador,
+  onSelecionarNota,
+  notaSelecionada,
+}: Props) {
+
   return (
     <tr className="border-t hover:bg-muted/30 transition-colors group">
-        <td className="py-3 px-4 w-32">
+      <td className="py-3 px-4 w-32">
         <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-            {codigo}
+          {codigo}
         </span>
-        </td>
+      </td>
 
-        <td className="py-3 px-4">
+      <td className="py-3 px-4">
         <p className="text-sm text-foreground leading-snug">
-            {criterio}
-            <span className="block text-xs my-2 text-muted-foreground italic">
-                {indicador}
-            </span>
+          {criterio}
+          <span className="block text-xs my-2 text-muted-foreground italic">
+            {indicador}
+          </span>
         </p>
-        </td>
+      </td>
 
-        <td className="py-3 px-4 text-center">
+      <td className="py-3 px-4 text-center">
         <span className="inline-block w-5 h-5 rounded-full text-[10px] font-bold text-white text-center leading-5 bg-[#cd0048]">
-            {peso}
+          {peso}
         </span>
-        </td>
+      </td>
 
-        <td className="py-3 px-4">
+      <td className="py-3 px-4">
         <div className="flex gap-1.5 flex-wrap">
-            {[1, 2, 3, 4, 5].map((nota) => (
+          {[1, 2, 3, 4, 5].map((nota) => (
             <button
-                key={nota}
-                type="button"
-                className="w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all duration-150 bg-background border-border text-muted-foreground hover:border-primary/50"
+              key={nota}
+              type="button"
+              onClick={() => onSelecionarNota(criterio, nota)}
+              className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all duration-150
+                ${
+                  notaSelecionada === nota
+                    ? "bg-red-500 text-white border-red-500"
+                    : "bg-background border-border text-muted-foreground hover:border-primary/50"
+                }`}
             >
-                {nota}
+              {nota}
             </button>
-            ))}
+          ))}
         </div>
-        </td>
+      </td>
 
-        <td className="py-3 px-4 text-center">
+      <td className="py-3 px-4 text-center">
         <span className="text-xs text-muted-foreground italic">
-            —
+          {notaSelecionada ?? "—"}
         </span>
-        </td>
+      </td>
     </tr>
-  )
+  );
 }

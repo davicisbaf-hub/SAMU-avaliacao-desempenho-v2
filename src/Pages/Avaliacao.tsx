@@ -12,6 +12,7 @@ type Criterios = {
   indicador: string;
 };
 
+
 const iconByTipo: Record<string, string> = {
   "BP-TEAM": "⚕️",
   "Condutor": "🚑",
@@ -24,6 +25,20 @@ export default function AvaliacaoPage() {
 
     const [tipoAvaliacao, setTipoAvaliacao] = useState("BP-TEAM");
     const [criterios, setCriterios] = useState<Criterios[]>([]);
+    const [notas, setNotas] = useState<Record<string, number>>({});
+
+    const selecionarNota = (codigo: string, nota: number) => {
+        setNotas((prev) => {
+            const atualizado = {
+            ...prev,
+            [codigo]: nota,
+            };
+
+            console.log("📊 Notas atualizadas:", atualizado);
+
+            return atualizado;
+        });
+    };
     
     const carregar = async (url: string, setter: Function) => {
         try {
@@ -250,6 +265,8 @@ export default function AvaliacaoPage() {
                                                     criterio={criterio.criterio}
                                                     peso={criterio.peso}
                                                     indicador={criterio.indicador}
+                                                    onSelecionarNota={selecionarNota}
+                                                    notaSelecionada={notas[criterio.criterio]}
                                                 />
                                                 ))}
                                             </tbody>
