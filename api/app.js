@@ -2,13 +2,17 @@ import express from "express";
 import pg from "pg";
 import cors from "cors";
 
+
 const app = express();
+const port = 3001
 
 app.use(
   cors({
     origin: "http://localhost:5173"
   })
 );
+
+
 
 const pool = new pg.Pool({
   host: "localhost",
@@ -50,4 +54,25 @@ app.get("/api/frequencias", async (req, res) => {
   }
 });
 
-app.listen(3001);
+app.get("/api/fluxos-avaliacao", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT *
+      FROM fluxos_avaliacao
+      WHERE ativo = true
+      ORDER BY ordem
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+console.log("API rodando na porta 3001");
+
+app.listen(port, () => {
+  console.log(`listening on port http://localhost:${port}`);
+});

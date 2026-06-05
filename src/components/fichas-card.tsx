@@ -1,10 +1,12 @@
 type FichasCardProps = {
+  icon: string;
   cargo: string;
   criterios: number;
   tags: string[];
 };
 
 export default function FichasCard({
+  icon,
   cargo,
   criterios,
   tags,
@@ -15,7 +17,7 @@ export default function FichasCard({
       className="block bg-card border border-border rounded-xl p-5 hover:border-primary/40 hover:shadow-md transition-all group"
     >
       <div className="flex items-start gap-3">
-        <span className="text-2xl">🚑</span>
+        <span className="text-2xl">{icon}</span>
 
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-card-foreground text-left text-sm group-hover:text-primary transition-colors">

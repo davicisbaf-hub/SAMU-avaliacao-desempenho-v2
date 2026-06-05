@@ -7,6 +7,7 @@ import FrequenciaTable from "../components/table";
 
 type Ficha = {
   id: number;
+  icon: string;
   nome: string;
   descricao: string;
   criterios: number;
@@ -23,45 +24,36 @@ type FrequenciaAplicacao = {
   responsavel: string;
 };
 
+type Fluxo = {
+  id: number;
+  titulo: string;
+  descricao: string;
+  ordem: number;
+  ativo: boolean;
+  created_at: string;
+};
+
 export default function Inicio() {
 
-  const [loading, setLoading] = useState(true);
   const [fichas, setFichas] = useState<Ficha[]>([]);
   const [frequencias, setFrequencias] = useState<FrequenciaAplicacao[]>([]);
+  const [fluxos, setFluxos] = useState<Fluxo[]>([]);
 
-  useEffect(() => {
-    async function carregarFichas() {
-      try {
-        const response = await fetch("http://localhost:3001/api/fichas");
-
-        if (!response.ok) {
-          throw new Error("Erro ao carregar fichas");
-        }
-
-        const data: Ficha[] = await response.json();
-        setFichas(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
+  const carregar = async (url: string, setter: Function) => {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      setter(data);
+    } catch (err) {
+      console.error(err);
     }
-
-    carregarFichas();
-  }, []);
-
-  
+  };
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/frequencias")
-      .then((res) => res.json())
-      .then(setFrequencias)
-      .catch(console.error);
+    carregar("http://localhost:3001/api/fichas", setFichas);
+    carregar("http://localhost:3001/api/frequencias", setFrequencias);
+    carregar("http://localhost:3001/api/fluxos", setFluxos);
   }, []);
-
-  if (loading) {
-    return <p>Carregando fichas...</p>;
-  }
 
   return (
     <div>
@@ -97,26 +89,12 @@ export default function Inicio() {
                   
                   <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mt-6'>
                     
-                    <div className='bg-sidebar/50 rounded-xl p-3'>
-                      <p className='text-secondary-foreground text-xs font-semibold'>Chefia → Equipe</p>
-                      <p className='text-secondary-foreground/60 text-xs mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
-                    </div>
-
-                    <div className='bg-sidebar/50 rounded-xl p-3'>
-                      <p className='text-secondary-foreground text-xs font-semibold'>Chefia → Equipe</p>
-                      <p className='text-secondary-foreground/60 text-xs mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
-                    </div>
-
-                    <div className='bg-sidebar/50 rounded-xl p-3'>
-                      <p className='text-secondary-foreground text-xs font-semibold'>Chefia → Equipe</p>
-                      <p className='text-secondary-foreground/60 text-xs mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
-                    </div>
-
-                    <div className='bg-sidebar/50 rounded-xl p-3'>
-                      <p className='text-secondary-foreground text-xs font-semibold'>Chefia → Equipe</p>
-                      <p className='text-secondary-foreground/60 text-xs mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
-                    </div>
-                  
+                    {fluxos.map((fluxo) => (
+                      <div key={fluxo.id} className='bg-sidebar/50 rounded-xl p-3'>
+                        <p className='text-secondary-foreground text-xs font-semibold'>{fluxo.titulo}</p>
+                        <p className='text-secondary-foreground/60 text-xs mt-0.5'>{fluxo.descricao}</p>
+                      </div>
+                    ))}
                   </div>
                 
                 </div>             
@@ -165,6 +143,7 @@ export default function Inicio() {
                 {fichas.map((ficha) => (
                   <FichasCard
                     key={ficha.id}
+                    icon={ficha.icon}
                     cargo={ficha.nome}
                     criterios={ficha.criterios}
                     tags={ficha.tags}
@@ -177,7 +156,6 @@ export default function Inicio() {
             <div className='mb-8'>
               <h2 className='text-left font-semibold text-foreground mb-3'>Frequência de Aplicação</h2>
               <div className='bg-card rounded-xl overflow-hidden'>
-                
                 <FrequenciaTable dados={frequencias} />
               </div>
             </div>
