@@ -1,10 +1,68 @@
 
-import FichasCard from '../components/fichas-card'
+import { useEffect, useState } from "react";
+import FichasCard from "../components/fichas-card";
 import Header from '../components/Header'
 import Nav from '../components/Nav'
+import FrequenciaTable from "../components/table";
 
+type Ficha = {
+  id: number;
+  nome: string;
+  descricao: string;
+  criterios: number;
+  tags: string[];
+  ordem: number;
+  ativo: boolean;
+  created_at: string;
+};
 
-export default function Painel() {
+type FrequenciaAplicacao = {
+  id: number;
+  frequencia: string;
+  instrumento_acao: string;
+  responsavel: string;
+};
+
+export default function Inicio() {
+
+  const [loading, setLoading] = useState(true);
+  const [fichas, setFichas] = useState<Ficha[]>([]);
+  const [frequencias, setFrequencias] = useState<FrequenciaAplicacao[]>([]);
+
+  useEffect(() => {
+    async function carregarFichas() {
+      try {
+        const response = await fetch("http://localhost:3001/api/fichas");
+
+        if (!response.ok) {
+          throw new Error("Erro ao carregar fichas");
+        }
+
+        const data: Ficha[] = await response.json();
+        setFichas(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarFichas();
+  }, []);
+
+  
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/frequencias")
+      .then((res) => res.json())
+      .then(setFrequencias)
+      .catch(console.error);
+  }, []);
+
+  if (loading) {
+    return <p>Carregando fichas...</p>;
+  }
+
   return (
     <div>
       <div className="flex h-screen w-screen bg-white text-black">
@@ -104,91 +162,23 @@ export default function Painel() {
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                { FichasCard("Condutor Socorrista", 15) }
-                { FichasCard("Condutor Socorrista", 15) }
-                { FichasCard("Condutor Socorrista", 15) }
-                { FichasCard("Condutor Socorrista", 15) }
-                { FichasCard("Condutor Socorrista", 15) }
-                { FichasCard("Condutor Socorrista", 15) }
+                {fichas.map((ficha) => (
+                  <FichasCard
+                    key={ficha.id}
+                    cargo={ficha.nome}
+                    criterios={ficha.criterios}
+                    tags={ficha.tags}
+                  />
+                ))}
               </div>
             </div>
 
             {/* frequencia de aplicação */}
             <div className='mb-8'>
               <h2 className='text-left font-semibold text-foreground mb-3'>Frequência de Aplicação</h2>
-              <div className='bg-card border border-border rounded-xl overflow-hidden'>
+              <div className='bg-card rounded-xl overflow-hidden'>
                 
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-muted/50 text-xs text-muted-foreground">
-                      <th className="px-4 py-2.5 text-left">Frequência</th>
-                      <th className="px-4 py-2.5 text-left">Instrumento / Ação</th>
-                      <th className="px-4 py-2.5 text-left">Responsável</th>
-                    </tr>
-                  </thead>
-
-                  <tbody className='text-left'>
-                    <tr className="border-b border-border bg-background">
-                      <td className="px-4 py-2.5 font-semibold text-primary text-xs">
-                        Diária
-                      </td>
-                      <td className="px-4 py-2.5 text-foreground text-sm">
-                        Checklist de viatura e EPIs (início do plantão)
-                      </td>
-                      <td className="px-4 py-2.5 text-muted-foreground text-xs">
-                        Condutor + equipe
-                      </td>
-                    </tr>
-
-                    <tr className="border-b border-border bg-muted/20">
-                      <td className="px-4 py-2.5 font-semibold text-primary text-xs">
-                        Semanal
-                      </td>
-                      <td className="px-4 py-2.5 text-foreground text-sm">
-                        Análise de prontuários e KPIs operacionais
-                      </td>
-                      <td className="px-4 py-2.5 text-muted-foreground text-xs">
-                        Enfermeiro supervisor / coord.
-                      </td>
-                    </tr>
-
-                    <tr className="border-b border-border bg-background">
-                      <td className="px-4 py-2.5 font-semibold text-primary text-xs">
-                        Mensal
-                      </td>
-                      <td className="px-4 py-2.5 text-foreground text-sm">
-                        Avaliação 360° por competências + feedback individual
-                      </td>
-                      <td className="px-4 py-2.5 text-muted-foreground text-xs">
-                        Chefia imediata
-                      </td>
-                    </tr>
-
-                    <tr className="border-b border-border bg-muted/20">
-                      <td className="px-4 py-2.5 font-semibold text-primary text-xs">
-                        Semestral
-                      </td>
-                      <td className="px-4 py-2.5 text-foreground text-sm">
-                        Simulação realística bp-TEAM/NTS + debriefing em vídeo
-                      </td>
-                      <td className="px-4 py-2.5 text-muted-foreground text-xs">
-                        NEP / Coord. médica
-                      </td>
-                    </tr>
-
-                    <tr className="bg-background">
-                      <td className="px-4 py-2.5 font-semibold text-primary text-xs">
-                        Anual
-                      </td>
-                      <td className="px-4 py-2.5 text-foreground text-sm">
-                        PDI — revisão de metas e certificações (ACLS/PHTLS/BLS)
-                      </td>
-                      <td className="px-4 py-2.5 text-muted-foreground text-xs">
-                        Direção Técnica / CISBAF
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <FrequenciaTable dados={frequencias} />
               </div>
             </div>
 
