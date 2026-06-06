@@ -185,6 +185,45 @@ app.get("/api/pesos-avaliacao", async (req, res) => {
   }
 });
 
+app.get("/api/fichas", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT nome
+      FROM fichas_avaliacao
+      WHERE ativo = true
+      AND nome NOT ILIKE '%bp-team%';
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+app.get("/api/ficha/:tipo", async (req, res) => {
+  try {
+    const { tipo } = req.params;
+
+    const { rows } = await pool.query(
+      `
+      SELECT *
+      FROM criterios_avaliacao
+      WHERE tipo_link = $1
+      ORDER BY categoria, codigo
+      `,
+      [tipo]
+    );
+
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      erro: error.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
 });

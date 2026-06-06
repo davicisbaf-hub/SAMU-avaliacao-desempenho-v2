@@ -5,6 +5,7 @@ CREATE TABLE fichas_avaliacao (
     descricao VARCHAR(255),
     criterios INTEGER NOT NULL,
     tags TEXT[] DEFAULT '{}',
+    link VARCHAR(100) NOT NULL,
     ordem INTEGER DEFAULT 0,
     ativo BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW()
@@ -16,6 +17,7 @@ INSERT INTO fichas_avaliacao (
     descricao,
     criterios,
     tags,
+    link,
     ordem
 )
 VALUES
@@ -25,6 +27,7 @@ VALUES
     '15 critérios de avaliação',
     15,
     ARRAY['Técnico', 'Comportamental', 'Processo'],
+    '/avaliacao/condutor-socorrista',
     1
 ),
 (
@@ -33,6 +36,7 @@ VALUES
     '14 critérios de avaliação',
     14,
     ARRAY['Técnico', 'Comportamental', 'Processo'],
+    '/avaliacao/tecnico-enfermagem',
     2
 ),
 (
@@ -41,6 +45,7 @@ VALUES
     '14 critérios de avaliação',
     14,
     ARRAY['Técnico', 'Comportamental', 'Processo', 'bp-TEAM'],
+    '/avaliacao/enfermeiro',
     3
 ),
 (
@@ -49,6 +54,7 @@ VALUES
     '14 critérios de avaliação',
     14,
     ARRAY['Técnico', 'Comportamental', 'Processo', 'bp-TEAM'],
+    '/avaliacao/medico-intervencionista',
     4
 ),
 (
@@ -57,6 +63,7 @@ VALUES
     '12 critérios de avaliação',
     12,
     ARRAY['Técnico', 'Comportamental', 'Processo'],
+    '/avaliacao/lideranca-coordenacao',
     5
 ),
 (
@@ -65,5 +72,6 @@ VALUES
     '11 critérios — 3 domínios + NTS',
     11,
     ARRAY['bp-TEAM', 'NTS'],
+    '/avaliacao/bp-team',
     6
 );

@@ -7,6 +7,8 @@ import Inicio from "./Pages/Inicio.tsx";
 import InstrucoesPage from "./Pages/Como-avaliar.tsx";
 import AvaliacaoPage from "./Pages/Avaliacao.tsx";
 import PrivateRoute from "./components/PrivateRoute";
+import FichaAvaliacaoCondutor from "./Fichas/FichaAvaliacaoCondutor.tsx";
+
 
 
 import { UserSessionProvider } from "./contexts/UserSession";
@@ -41,6 +43,14 @@ ReactDOM.createRoot(root!).render(
           element={
             <PrivateRoute>
               <AvaliacaoPage />
+            </PrivateRoute>
+          }
+        />
+          <Route
+          path="/avaliacao/condutor-socorrista"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoCondutor />
             </PrivateRoute>
           }
         />
