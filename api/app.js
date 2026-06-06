@@ -4,6 +4,7 @@ import cors from "cors";
 
 
 const app = express();
+app.use(express.json());
 const port = 3001
 
 app.use(
@@ -101,7 +102,28 @@ app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
 });
 
 
-console.log("API rodando na porta 3001");
+app.post("/api/avaliacoes", async (req, res) => {
+  try {
+    const notas = req.body;
+
+    await pool.query(
+      `
+      INSERT INTO avaliacoes(resultado)
+      VALUES($1)
+      `,
+      [JSON.stringify(notas)]
+    );
+
+    res.json({
+      sucesso: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      erro: "Erro ao salvar",
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
