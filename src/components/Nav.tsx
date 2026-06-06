@@ -1,5 +1,18 @@
+import { useNavigate } from "react-router";
+import { useUserSession } from "../contexts/UserSession";
+
+
 export default function Nav() {
-  return (
+  
+    const navigate = useNavigate();
+    const { logout } = useUserSession();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
+
+    return (
     <aside className="bg-[#0a1a30] lg:flex w-64 flex-col text-white shrink-0 border-r border-sidebar-border">
       <div className="flex flex-col h-full">
 
@@ -91,9 +104,13 @@ export default function Nav() {
                 </a>
             </div>
         </nav>
-
-
-
+        <div className='px-4 py-3 border-t border-sidebar-border'>
+            <button onClick={handleLogout} className='w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-sidebar-foreground/60 hover:bg-destructive/20 hover:text-destructive transition-colors'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+                Sair
+            </button>
+            <p className='text-sidebar-foreground/30 text-[10px] mt-2 leading-relaxed px-1'>bp-TEAM · NTS · Portaria MS 2.048/2002</p>
+        </div>
       </div>
     </aside>
   )
