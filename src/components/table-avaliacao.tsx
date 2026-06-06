@@ -7,6 +7,12 @@ type EscalaLikert = {
   cor: string;
 };
 
+type Peso = {
+  valor: number;
+  descricao: string;
+  cor: string;
+};
+
 type Props = {
   codigo: string;
   criterio: string;
@@ -14,6 +20,7 @@ type Props = {
   indicador: string;
 
   escalaLikert: EscalaLikert[];
+  pesos: Peso[];
 
   onSelecionarNota: (criterio: string, nota: number) => void;
   notaSelecionada: number;
@@ -28,12 +35,17 @@ export default function TableAvaliacao({
   indicador,
   onSelecionarNota,
   notaSelecionada,
-  escalaLikert
+  escalaLikert,
+  pesos
 }: Props) {
 
   const classificacao = escalaLikert.find(
     (item) => item.nota === notaSelecionada
   );
+
+  const pesoInfo = pesos.find(
+  (item) => item.valor === peso
+);
 
   return (
     <tr className="border-t hover:bg-muted/30 transition-colors group">
@@ -53,7 +65,12 @@ export default function TableAvaliacao({
       </td>
 
       <td className="py-3 px-4 text-center">
-        <span className="inline-block w-5 h-5 rounded-full text-[10px] font-bold text-white text-center leading-5 bg-[#cd0048]">
+        <span
+          className="inline-block w-5 h-5 rounded-full text-[10px] font-bold text-white text-center leading-5"
+          style={{
+            backgroundColor: pesoInfo?.cor,
+          }}
+        >
           {peso}
         </span>
       </td>

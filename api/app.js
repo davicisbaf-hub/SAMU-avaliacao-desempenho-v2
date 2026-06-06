@@ -169,6 +169,22 @@ app.get("/api/pesos-avaliacao", async (req, res) => {
   res.json(rows);
 });
 
+app.get("/api/pesos-avaliacao", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT valor, descricao, cor
+      FROM pesos_avaliacao
+      ORDER BY valor DESC
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
 });

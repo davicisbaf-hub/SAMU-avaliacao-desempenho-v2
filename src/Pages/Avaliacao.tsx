@@ -34,6 +34,7 @@ type EscalaLikert = {
 type Peso = {
   valor: number;
   descricao: string;
+  cor: string;
 };
 
 
@@ -252,7 +253,12 @@ export default function AvaliacaoPage() {
 											key={peso.valor}
 											className="flex items-center gap-2"
 										>
-											<span className="inline-block w-4 h-4 rounded-full bg-[#cd0048] text-white text-[10px] font-bold text-center leading-4">
+											<span
+												className="inline-block w-5 h-5 rounded-full text-[10px] font-bold text-white text-center leading-5"
+												style={{
+													backgroundColor: peso.cor,
+												}}
+												>
 												{peso.valor}
 											</span>
 
@@ -299,6 +305,7 @@ export default function AvaliacaoPage() {
 													<tbody>
 														{itens.map((criterio) => (
 															<TableAvaliacao
+																pesos={pesos}
 																key={criterio.codigo}
 																codigo={criterio.codigo}
 																criterio={criterio.criterio}
@@ -307,7 +314,7 @@ export default function AvaliacaoPage() {
 																escalaLikert={escalaLikert}
 																notaSelecionada={notas[criterio.criterio]}
 																onSelecionarNota={selecionarNota}
-																/>
+															/>
 														))}
 													</tbody>
 												</table>

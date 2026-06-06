@@ -5,11 +5,6 @@ CREATE TABLE escala_likert (
     cor VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE pesos_avaliacao (
-    valor INTEGER PRIMARY KEY,
-    descricao VARCHAR(200) NOT NULL
-);
-
 INSERT INTO escala_likert
 (nota, titulo, descricao, cor)
 VALUES
@@ -44,9 +39,29 @@ VALUES
     '#2563eb'
 );
 
+CREATE TABLE pesos_avaliacao (
+    valor INTEGER PRIMARY KEY,
+    descricao VARCHAR(200) NOT NULL,
+    cor VARCHAR(20) NOT NULL
+);
+
 INSERT INTO pesos_avaliacao
-(valor, descricao)
+(valor, descricao, cor)
 VALUES
-(3, 'Peso Alto (itens críticos)'),
-(2, 'Peso Médio'),
-(1, 'Peso Baixo');
+(
+    3,
+    'Peso Alto (itens críticos)',
+    '#cd0048'
+),
+(
+    2,
+    'Peso Médio',
+    '#061c31'
+),
+(
+    1,
+    'Peso Baixo',
+    '#555f69'
+);
+
+
