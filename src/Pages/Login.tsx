@@ -1,8 +1,53 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useUserSession } from "../contexts/UserSession";
+
 import "../App.css";
 
+
 function App() {
-  const [perfil, setPerfil] = useState<"admin" | "profissional">("admin");
+  const [perfil, setPerfil] = useState();
+
+
+  const navigate = useNavigate();
+  const { login } = useUserSession();
+
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            senha,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.erro);
+        return;
+      }
+
+      login(data);
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao conectar ao servidor");
+    }
+  };
 
   return (
     <div className="login w-[100vw] text-center flex items-center justify-center p-4">
@@ -52,128 +97,102 @@ function App() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 p-4 border-b border-border">
-            <button
-              type="button"
-              onClick={() => setPerfil("admin")}
-              className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
-                perfil === "admin"
-                  ? "border-primary bg-primary/5 text-primary"
-                  : "border-gray-200 text-gray-500"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+          {/* Selecionar tipo deperfil */}
+          {/* /
+            <div className="grid grid-cols-2 gap-2 p-4 border-b border-border">
+              <button
+                type="button"
+                onClick={() => setPerfil("admin")}
+                className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
+                  perfil === "admin"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-gray-200 text-gray-500"
+                }`}
               >
-                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                </svg>
 
-              <span>Admin / Coordenação</span>
+                <span>Admin / Coordenação</span>
 
-              <span className="text-[10px] font-normal opacity-70">
-                Acesso completo
-              </span>
-            </button>
+                <span className="text-[10px] font-normal opacity-70">
+                  Acesso completo
+                </span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setPerfil("profissional")}
-              className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
-                perfil === "profissional"
-                  ? "border-primary bg-primary/5 text-primary"
-                  : "border-gray-200 text-gray-500"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <button
+                type="button"
+                onClick={() => setPerfil("profissional")}
+                className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
+                  perfil === "profissional"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-gray-200 text-gray-500"
+                }`}
               >
-                <path d="M18 20a6 6 0 0 0-12 0" />
-                <circle cx="12" cy="10" r="4" />
-                <circle cx="12" cy="12" r="10" />
-              </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 20a6 6 0 0 0-12 0" />
+                  <circle cx="12" cy="10" r="4" />
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
 
-              <span>Profissional</span>
+                <span>Profissional</span>
 
-              <span className="text-[10px] font-normal opacity-70">
-                Autoavaliação / bp-TEAM
-              </span>
-            </button>
-          </div>
+                <span className="text-[10px] font-normal opacity-70">
+                  Autoavaliação / bp-TEAM
+                </span>
+              </button>
+            </div>
+          */}
 
-          <form className="p-6 space-y-4">
-            {perfil === "admin" ? (
-              <>
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-semibold text-black">
-                    Acesso / Base de Lotação
-                  </label>
+          <form onSubmit={handleLogin} className="p-6 space-y-4" >
 
-                  <select className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50">
-                    <option value="">Selecione seu acesso…</option>
+            <div className="space-y-2 text-left">
+              <label className="text-sm font-semibold text-black">
+                E-mail
+              </label>
 
-                    <optgroup label="── Administração ──">
-                      <option value="admin">
-                        🔑 Administrador CRUR-BF (todas as bases)
-                      </option>
-                    </optgroup>
-                  </select>
-                </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Digite seu e-mail..."
+                className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
+              />
+            </div>
 
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-semibold text-black">
-                    Senha de Acesso
-                  </label>
+            <div className="space-y-2 text-left">
+              <label className="text-sm font-semibold text-black">
+                Senha
+              </label>
 
-                  <input
-                    type="password"
-                    placeholder="Digite a senha..."
-                    className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-semibold text-black">
-                    E-mail
-                  </label>
-
-                  <input
-                    type="email"
-                    placeholder="Digite seu e-mail..."
-                    className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
-                  />
-                </div>
-
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-semibold text-black">
-                    Senha
-                  </label>
-
-                  <input
-                    type="password"
-                    placeholder="Digite sua senha..."
-                    className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
-                  />
-                </div>
-              </>
-            )}
+              <input
+                type="password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="Digite sua senha..."
+                className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
+              />
+            </div>
 
             <button
               type="submit"

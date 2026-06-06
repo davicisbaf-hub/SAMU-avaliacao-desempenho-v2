@@ -125,6 +125,30 @@ app.post("/api/avaliacoes", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  const { email, senha } = req.body;
+
+  const result = await pool.query(
+    "SELECT * FROM usuarios WHERE email = $1",
+    [email]
+  );
+
+  const usuario = result.rows[0];
+
+  if (!usuario || usuario.senha !== senha) {
+    return res.status(401).json({
+      erro: "Credenciais inválidas",
+    });
+  }
+
+  res.json({
+    id: usuario.id,
+    nome: usuario.nome,
+    email: usuario.email,
+    perfil: usuario.perfil,
+  });
+});
+
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
 });
