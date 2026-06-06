@@ -8,6 +8,8 @@ import InstrucoesPage from "./Pages/Como-avaliar.tsx";
 import AvaliacaoPage from "./Pages/Avaliacao.tsx";
 import PrivateRoute from "./components/PrivateRoute";
 import FichaAvaliacaoCondutor from "./Fichas/FichaAvaliacaoCondutor.tsx";
+import FichaAvaliacaoTecEnf from "./Fichas/FichaAvaliacaoTecEnf.tsx";
+import CadastroPage from "./Pages/Cadastro.tsx";
 
 
 
@@ -46,11 +48,28 @@ ReactDOM.createRoot(root!).render(
             </PrivateRoute>
           }
         />
-          <Route
+        <Route
           path="/avaliacao/condutor-socorrista"
           element={
             <PrivateRoute>
               <FichaAvaliacaoCondutor />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/avaliacao/tecnico-enfermagem"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoTecEnf />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/cadastro"
+          element={
+            <PrivateRoute>
+              <CadastroPage />
             </PrivateRoute>
           }
         />
