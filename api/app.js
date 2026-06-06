@@ -224,6 +224,11 @@ app.get("/api/ficha/:tipo", async (req, res) => {
   }
 });
 
+app.get("/api/bases", async (req, res) => {
+  const bases = await pool.query("SELECT * FROM bases ORDER BY nome");
+  res.json(bases.rows);
+});
+
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
 });
