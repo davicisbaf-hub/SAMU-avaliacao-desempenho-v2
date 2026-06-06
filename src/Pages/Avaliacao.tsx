@@ -10,8 +10,9 @@ type Criterios = {
 	codigo: string;
 	criterio: string;
 	peso: number;
-	id: number;	
+	id: number;
 	indicador: string;
+	titulo: string;
 };
 
 
@@ -23,11 +24,37 @@ const iconByTipo: Record<string, string> = {
 	"Médico": "⚕️",
 };
 
+type EscalaLikert = {
+  nota: number;
+  titulo: string;
+  descricao: string;
+  cor: string;
+};
+
+type Peso = {
+  valor: number;
+  descricao: string;
+};
+
+
 export default function AvaliacaoPage() {
 
 	const [tipoAvaliacao, setTipoAvaliacao] = useState("BP-TEAM");
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
+
+	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
+	const [pesos, setPesos] = useState<Peso[]>([]);
+
+	useEffect(() => {
+	fetch("http://localhost:3001/api/escala-likert")
+		.then((r) => r.json())
+		.then(setEscalaLikert);
+
+	fetch("http://localhost:3001/api/pesos-avaliacao")
+		.then((r) => r.json())
+		.then(setPesos);
+	}, []);
 
 	const selecionarNota = (codigo: string, nota: number) => {
 		setNotas((prev) => {
@@ -185,61 +212,53 @@ export default function AvaliacaoPage() {
 							</div>
 
 							{/* escala de pontuacao */}
-							<div className='bg-muted/50 rounded-xl p-4'>
-								<p className='text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3'>Escala de Pontuação Likert — 1 a 5</p>
-								<div className='flex flex-wrap gap-3'>
-									<div className='flex items-center gap-2'>
-										<span className='w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center bg-[#cd0048]'>1</span>
-										<span className='text-xs text-foreground'>
-											<span className='font-medium'>Insatisfatório</span>
-											<span className='text-muted-foreground hidden sm:inline'> Não atende; requer intervenção imediata</span>
-										</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<span className='w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center bg-[#cd0048]'>1</span>
-										<span className='text-xs text-foreground'>
-											<span className='font-medium'>Insatisfatório</span>
-											<span className='text-muted-foreground hidden sm:inline'> Não atende; requer intervenção imediata</span>
-										</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<span className='w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center bg-[#cd0048]'>1</span>
-										<span className='text-xs text-foreground'>
-											<span className='font-medium'>Insatisfatório</span>
-											<span className='text-muted-foreground hidden sm:inline'> Não atende; requer intervenção imediata</span>
-										</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<span className='w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center bg-[#cd0048]'>1</span>
-										<span className='text-xs text-foreground'>
-											<span className='font-medium'>Insatisfatório</span>
-											<span className='text-muted-foreground hidden sm:inline'> Não atende; requer intervenção imediata</span>
-										</span>
-									</div>
-									<div className='flex items-center gap-2'>
-										<span className='w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center bg-[#cd0048]'>1</span>
-										<span className='text-xs text-foreground'>
-											<span className='font-medium'>Insatisfatório</span>
-											<span className='text-muted-foreground hidden sm:inline'> Não atende; requer intervenção imediata</span>
-										</span>
-									</div>
+							<div className="bg-muted/50 rounded-xl p-4 ">
+								<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+									Escala de Pontuação Likert — 1 a 5
+								</p>
+
+								<div className="flex flex-col gap-3">
+									{escalaLikert.map((item) => (
+										<div
+											key={item.nota}
+											className="flex items-center gap-2"
+										>
+											<span
+												className="w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center"
+												style={{
+													backgroundColor: item.cor,
+												}}
+											>
+											{item.nota}
+											</span>
+											<span className="text-xs text-foreground">
+												<span
+													className="font-medium">
+													{item.titulo}
+												</span>
+
+												<span className="text-muted-foreground">
+													{" "}
+													— {item.descricao}
+												</span>
+											</span>
+										</div>
+										))}
 								</div>
 
-								<div className='class="flex gap-4 mt-3 text-xs text-muted-foreground border-t border-border pt-3'>
-									<span className='flex items-center gap-2'>
-										<span className='inline-block w-4 h-4 rounded-full bg-[#cd0048] text-white text-[10px] font-bold text-center leading-4'>
-											3
+								<div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground border-t border-border pt-3">
+									{pesos.map((peso) => (
+										<span
+											key={peso.valor}
+											className="flex items-center gap-2"
+										>
+											<span className="inline-block w-4 h-4 rounded-full bg-[#cd0048] text-white text-[10px] font-bold text-center leading-4">
+												{peso.valor}
+											</span>
+
+											{peso.descricao}
 										</span>
-										Peso Alto (itens críticos)
-										<span className='inline-block w-4 h-4 rounded-full bg-[#cd0048] text-white text-[10px] font-bold text-center leading-4'>
-											2
-										</span>
-										Peso Médio
-										<span className='inline-block w-4 h-4 rounded-full bg-[#cd0048] text-white text-[10px] font-bold text-center leading-4'>
-											1
-										</span>
-										Peso Baixo
-									</span>
+									))}
 								</div>
 							</div>
 
@@ -280,14 +299,15 @@ export default function AvaliacaoPage() {
 													<tbody>
 														{itens.map((criterio) => (
 															<TableAvaliacao
-																key={criterio.id}
+																key={criterio.codigo}
 																codigo={criterio.codigo}
 																criterio={criterio.criterio}
 																peso={criterio.peso}
 																indicador={criterio.indicador}
-																onSelecionarNota={selecionarNota}
+																escalaLikert={escalaLikert}
 																notaSelecionada={notas[criterio.criterio]}
-															/>
+																onSelecionarNota={selecionarNota}
+																/>
 														))}
 													</tbody>
 												</table>
@@ -297,9 +317,9 @@ export default function AvaliacaoPage() {
 								)
 							)}
 							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-								<TextArea titulo="Observações Gerais" placeholder="Pontos positivos, contexto da avaliação, situações específicas observadas..."/>
-								<TextArea titulo="Pontos a Melhorar (Lacunas Identificadas)" placeholder="Competências que requerem desenvolvimento, erros recorrentes, lacunas técnicas..."/>
-								<TextArea titulo="Plano de Ação / PDI Sugerido" placeholder="Cursos, treinamentos, simulações, mentoria, prazo previsto..."/>
+								<TextArea titulo="Observações Gerais" placeholder="Pontos positivos, contexto da avaliação, situações específicas observadas..." />
+								<TextArea titulo="Pontos a Melhorar (Lacunas Identificadas)" placeholder="Competências que requerem desenvolvimento, erros recorrentes, lacunas técnicas..." />
+								<TextArea titulo="Plano de Ação / PDI Sugerido" placeholder="Cursos, treinamentos, simulações, mentoria, prazo previsto..." />
 							</div>
 							<div className='bg-card border border-border rounded-xl p-5'>
 								<h3 className='text-sm font-semibold text-card-foreground mb-4'>Assinaturas e Ciência</h3>

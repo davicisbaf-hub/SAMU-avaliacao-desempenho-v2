@@ -1,14 +1,24 @@
 
 
+type EscalaLikert = {
+  nota: number;
+  titulo: string;
+  descricao: string;
+  cor: string;
+};
+
 type Props = {
   codigo: string;
   criterio: string;
   peso: number;
   indicador: string;
 
+  escalaLikert: EscalaLikert[];
+
   onSelecionarNota: (criterio: string, nota: number) => void;
   notaSelecionada: number;
 };
+
 
 
 export default function TableAvaliacao({
@@ -18,7 +28,12 @@ export default function TableAvaliacao({
   indicador,
   onSelecionarNota,
   notaSelecionada,
+  escalaLikert
 }: Props) {
+
+  const classificacao = escalaLikert.find(
+    (item) => item.nota === notaSelecionada
+  );
 
   return (
     <tr className="border-t hover:bg-muted/30 transition-colors group">
@@ -45,27 +60,46 @@ export default function TableAvaliacao({
 
       <td className="py-3 px-4">
         <div className="flex gap-1.5 flex-wrap">
-          {[1, 2, 3, 4, 5].map((nota) => (
-            <button
-              key={nota}
-              type="button"
-              onClick={() => onSelecionarNota(criterio, nota)}
-              className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all duration-150
-                ${
-                  notaSelecionada === nota
-                    ? "bg-red-500 text-white border-red-500"
-                    : "bg-background border-border text-muted-foreground hover:border-primary/50"
+          {[1, 2, 3, 4, 5].map((nota) => {
+            const escala = escalaLikert.find(
+              (item) => item.nota === nota
+            );
+
+            return (
+              <button
+                key={nota}
+                type="button"
+                onClick={() => onSelecionarNota(criterio, nota)}
+                className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all duration-150 ${
+                  notaSelecionada !== nota
+                    ? "bg-background border-border text-muted-foreground hover:border-primary/50"
+                    : ""
                 }`}
-            >
-              {nota}
-            </button>
-          ))}
+                style={
+                  notaSelecionada === nota
+                    ? {
+                        backgroundColor: escala?.cor,
+                        borderColor: escala?.cor,
+                        color: "#fff",
+                      }
+                    : {}
+                }
+              >
+                {nota}
+              </button>
+            );
+          })}
         </div>
       </td>
 
       <td className="py-3 px-4 text-center">
-        <span className="text-xs text-muted-foreground italic">
-          {notaSelecionada ?? "—"}
+        <span
+          className="text-xs italic font-medium"
+          style={{
+            color: classificacao?.cor,
+          }}
+        >
+          {classificacao?.titulo ?? "—"}
         </span>
       </td>
     </tr>

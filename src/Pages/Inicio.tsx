@@ -4,6 +4,7 @@ import FichasCard from "../components/fichas-card";
 import Header from '../components/Header'
 import Nav from '../components/Nav'
 import FrequenciaTable from "../components/table";
+import { useUserSession } from "../contexts/UserSession";
 
 type Ficha = {
   id: number;
@@ -34,6 +35,7 @@ type Fluxo = {
 };
 
 export default function Inicio() {
+  const { user } = useUserSession();
 
   const [fichas, setFichas] = useState<Ficha[]>([]);
   const [frequencias, setFrequencias] = useState<FrequenciaAplicacao[]>([]);
@@ -81,7 +83,7 @@ export default function Inicio() {
                       <h1 className='text-xl md:text-2xl font-bold text-secondary-foreground'>Instrumento de Avaliação de Desempenho</h1>
                       <span className='bg-[#cd0048] text-primary-foreground text-xs px-2.5 py-1 rounded-full font-semibold'>360°</span>
                     </div>
-                    <span className='inline-flex items-center gap-1.5 bg-[#cd0048]/30 text-primary-foreground text-xs px-2.5 py-1 rounded-full font-medium'>🔑 Administrador — Todas as bases</span>
+                    <span className='inline-flex items-center gap-1.5 bg-[#cd0048]/30 text-primary-foreground text-xs px-2.5 py-1 rounded-full font-medium'>{user?.perfil}</span>
                   </div>
 
                   <p className='text-secondary-foreground/70 text-sm'>Equipes de Intervenção SAMU 192 — CRUR-BF / CISBAF — Baixada Fluminense, RJ</p>

@@ -149,6 +149,26 @@ app.post("/login", async (req, res) => {
   });
 });
 
+app.get("/api/escala-likert", async (req, res) => {
+  const { rows } = await pool.query(`
+    SELECT *
+    FROM escala_likert
+    ORDER BY nota
+  `);
+
+  res.json(rows);
+});
+
+app.get("/api/pesos-avaliacao", async (req, res) => {
+  const { rows } = await pool.query(`
+    SELECT *
+    FROM pesos_avaliacao
+    ORDER BY valor DESC
+  `);
+
+  res.json(rows);
+});
+
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
 });
