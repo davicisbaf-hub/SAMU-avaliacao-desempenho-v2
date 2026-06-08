@@ -9,6 +9,12 @@ import AvaliacaoPage from "./Pages/Avaliacao.tsx";
 import PrivateRoute from "./components/PrivateRoute";
 import FichaAvaliacaoCondutor from "./Fichas/FichaAvaliacaoCondutor.tsx";
 import FichaAvaliacaoTecEnf from "./Fichas/FichaAvaliacaoTecEnf.tsx";
+import FichaAvaliacaoEnf from "./Fichas/FichaAvaliacaoEnf.tsx";
+import FichaAvaliacaoMedico from "./Fichas/FichaAvaliacaoMedico.tsx";
+import FichaAvaliacaoLideranca from "./Fichas/FichaAvaliacaoLideranca.tsx";
+import FichaAvaliacaoBpTeam from "./Fichas/FichaAvaliacaoBpTeam.tsx";
+
+
 import CadastroPage from "./Pages/Cadastro.tsx";
 
 
@@ -61,6 +67,42 @@ ReactDOM.createRoot(root!).render(
           element={
             <PrivateRoute>
               <FichaAvaliacaoTecEnf />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/avaliacao/enfermeiro"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoEnf />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/avaliacao/medico-intervencionista"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoMedico />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/avaliacao/lideranca-coordenacao"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoLideranca />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/avaliacao/bp-team"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoBpTeam />
             </PrivateRoute>
           }
         />

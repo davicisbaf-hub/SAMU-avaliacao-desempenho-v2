@@ -93,7 +93,34 @@ app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
       `,
       [tipo]
     );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
 
+app.get("/api/fichas-avaliacao/:tipo", async (req, res) => {
+  try {
+    const { tipo } = req.params;
+
+    const { rows } = await pool.query(
+      `
+      SELECT
+        id,
+        tipo,
+        categoria,
+        codigo,
+        criterio,
+        peso,
+        indicador
+      FROM fichas_avaliacao
+      WHERE tipo = $1
+      ORDER BY categoria, codigo;
+      `,
+      [tipo]
+    );
     res.json(rows);
   } catch (err) {
     res.status(500).json({

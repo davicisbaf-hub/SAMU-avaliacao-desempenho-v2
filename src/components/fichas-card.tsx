@@ -3,6 +3,7 @@ type FichasCardProps = {
   cargo: string;
   criterios: number;
   tags: string[];
+  link: string;
 };
 
 export default function FichasCard({
@@ -10,10 +11,11 @@ export default function FichasCard({
   cargo,
   criterios,
   tags,
+  link
 }: FichasCardProps) {
   return (
     <a
-      href="#"
+      href={link}
       className="block bg-card border border-border rounded-xl p-5 hover:border-primary/40 hover:shadow-md transition-all group"
     >
       <div className="flex items-start gap-3">
