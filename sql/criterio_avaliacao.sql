@@ -7,6 +7,7 @@ CREATE TABLE criterios_avaliacao (
     criterio TEXT NOT NULL,
     peso INTEGER NOT NULL,
     indicador VARCHAR(100),
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

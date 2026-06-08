@@ -20,6 +20,7 @@ import CadastroPage from "./Pages/Cadastro.tsx";
 
 
 import { UserSessionProvider } from "./contexts/UserSession";
+import Configuracoes from "./Pages/Configuracoes.tsx";
 
 const root = document.getElementById("root");
 
@@ -115,6 +116,16 @@ ReactDOM.createRoot(root!).render(
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/configuracoes"
+          element={
+            <PrivateRoute>
+              <Configuracoes />
+            </PrivateRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   </UserSessionProvider>
