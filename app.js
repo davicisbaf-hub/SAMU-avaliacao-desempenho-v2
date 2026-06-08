@@ -280,6 +280,7 @@ app.post("/api/usuarios", async (req, res) => {
     email,
     senha,
     funcao,
+    base,
     perfil,
   } = req.body;
 
@@ -291,10 +292,11 @@ app.post("/api/usuarios", async (req, res) => {
       email,
       senha,
       funcao,
+      base,
       perfil
     )
     VALUES
-    ($1,$2,$3,$4,$5)
+    ($1,$2,$3,$4,$5,$6)
     RETURNING *
     `,
     [
@@ -302,6 +304,7 @@ app.post("/api/usuarios", async (req, res) => {
       email,
       senha,
       funcao,
+      base,
       perfil,
     ]
   );
@@ -419,17 +422,76 @@ app.get("/api/tipos-avaliacao", async (req, res) => {
 });
 
 app.get("/api/usuarios", async (req, res) => {
-  try {
-    const { rows } = await pool.query(`
-      SELECT *
-      FROM usuarios
-      WHERE ativo = true
-    `);
+  const { rows } = await pool.query(`
+    SELECT *
+    FROM usuarios
+    WHERE ativo = TRUE
+    ORDER BY nome
+  `);
 
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json(rows);
+});
+
+app.get("/api/funcoes", async (req, res) => {
+  const { rows } = await pool.query(`
+    SELECT
+      id,
+      nome,
+      icon
+    FROM fichas_avaliacao
+    WHERE ativo = true
+    ORDER BY ordem
+  `);
+
+  res.json(rows);
+});
+
+app.put("/api/usuarios/:id/inativar", async (req, res) => {
+  const { rows } = await pool.query(
+    `
+    UPDATE usuarios
+    SET ativo = FALSE
+    WHERE id = $1
+    RETURNING *
+    `,
+    [req.params.id]
+  );
+
+  res.json(rows[0]);
+});
+
+app.put("/api/usuarios/:id", async (req, res) => {
+  const {
+    nome,
+    email,
+    funcao,
+    perfil,
+    base
+  } = req.body;
+
+  const { rows } = await pool.query(
+    `
+    UPDATE usuarios
+    SET
+      nome = $1,
+      email = $2,
+      funcao = $3,
+      perfil = $4,
+      base = $5
+    WHERE id = $6
+    RETURNING *
+    `,
+    [
+      nome,
+      email,
+      funcao,
+      perfil,
+      base,
+      req.params.id
+    ]
+  );
+
+  res.json(rows[0]);
 });
 
 app.listen(port, () => {

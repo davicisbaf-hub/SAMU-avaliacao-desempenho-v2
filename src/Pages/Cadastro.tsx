@@ -9,15 +9,68 @@ type Base = {
     cor: string;
 };
 
+type Usuario = {
+  id: number;
+  nome: string;
+  email: string;
+  funcao: string;
+  base: string;
+  perfil: string;
+  quantidade: number;
+};
+
+type Ficha = {
+  id: number;
+  icon: string;
+  nome: string;
+  descricao: string;
+  criterios: number;
+  tags: string[];
+  ordem: number;
+  link: string;
+  ativo: boolean;
+  created_at: string;
+};
+
+
 export default function CadastroPage() {
     const [bases, setBases] = useState<Base[]>([]);
     const [baseSelecionada, setBaseSelecionada] = useState<Base | null>(null);
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
+    const [base, setBase] = useState("");
     const [senha, setSenha] = useState("");
     const [funcao, setFuncao] = useState("");
     const [perfil, setPerfil] = useState("");
-    const [usuarios, setUsuarios] = useState<any[]>([]);
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+    const [modalAberto, setModalAberto] = useState(false);
+    const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
+    
+    async function salvarEdicao() {
+        if (!usuarioEditando) return;
+
+        await fetch(
+            `http://localhost:3001/api/usuarios/${usuarioEditando.id}`,
+            {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nome,
+                email,
+                funcao,
+                base,
+                perfil,
+            }),
+            }
+        );
+
+        setModalAberto(false);
+        setUsuarioEditando(null);
+
+        carregarUsuarios();
+    }
 
     useEffect(() => {
         carregarUsuarios();
@@ -62,6 +115,7 @@ export default function CadastroPage() {
                         email,
                         senha,
                         funcao,
+                        base,
                         perfil
                     }),
                 }
@@ -84,6 +138,49 @@ export default function CadastroPage() {
             alert("Erro ao cadastrar usuário");
         }
     };
+
+    
+      const [fichas, setFichas] = useState<Ficha[]>([]);
+    
+      const carregar = async (url: string, setter: Function) => {
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          setter(data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+    
+      useEffect(() => {
+        carregar("http://localhost:3001/api/fichas", setFichas);
+      }, []);
+
+      async function removerUsuario(id: number) {
+        if (!confirm("Deseja inativar este usuário?")) {
+            return;
+        }
+
+        await fetch(
+            `http://localhost:3001/api/usuarios/${id}/inativar`,
+            {
+            method: "PUT",
+            }
+        );
+
+        carregarUsuarios();
+    }
+    function editarUsuario(usuario: Usuario) {
+        setUsuarioEditando(usuario);
+
+        setNome(usuario.nome);
+        setEmail(usuario.email);
+        setFuncao(usuario.funcao);
+        setPerfil(usuario.perfil);
+        setBase(usuario.base);
+
+        setModalAberto(true);
+    }
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -118,7 +215,7 @@ export default function CadastroPage() {
                                             key={base.id}
                                             onClick={() => setBaseSelecionada(base)}
                                             className={`flex items-center gap-2 px-3 py-1 rounded-lg border text-sm transition
-                            ${baseSelecionada?.id === base.id
+                                            ${baseSelecionada?.id === base.id
                                                     ? "bg-primary text-primary-foreground"
                                                     : "hover:bg-muted"
                                                 }`}
@@ -135,31 +232,28 @@ export default function CadastroPage() {
 
                             {/* Resumo */}
                             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                                <button className="flex flex-col items-center gap-1 p-3 rounded-xl border text-xs font-semibold transition-all border-border bg-card text-foreground hover:border-primary/30">
-                                    <span className="text-xl">🚑</span>
-                                    <span className="text-center leading-tight">Condutor</span>
-                                    <p className="text-lg font-black text-muted-foreground">0</p>
-                                </button>
-                                <button className="flex flex-col items-center gap-1 p-3 rounded-xl border text-xs font-semibold transition-all border-border bg-card text-foreground hover:border-primary/30">
-                                    <span className="text-xl">🚑</span>
-                                    <span className="text-center leading-tight">Condutor</span>
-                                    <p className="text-lg font-black text-muted-foreground">0</p>
-                                </button>
-                                <button className="flex flex-col items-center gap-1 p-3 rounded-xl border text-xs font-semibold transition-all border-border bg-card text-foreground hover:border-primary/30">
-                                    <span className="text-xl">🚑</span>
-                                    <span className="text-center leading-tight">Condutor</span>
-                                    <p className="text-lg font-black text-muted-foreground">0</p>
-                                </button>
-                                <button className="flex flex-col items-center gap-1 p-3 rounded-xl border text-xs font-semibold transition-all border-border bg-card text-foreground hover:border-primary/30">
-                                    <span className="text-xl">🚑</span>
-                                    <span className="text-center leading-tight">Condutor</span>
-                                    <p className="text-lg font-black text-muted-foreground">0</p>
-                                </button>
-                                <button className="flex flex-col items-center gap-1 p-3 rounded-xl border text-xs font-semibold transition-all border-border bg-card text-foreground hover:border-primary/30">
-                                    <span className="text-xl">🚑</span>
-                                    <span className="text-center leading-tight">Condutor</span>
-                                    <p className="text-lg font-black text-muted-foreground">0</p>
-                                </button>
+                                {fichas.map((ficha) => (
+                                    <button
+                                        key={ficha.id}
+                                        className="flex flex-col items-center gap-1 p-3 rounded-xl border"
+                                    >
+                                        <span >
+                                        {ficha.icon}
+                                        </span>
+
+                                        <span className="text-[16px]">
+                                        {ficha.nome}
+                                        </span>
+
+                                        <p className="font-black">
+                                            {
+                                                usuarios.filter(
+                                                (u) => u.funcao === ficha.nome
+                                                ).length
+                                            }
+                                        </p>
+                                    </button>
+                                    ))}
                             </div>
 
                             {/* Formulário */}
@@ -217,8 +311,11 @@ export default function CadastroPage() {
                                                 required
                                             >
                                                 <option value="">Selecione</option>
-                                                <option value="Administrador">Administrador</option>
-                                                <option value="Usuario">Usuário</option>
+                                                <option value="Condutor Socorrista">Condutor Socorrista</option>
+                                                <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
+                                                <option value="Enfermeiro">Enfermeiro</option>
+                                                <option value="Médico Intervencionista">Médico Intervencionista</option>
+                                                <option value="Liderança / Coordenação">Liderança / Coordenação</option>
                                             </select>
                                         </div>
                                         <div className="space-y-1">
@@ -242,6 +339,23 @@ export default function CadastroPage() {
                                                 placeholder="Opcional"
                                                 className="w-full border rounded-lg px-3 py-2 text-sm"
                                             />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold">Base</label>
+                                            <select
+                                                value={base}
+                                                onChange={(e) => setBase(e.target.value)}
+                                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                                                required
+                                                >
+                                                <option value="">Selecione</option>
+
+                                                {bases.map((base) => (
+                                                    <option key={base.id} value={base.nome}>
+                                                    {base.nome}
+                                                    </option>
+                                                ))}
+                                                </select>
                                         </div>
 
                                     </div>
@@ -270,20 +384,33 @@ export default function CadastroPage() {
 
                                     {usuarios.map((user: any) => (
                                         <div className="flex items-center justify-between px-5 py-3">
-                                            <div>
+                                            <div className="text-left gap-3">
                                                 <p className="text-sm font-semibold">{user.nome}</p>
+                                                
                                                 <p className="text-xs text-muted-foreground">
                                                     Matrícula: {user.matricula}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Função: {user.funcao}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Base: {user.base}
                                                 </p>
                                             </div>
 
                                             <div className="flex gap-2">
-                                                <button className="text-sm px-2 py-1 border rounded">
+                                                <button
+                                                    onClick={() => editarUsuario(user)}
+                                                    className="text-sm px-2 py-1 border rounded"
+                                                    >
                                                     Editar
                                                 </button>
-                                                <button className="text-sm px-2 py-1 border rounded text-red-500">
+                                                <button
+                                                    onClick={() => removerUsuario(user.id)}
+                                                    className="text-sm px-2 py-1 border rounded text-red-500"
+                                                    >
                                                     Remover
-                                                </button>
+                                                    </button>
                                             </div>
                                         </div>
                                     ))}
@@ -301,6 +428,66 @@ export default function CadastroPage() {
                     </div>
                 </div>
             </div>
+            {modalAberto && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl w-full max-w-xl p-6">
+                    <h2 className="text-lg font-bold mb-4">
+                        Editar Profissional
+                    </h2>
+
+                    <div className="space-y-3">
+                        <input
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2"
+                        />
+
+                        <input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2"
+                        />
+
+                        <select
+                        value={funcao}
+                        onChange={(e) => setFuncao(e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2"
+                        >
+                        {fichas.map((ficha) => (
+                            <option key={ficha.id} value={ficha.nome}>
+                            {ficha.nome}
+                            </option>
+                        ))}
+                        </select>
+
+                        <select
+                        value={perfil}
+                        onChange={(e) => setPerfil(e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2"
+                        >
+                        <option value="Administrador">Administrador</option>
+                        <option value="Usuario">Usuário</option>
+                        </select>
+                    </div>
+
+                    <div className="flex justify-end gap-2 mt-5">
+                        <button
+                        onClick={() => setModalAberto(false)}
+                        className="px-4 py-2 border rounded-lg"
+                        >
+                        Cancelar
+                        </button>
+
+                        <button
+                        onClick={salvarEdicao}
+                        className="px-4 py-2 bg-black text-white rounded-lg"
+                        >
+                        Salvar
+                        </button>
+                    </div>
+                    </div>
+                </div>
+                )}
         </div>
     )
 }

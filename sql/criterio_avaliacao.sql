@@ -1,7 +1,6 @@
 CREATE TABLE criterios_avaliacao (
     id SERIAL PRIMARY KEY,
     tipo VARCHAR(50) NOT NULL,
-    tipo_link VARCHAR(50) NOT NULL,
     categoria VARCHAR(100) NOT NULL,
     codigo VARCHAR(20) NOT NULL,
     criterio TEXT NOT NULL,
