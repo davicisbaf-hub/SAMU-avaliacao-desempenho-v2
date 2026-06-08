@@ -7,17 +7,18 @@ const app = express();
 app.use(express.json());
 const port = 3001
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173"
-  ]
-}));
+// app.use(cors({
+//   origin: [
+//     "http://localhost:5173",
+//     "http://127.0.0.1:5173"
+//   ]
+// }));
 
+app.use(cors());
 
 
 const pool = new pg.Pool({
-  host: "localhost",
+  host: "host.docker.internal",
   port: 5432,
   user: "samu",
   password: "samu",
