@@ -20,6 +20,8 @@ export default function ConfiguracaoPage() {
   const [tipos, setTipos] = useState<Tipo[]>([]);
   const [tipoSelecionado, setTipoSelecionado] = useState("");
   const [selecionados, setSelecionados] = useState<number[]>([]);
+  const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [modalAberto, setModalAberto] = useState(false);
 
   const [criterios, setCriterios] = useState<Criterio[]>([]);
 
@@ -35,6 +37,70 @@ export default function ConfiguracaoPage() {
         ? prev.filter((item) => item !== id)
         : [...prev, id]
     );
+  }
+
+  function editarCriterio(item: Criterio) {
+    setEditandoId(item.id);
+    setCategoria(item.categoria);
+    setCodigo(item.codigo);
+    setCriterio(item.criterio);
+    setPeso(item.peso);
+    setIndicador(item.indicador);
+
+    setModalAberto(true);
+  }
+
+  function limparFormulario() {
+    setEditandoId(null);
+    setCategoria("");
+    setCodigo("");
+    setCriterio("");
+    setPeso(1);
+    setIndicador("");
+    setModalAberto(false);
+  }
+
+  async function salvar() {
+    if (!tipoSelecionado || !categoria || !codigo || !criterio) {
+      alert("Preencha todos os campos.");
+      return;
+    }
+
+    const url = editandoId
+      ? `http://localhost:3001/api/criterios-avaliacao/${editandoId}`
+      : "http://localhost:3001/api/criterios-avaliacao";
+
+    const method = editandoId ? "PUT" : "POST";
+
+    await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tipo: tipoSelecionado,
+        categoria,
+        codigo,
+        criterio,
+        peso,
+        indicador,
+      }),
+    });
+
+    limparFormulario();
+    carregarCriterios();
+  }
+
+  function novoCriterio() {
+    setEditandoId(null);
+
+    setCategoria("");
+    setCodigo("");
+    setCriterio("");
+    setPeso(1);
+    setIndicador("");
+
+    setModalAberto(true);
   }
 
   async function inativarSelecionados() {
@@ -88,49 +154,6 @@ export default function ConfiguracaoPage() {
     setCriterios(Array.isArray(data) ? data : []);
   }
 
-  async function adicionarCriterio() {
-    if (!tipoSelecionado || !categoria || !codigo || !criterio) {
-      alert("Preencha todos os campos.");
-      return;
-    }
-
-    await fetch("http://localhost:3001/api/criterios-avaliacao", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        tipo: tipoSelecionado,
-        tipo_link: "",
-        categoria,
-        codigo,
-        criterio,
-        peso,
-        indicador,
-      }),
-    });
-
-    setCategoria("");
-    setCodigo("");
-    setCriterio("");
-    setPeso(1);
-    setIndicador("");
-
-    carregarCriterios();
-  }
-
-  async function inativarCriterio(id: number) {
-    if (!confirm("Deseja inativar este critério?")) return;
-
-    await fetch(
-      `http://localhost:3001/api/criterios-avaliacao/${id}/inativar`,
-      {
-        method: "PUT",
-      }
-    );
-
-    carregarCriterios();
-  }
 
   return (
     <div className="flex h-screen w-screen bg-white text-black">
@@ -172,68 +195,28 @@ export default function ConfiguracaoPage() {
                 ))}
               </select>
             </div>
-           
-            {/* FORM */}
-            {tipoSelecionado && (
-              <div className="border rounded-xl p-4 space-y-3">
-                <h2 className="font-semibold">Novo Critério</h2>
-
-                <input
-                  value={categoria}
-                  onChange={(e) => setCategoria(e.target.value)}
-                  placeholder="Categoria"
-                  className="w-full border rounded-lg px-3 py-2"
-                />
-
-                <input
-                  value={codigo}
-                  onChange={(e) => setCodigo(e.target.value)}
-                  placeholder="Código"
-                  className="w-full border rounded-lg px-3 py-2"
-                />
-
-                <textarea
-                  value={criterio}
-                  onChange={(e) => setCriterio(e.target.value)}
-                  placeholder="Critério"
-                  className="w-full border rounded-lg px-3 py-2"
-                />
-
-                <input
-                  type="number"
-                  value={peso}
-                  onChange={(e) => setPeso(Number(e.target.value))}
-                  placeholder="Peso"
-                  className="w-full border rounded-lg px-3 py-2"
-                />
-
-                <input
-                  value={indicador}
-                  onChange={(e) => setIndicador(e.target.value)}
-                  placeholder="Indicador"
-                  className="w-full border rounded-lg px-3 py-2"
-                />
-
-                <button
-                  onClick={adicionarCriterio}
-                  className="px-4 py-2 bg-black text-white rounded-lg"
-                >
-                  Adicionar Critério
-                </button>
-              </div>
-            )}
+            
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-semibold text-lg">
                 Critérios da Ficha
               </h2>
 
-              <button
-                onClick={inativarSelecionados}
-                disabled={selecionados.length === 0}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50"
-              >
-                Inativar Selecionados ({selecionados.length})
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={novoCriterio}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg"
+                >
+                  Novo Critério
+                </button>
+
+                <button
+                  onClick={inativarSelecionados}
+                  disabled={selecionados.length === 0}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50"
+                >
+                  Inativar ({selecionados.length})
+                </button>
+              </div>
             </div>
             {/* LISTA */}
             {tipoSelecionado && (
@@ -264,6 +247,7 @@ export default function ConfiguracaoPage() {
                     <th className="px-3 py-2 text-left">Critério</th>
                     <th className="px-3 py-2 text-center">Peso</th>
                     <th className="px-3 py-2 text-left">Indicador</th>
+                    <th className="px-3 py-2 text-center">Ações</th>
                   </tr>
                 </thead>
 
@@ -304,6 +288,14 @@ export default function ConfiguracaoPage() {
                       <td className="px-3 py-3">
                         {item.indicador}
                       </td>
+                      <td className="px-3 py-3 text-center">
+                        <button
+                          onClick={() => editarCriterio(item)}
+                          className="text-blue-600 hover:underline"
+                        >
+                          Editar
+                        </button>
+                      </td>
                     </tr>
                   ))}
 
@@ -324,6 +316,78 @@ export default function ConfiguracaoPage() {
           </div>
         </div>
       </div>
+      {modalAberto && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl w-full max-w-2xl p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">
+                Editar Critério
+              </h2>
+
+              <button
+                onClick={limparFormulario}
+                className="text-gray-500 text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <input
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                placeholder="Categoria"
+                className="w-full border rounded-lg px-3 py-2"
+              />
+
+              <input
+                value={codigo}
+                onChange={(e) => setCodigo(e.target.value)}
+                placeholder="Código"
+                className="w-full border rounded-lg px-3 py-2"
+              />
+
+              <textarea
+                value={criterio}
+                onChange={(e) => setCriterio(e.target.value)}
+                placeholder="Critério"
+                className="w-full border rounded-lg px-3 py-2"
+                rows={4}
+              />
+
+              <input
+                type="number"
+                value={peso}
+                onChange={(e) => setPeso(Number(e.target.value))}
+                className="w-full border rounded-lg px-3 py-2"
+              />
+
+              <input
+                value={indicador}
+                onChange={(e) => setIndicador(e.target.value)}
+                placeholder="Indicador"
+                className="w-full border rounded-lg px-3 py-2"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={limparFormulario}
+                className="px-4 py-2 border rounded-lg"
+              >
+                Cancelar
+              </button>
+
+              <button
+                  onClick={salvar}
+                  className="px-4 py-2 bg-black text-white rounded-lg"
+                >
+                  {editandoId ? "Salvar Alterações" : "Adicionar Critério"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
