@@ -19,6 +19,7 @@ type Criterio = {
 export default function ConfiguracaoPage() {
   const [tipos, setTipos] = useState<Tipo[]>([]);
   const [tipoSelecionado, setTipoSelecionado] = useState("");
+  const [selecionados, setSelecionados] = useState<number[]>([]);
 
   const [criterios, setCriterios] = useState<Criterio[]>([]);
 
@@ -27,6 +28,39 @@ export default function ConfiguracaoPage() {
   const [criterio, setCriterio] = useState("");
   const [peso, setPeso] = useState(1);
   const [indicador, setIndicador] = useState("");
+
+  function toggleSelecionado(id: number) {
+    setSelecionados((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  }
+
+  async function inativarSelecionados() {
+    if (selecionados.length === 0) {
+      alert("Selecione pelo menos um critério.");
+      return;
+    }
+
+    if (!confirm(`Deseja inativar ${selecionados.length} critérios?`)) {
+      return;
+    }
+
+    await Promise.all(
+      selecionados.map((id) =>
+        fetch(
+          `http://localhost:3001/api/criterios-avaliacao/${id}/inativar`,
+          {
+            method: "PUT",
+          }
+        )
+      )
+    );
+
+    setSelecionados([]);
+    carregarCriterios();
+  }
 
   useEffect(() => {
     carregarTipos();
@@ -138,7 +172,7 @@ export default function ConfiguracaoPage() {
                 ))}
               </select>
             </div>
-
+           
             {/* FORM */}
             {tipoSelecionado && (
               <div className="border rounded-xl p-4 space-y-3">
@@ -188,50 +222,103 @@ export default function ConfiguracaoPage() {
                 </button>
               </div>
             )}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-semibold text-lg">
+                Critérios da Ficha
+              </h2>
 
+              <button
+                onClick={inativarSelecionados}
+                disabled={selecionados.length === 0}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50"
+              >
+                Inativar Selecionados ({selecionados.length})
+              </button>
+            </div>
             {/* LISTA */}
             {tipoSelecionado && (
-              <div className="border rounded-xl overflow-hidden">
-                <div className="p-4 border-b font-semibold">
-                  Critérios da Ficha
-                </div>
+              <table className="w-full border-collapse text-sm">
+                <thead>
+                  <tr className="border-b bg-gray-100">
+                    <th className="px-3 py-2 text-left">#</th>
 
-                <div className="divide-y">
+                    <th className="px-3 py-2 text-center w-12">
+                      <input
+                        type="checkbox"
+                        checked={
+                          criterios.length > 0 &&
+                          selecionados.length === criterios.length
+                        }
+                        onChange={(e) =>
+                          setSelecionados(
+                            e.target.checked
+                              ? criterios.map((c) => c.id)
+                              : []
+                          )
+                        }
+                      />
+                    </th>
+
+                    <th className="px-3 py-2 text-left">Categoria</th>
+                    <th className="px-3 py-2 text-left">Código</th>
+                    <th className="px-3 py-2 text-left">Critério</th>
+                    <th className="px-3 py-2 text-center">Peso</th>
+                    <th className="px-3 py-2 text-left">Indicador</th>
+                  </tr>
+                </thead>
+
+                <tbody>
                   {criterios.map((item) => (
-                    <div
+                    <tr
                       key={item.id}
-                      className="p-4 flex justify-between gap-4"
+                      className="border-b hover:bg-gray-50 transition-colors"
                     >
-                      <div>
-                        <p className="font-semibold">
-                          {item.codigo}
-                        </p>
+                      <td className="px-3 py-3">
+                        {item.id}
+                      </td>
 
-                        <p className="text-sm">
-                          {item.criterio}
-                        </p>
+                      <td className="px-3 py-3 text-center">
+                        <input
+                          type="checkbox"
+                          checked={selecionados.includes(item.id)}
+                          onChange={() => toggleSelecionado(item.id)}
+                        />
+                      </td>
 
-                        <p className="text-xs text-gray-500">
-                          {item.categoria} • Peso {item.peso}
-                        </p>
-                      </div>
+                      <td className="px-3 py-3">
+                        {item.categoria}
+                      </td>
 
-                      <button
-                        onClick={() => inativarCriterio(item.id)}
-                        className="text-red-600"
-                      >
-                        Inativar
-                      </button>
-                    </div>
+                      <td className="px-3 py-3 font-medium">
+                        {item.codigo}
+                      </td>
+
+                      <td className="px-3 py-3">
+                        {item.criterio}
+                      </td>
+
+                      <td className="px-3 py-3 text-center">
+                        {item.peso}
+                      </td>
+
+                      <td className="px-3 py-3">
+                        {item.indicador}
+                      </td>
+                    </tr>
                   ))}
 
                   {criterios.length === 0 && (
-                    <div className="p-4 text-sm text-gray-500">
-                      Nenhum critério encontrado.
-                    </div>
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-3 py-6 text-center text-gray-500"
+                      >
+                        Nenhum critério encontrado.
+                      </td>
+                    </tr>
                   )}
-                </div>
-              </div>
+                </tbody>
+              </table>
             )}
 
           </div>

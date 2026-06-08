@@ -5,7 +5,7 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-const port = 8087;
+const port = 3001;
 
 app.use(cors({
   origin: [
@@ -18,7 +18,7 @@ app.use(cors({
 
 
 const pool = new pg.Pool({
-  host: "host.docker.internal",
+  host: "localhost",
   port: 5432,
   user: "samu",
   password: "samu",
@@ -91,7 +91,7 @@ app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
       FROM criterios_avaliacao
       WHERE tipo = $1
       AND ativo = true
-      ORDER BY categoria, codigo;
+      ORDER BY id ASC;
       `,
       [tipo]
     );
