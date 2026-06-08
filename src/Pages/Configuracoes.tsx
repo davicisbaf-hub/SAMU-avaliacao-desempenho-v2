@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 
 type Tipo = {
   tipo: string;
-  tipo_link: string;
 };
 
 type Criterio = {
   id: number;
   tipo: string;
-  tipo_link: string;
   categoria: string;
   codigo: string;
   criterio: string;
@@ -41,13 +39,10 @@ export default function ConfiguracaoPage() {
   }, [tipoSelecionado]);
 
   async function carregarTipos() {
-    const res = await fetch(
-      "http://localhost:3001/api/tipos-avaliacao"
-    );
-
+    const res = await fetch("http://localhost:3001/api/tipos-avaliacao");
     const data = await res.json();
 
-    setTipos(data);
+    setTipos(Array.isArray(data) ? data : []);
   }
 
   async function carregarCriterios() {
@@ -56,43 +51,30 @@ export default function ConfiguracaoPage() {
     );
 
     const data = await res.json();
-
-    setCriterios(data);
+    setCriterios(Array.isArray(data) ? data : []);
   }
 
   async function adicionarCriterio() {
-    if (
-      !tipoSelecionado ||
-      !categoria ||
-      !codigo ||
-      !criterio
-    ) {
+    if (!tipoSelecionado || !categoria || !codigo || !criterio) {
       alert("Preencha todos os campos.");
       return;
     }
 
-    const tipoInfo = tipos.find(
-      (t) => t.tipo === tipoSelecionado
-    );
-
-    await fetch(
-      "http://localhost:3001/api/criterios-avaliacao",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          tipo: tipoSelecionado,
-          tipo_link: tipoInfo?.tipo_link,
-          categoria,
-          codigo,
-          criterio,
-          peso,
-          indicador,
-        }),
-      }
-    );
+    await fetch("http://localhost:3001/api/criterios-avaliacao", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tipo: tipoSelecionado,
+        tipo_link: "",
+        categoria,
+        codigo,
+        criterio,
+        peso,
+        indicador,
+      }),
+    });
 
     setCategoria("");
     setCodigo("");
@@ -103,10 +85,8 @@ export default function ConfiguracaoPage() {
     carregarCriterios();
   }
 
-  async function removerCriterio(id: number) {
-    if (!confirm("Deseja remover este critério?")) {
-      return;
-    }
+  async function inativarCriterio(id: number) {
+    if (!confirm("Deseja inativar este critério?")) return;
 
     await fetch(
       `http://localhost:3001/api/criterios-avaliacao/${id}/inativar`,
@@ -125,20 +105,20 @@ export default function ConfiguracaoPage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
 
-        <div className="custom-scrollbar p-8 overflow-y-auto">
-
+        <div className="p-8 overflow-y-auto custom-scrollbar">
           <div className="rounded-xl border p-6 space-y-6">
 
+            {/* HEADER */}
             <div>
               <h1 className="text-2xl font-bold">
                 Configuração das Fichas
               </h1>
-
               <p className="text-sm text-gray-500">
-                Adicione e remova critérios de avaliação.
+                Adicione e gerencie critérios de avaliação.
               </p>
             </div>
 
+            {/* SELECT */}
             <div>
               <label className="text-sm font-semibold">
                 Tipo de Avaliação
@@ -146,134 +126,115 @@ export default function ConfiguracaoPage() {
 
               <select
                 value={tipoSelecionado}
-                onChange={(e) =>
-                  setTipoSelecionado(e.target.value)
-                }
+                onChange={(e) => setTipoSelecionado(e.target.value)}
                 className="w-full border rounded-lg px-3 py-2 mt-1"
               >
-                <option value="">
-                  Selecione
-                </option>
+                <option value="">Selecione</option>
 
-                {tipos?.map((tipo) => (
-                  <option key={tipo.tipo_link} value={tipo.tipo}>
+                {tipos.map((tipo) => (
+                  <option key={tipo.tipo} value={tipo.tipo}>
                     {tipo.tipo}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* FORM */}
             {tipoSelecionado && (
-              <>
-                <div className="border rounded-xl p-4 space-y-3">
+              <div className="border rounded-xl p-4 space-y-3">
+                <h2 className="font-semibold">Novo Critério</h2>
 
-                  <h2 className="font-semibold">
-                    Novo Critério
-                  </h2>
+                <input
+                  value={categoria}
+                  onChange={(e) => setCategoria(e.target.value)}
+                  placeholder="Categoria"
+                  className="w-full border rounded-lg px-3 py-2"
+                />
 
-                  <input
-                    value={categoria}
-                    onChange={(e) =>
-                      setCategoria(e.target.value)
-                    }
-                    placeholder="Categoria"
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
+                <input
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value)}
+                  placeholder="Código"
+                  className="w-full border rounded-lg px-3 py-2"
+                />
 
-                  <input
-                    value={codigo}
-                    onChange={(e) =>
-                      setCodigo(e.target.value)
-                    }
-                    placeholder="Código"
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
+                <textarea
+                  value={criterio}
+                  onChange={(e) => setCriterio(e.target.value)}
+                  placeholder="Critério"
+                  className="w-full border rounded-lg px-3 py-2"
+                />
 
-                  <textarea
-                    value={criterio}
-                    onChange={(e) =>
-                      setCriterio(e.target.value)
-                    }
-                    placeholder="Critério"
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
+                <input
+                  type="number"
+                  value={peso}
+                  onChange={(e) => setPeso(Number(e.target.value))}
+                  placeholder="Peso"
+                  className="w-full border rounded-lg px-3 py-2"
+                />
 
-                  <input
-                    type="number"
-                    value={peso}
-                    onChange={(e) =>
-                      setPeso(Number(e.target.value))
-                    }
-                    placeholder="Peso"
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
+                <input
+                  value={indicador}
+                  onChange={(e) => setIndicador(e.target.value)}
+                  placeholder="Indicador"
+                  className="w-full border rounded-lg px-3 py-2"
+                />
 
-                  <input
-                    value={indicador}
-                    onChange={(e) =>
-                      setIndicador(e.target.value)
-                    }
-                    placeholder="Indicador"
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
-
-                  <button
-                    onClick={adicionarCriterio}
-                    className="px-4 py-2 bg-primary text-white rounded-lg"
-                  >
-                    Adicionar Critério
-                  </button>
-                </div>
-
-                <div className="border rounded-xl overflow-hidden">
-
-                  <div className="p-4 border-b font-semibold">
-                    Critérios da Ficha
-                  </div>
-
-                  <div className="divide-y">
-                    {criterios.map((item) => (
-                      <div
-                        key={item.id}
-                        className="p-4 flex justify-between gap-4"
-                      >
-                        <div>
-                          <p className="font-semibold">
-                            {item.codigo}
-                          </p>
-
-                          <p className="text-sm">
-                            {item.criterio}
-                          </p>
-
-                          <p className="text-xs text-gray-500">
-                            {item.categoria} • Peso {item.peso}
-                          </p>
-                        </div>
-
-                        <button
-                          onClick={() =>
-                            removerCriterio(item.id)
-                          }
-                          className="text-red-600"
-                        >
-                          Remover
-                        </button>
-                      </div>
-                    ))}
-
-                    {criterios.length === 0 && (
-                      <div className="p-4 text-sm text-gray-500">
-                        Nenhum critério encontrado.
-                      </div>
-                    )}
-                  </div>
-
-                </div>
-              </>
+                <button
+                  onClick={adicionarCriterio}
+                  className="px-4 py-2 bg-black text-white rounded-lg"
+                >
+                  Adicionar Critério
+                </button>
+              </div>
             )}
-          </div>
 
+            {/* LISTA */}
+            {tipoSelecionado && (
+              <div className="border rounded-xl overflow-hidden">
+                <div className="p-4 border-b font-semibold">
+                  Critérios da Ficha
+                </div>
+
+                <div className="divide-y">
+                  {criterios.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 flex justify-between gap-4"
+                    >
+                      <div>
+                        <p className="font-semibold">
+                          {item.codigo}
+                        </p>
+
+                        <p className="text-sm">
+                          {item.criterio}
+                        </p>
+
+                        <p className="text-xs text-gray-500">
+                          {item.categoria} • Peso {item.peso}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => inativarCriterio(item.id)}
+                        className="text-red-600"
+                      >
+                        Inativar
+                      </button>
+                    </div>
+                  ))}
+
+                  {criterios.length === 0 && (
+                    <div className="p-4 text-sm text-gray-500">
+                      Nenhum critério encontrado.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+          </div>
         </div>
       </div>
     </div>
