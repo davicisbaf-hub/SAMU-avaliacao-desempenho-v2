@@ -12,6 +12,11 @@ type Base = {
 export default function CadastroPage() {
     const [bases, setBases] = useState<Base[]>([]);
     const [baseSelecionada, setBaseSelecionada] = useState<Base | null>(null);
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [funcao, setFuncao] = useState("");
+    const [perfil, setPerfil] = useState("");
 
     useEffect(() => {
     async function carregarBases() {
@@ -25,6 +30,43 @@ export default function CadastroPage() {
     }, []);
 
 
+    const cadastrarUsuario = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(
+            "http://localhost:3001/api/usuarios",
+            {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                nome,
+                email,
+                senha,
+                funcao,
+                perfil
+                }),
+            }
+            );
+
+
+            if (!response.ok) {
+            return;
+            }
+
+            alert("Usuário cadastrado com sucesso!");
+
+            setNome("");
+            setEmail("");
+            setSenha("");
+            setFuncao("");
+            setPerfil("");
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao cadastrar usuário");
+        }
+    };
   return (
     <div>
       <div className="flex h-screen w-screen bg-white text-black">
@@ -112,54 +154,89 @@ export default function CadastroPage() {
                     </h2>
                     </div>
 
-                    <form className="p-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <form onSubmit={cadastrarUsuario} className="p-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 
-                        <div className="space-y-1">
-                        <label className="text-xs font-semibold">Nome</label>
-                        <input
-                            type="text"
-                            placeholder="Nome do profissional"
-                            className="w-full border rounded-lg px-3 py-2 text-sm"
-                        />
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold">Nome</label>
+                                <input
+                                    type="text"
+                                    value={nome}
+                                    onChange={(e) => setNome(e.target.value)}
+                                    placeholder="Nome do profissional"
+                                    required
+                                    className="w-full border rounded-lg px-3 py-2 text-sm"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold">Email</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Email do profissional"
+                                    required
+                                    className="w-full border rounded-lg px-3 py-2 text-sm"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold">Senha</label>
+                                <input
+                                    type="password"
+                                    value={senha}
+                                    onChange={(e) => setSenha(e.target.value)}
+                                    placeholder="Senha do profissional"
+                                    required
+                                    className="w-full border rounded-lg px-3 py-2 text-sm"
+                                />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold">Função</label>
+                                <select
+                                    value={funcao}
+                                    onChange={(e) => setFuncao(e.target.value)}
+                                    className="w-full border rounded-lg px-3 py-2 text-sm"
+                                    required
+                                >
+                                    <option value="">Selecione</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <option value="Usuario">Usuário</option>
+                                </select>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-semibold">Perfil</label>
+                                <select
+                                    value={perfil}
+                                    onChange={(e) => setPerfil(e.target.value)}
+                                    className="w-full border rounded-lg px-3 py-2 text-sm"
+                                    required
+                                >
+                                    <option value="">Selecione</option>
+                                    <option value="Administrador">Administrador</option>
+                                    <option value="Usuario">Usuário</option>
+                                </select>
+                            </div>
+
+                            <div className="space-y-1">
+                            <label className="text-xs font-semibold">Matrícula</label>
+                            <input
+                                type="text"
+                                placeholder="Opcional"
+                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                            />
+                            </div>
+
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold">Função</label>
-                            <select className="w-full border rounded-lg px-3 py-2 text-sm">
-                                <option>Selecione</option>
-                                <option>Função 1</option>
-                                <option>Função 2</option>
-                            </select>
+                        <div className="mt-4 flex gap-2">
+                            <button
+                                type="submit"
+                                className="px-5 py-2 bg-primary border text-black rounded-lg text-sm"
+                                >
+                                Adicionar
+                            </button>
                         </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-semibold">Perfil</label>
-                            <select className="w-full border rounded-lg px-3 py-2 text-sm">
-                                <option>Selecione</option>
-                                <option>Administrador</option>
-                                <option>Usuario</option>
-                            </select>
-                        </div>
-
-                        <div className="space-y-1">
-                        <label className="text-xs font-semibold">Matrícula</label>
-                        <input
-                            type="text"
-                            placeholder="Opcional"
-                            className="w-full border rounded-lg px-3 py-2 text-sm"
-                        />
-                        </div>
-
-                    </div>
-
-                    <div className="mt-4 flex gap-2">
-                        <button
-                        type="button"
-                        className="px-5 py-2 bg-primary text-white rounded-lg text-sm"
-                        >
-                        Adicionar
-                        </button>
-                    </div>
                     </form>
                 </div>
 

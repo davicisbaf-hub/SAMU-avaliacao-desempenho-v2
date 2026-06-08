@@ -9,9 +9,9 @@ type User = {
   id: number;
   nome: string;
   email: string;
-  perfil: "admin" | "profissional";
+  funcao: string;
+  perfil: string;
 };
-
 type UserSessionType = {
   user: User | null;
   login: (user: User) => void;
@@ -26,13 +26,13 @@ export function UserSessionProvider({
   children: ReactNode;
 }) {
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem("user");
+    try {
+      const saved = localStorage.getItem("user");
 
-    if (saved) {
-      return JSON.parse(saved);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
     }
-
-    return null;
   });
 
   const login = (userData: User) => {

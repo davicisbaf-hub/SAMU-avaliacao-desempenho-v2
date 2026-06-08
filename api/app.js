@@ -173,6 +173,7 @@ app.post("/login", async (req, res) => {
     id: usuario.id,
     nome: usuario.nome,
     email: usuario.email,
+    funcao: usuario.funcao,
     perfil: usuario.perfil,
   });
 });
@@ -259,4 +260,39 @@ app.get("/api/bases", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
+});
+
+app.post("/api/usuarios", async (req, res) => {
+  const {
+    nome,
+    email,
+    senha,
+    funcao,
+    perfil,
+  } = req.body;
+
+  const resultado = await pool.query(
+    `
+    INSERT INTO usuarios
+    (
+      nome,
+      email,
+      senha,
+      funcao,
+      perfil
+    )
+    VALUES
+    ($1,$2,$3,$4,$5)
+    RETURNING *
+    `,
+    [
+      nome,
+      email,
+      senha,
+      funcao,
+      perfil,
+    ]
+  );
+
+  res.status(201).json(resultado.rows[0]);
 });
