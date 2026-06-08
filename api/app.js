@@ -132,14 +132,25 @@ app.get("/api/fichas-avaliacao/:tipo", async (req, res) => {
 
 app.post("/api/avaliacoes", async (req, res) => {
   try {
-    const notas = req.body;
+    const {
+      usuarioId,
+      respostas,
+    } = req.body;
 
     await pool.query(
       `
-      INSERT INTO avaliacoes(resultado)
-      VALUES($1)
+      INSERT INTO avaliacoes
+      (
+        usuario_id,
+        resultado
+      )
+      VALUES
+      ($1, $2)
       `,
-      [JSON.stringify(notas)]
+      [
+        usuarioId,
+        JSON.stringify(respostas),
+      ]
     );
 
     res.json({
@@ -147,6 +158,7 @@ app.post("/api/avaliacoes", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       erro: "Erro ao salvar",
     });

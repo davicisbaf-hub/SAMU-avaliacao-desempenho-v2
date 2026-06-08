@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TableAvaliacao from '../components/table-avaliacao';
 import TextArea from '../components/TextArea';
 import Assinatura from '../components/Assinatura';
+import { useUserSession } from "../contexts/UserSession";
 
 type Criterios = {
 	categoria: string;
@@ -43,9 +44,11 @@ export default function AvaliacaoPage() {
 	const [tipoAvaliacao, setTipoAvaliacao] = useState("BP-TEAM");
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
-
+	const { user } = useUserSession();
+	
 	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
 	const [pesos, setPesos] = useState<Peso[]>([]);
+
 
 	useEffect(() => {
 	fetch("http://localhost:3001/api/escala-likert")
@@ -63,8 +66,6 @@ export default function AvaliacaoPage() {
 				...prev,
 				[codigo]: nota,
 			};
-
-			console.log("📊 Notas atualizadas:", atualizado);
 
 			return atualizado;
 		});
@@ -105,7 +106,10 @@ export default function AvaliacaoPage() {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(notas),
+				body: JSON.stringify({
+					usuarioId: user?.id,
+					respostas: notas,
+				}),
 			});
 
 			const data = await response.json();
