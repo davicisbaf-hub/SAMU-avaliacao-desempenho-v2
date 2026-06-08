@@ -253,7 +253,6 @@ app.get("/api/ficha/:tipo", async (req, res) => {
       `
       SELECT *
       FROM criterios_avaliacao
-      WHERE tipo_link = $1
       ORDER BY categoria, codigo
       `,
       [tipo]
@@ -312,7 +311,6 @@ app.post("/api/usuarios", async (req, res) => {
 app.post("/api/criterios-avaliacao", async (req, res) => {
   const {
     tipo,
-    tipo_link,
     categoria,
     codigo,
     criterio,
@@ -325,7 +323,6 @@ app.post("/api/criterios-avaliacao", async (req, res) => {
     INSERT INTO criterios_avaliacao
     (
       tipo,
-      tipo_link,
       categoria,
       codigo,
       criterio,
@@ -338,7 +335,6 @@ app.post("/api/criterios-avaliacao", async (req, res) => {
     `,
     [
       tipo,
-      tipo_link,
       categoria,
       codigo,
       criterio,
@@ -410,9 +406,23 @@ app.put("/api/criterios-avaliacao/:id", async (req, res) => {
 app.get("/api/tipos-avaliacao", async (req, res) => {
   try {
     const { rows } = await pool.query(`
-      SELECT DISTINCT tipo, tipo_link
+      SELECT DISTINCT tipo
       FROM criterios_avaliacao
       ORDER BY tipo
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/usuarios", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT *
+      FROM usuarios
+      WHERE ativo = true
     `);
 
     res.json(rows);

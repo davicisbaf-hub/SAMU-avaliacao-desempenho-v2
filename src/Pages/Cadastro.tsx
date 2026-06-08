@@ -17,6 +17,23 @@ export default function CadastroPage() {
     const [senha, setSenha] = useState("");
     const [funcao, setFuncao] = useState("");
     const [perfil, setPerfil] = useState("");
+    const [usuarios, setUsuarios] = useState<any[]>([]);
+
+    useEffect(() => {
+        carregarUsuarios();
+        }, []);
+
+        async function carregarUsuarios() {
+        try {
+            const res = await fetch("http://localhost:3001/api/usuarios");
+            const data = await res.json();
+
+            setUsuarios(Array.isArray(data) ? data : []);
+        } catch (err) {
+            console.error("Erro ao carregar usuários:", err);
+            setUsuarios([]);
+        }
+        }
 
     useEffect(() => {
         async function carregarBases() {
@@ -251,25 +268,25 @@ export default function CadastroPage() {
 
                                 <div className="divide-y divide-border">
 
-                                    {/* Item fake */}
-                                    <div className="flex items-center justify-between px-5 py-3">
-                                        <div>
-                                            <p className="text-sm font-semibold">João Silva</p>
-                                            <p className="text-xs text-muted-foreground">
-                                                Matrícula: 001
-                                            </p>
-                                        </div>
+                                    {usuarios.map((user: any) => (
+                                        <div className="flex items-center justify-between px-5 py-3">
+                                            <div>
+                                                <p className="text-sm font-semibold">{user.nome}</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Matrícula: {user.matricula}
+                                                </p>
+                                            </div>
 
-                                        <div className="flex gap-2">
-                                            <button className="text-sm px-2 py-1 border rounded">
-                                                Editar
-                                            </button>
-                                            <button className="text-sm px-2 py-1 border rounded text-red-500">
-                                                Remover
-                                            </button>
+                                            <div className="flex gap-2">
+                                                <button className="text-sm px-2 py-1 border rounded">
+                                                    Editar
+                                                </button>
+                                                <button className="text-sm px-2 py-1 border rounded text-red-500">
+                                                    Remover
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-
+                                    ))}
                                 </div>
                             </div>
 
