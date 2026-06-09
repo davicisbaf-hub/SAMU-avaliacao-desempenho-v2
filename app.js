@@ -18,7 +18,7 @@ app.use(cors({
 
 
 const pool = new pg.Pool({
-  host: "localhost",
+  host: "db",
   port: 5432,
   user: "samu",
   password: "samu",
@@ -324,7 +324,7 @@ app.post("/api/criterios-avaliacao", async (req, res) => {
       indicador
     )
     VALUES
-    ($1,$2,$3,$4,$5,$6,$7)
+    ($1,$2,$3,$4,$5,$6)
     RETURNING *
     `,
     [
