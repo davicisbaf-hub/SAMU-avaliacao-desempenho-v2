@@ -5,7 +5,7 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-const port = 3001
+const port = 8026;
 
 app.use(cors({
   origin: [
