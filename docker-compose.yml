@@ -36,7 +36,7 @@ services:
     container_name: samu-frontend
     restart: always
     ports:
-      - "${FICHA_SAMU_FRONT}:5173" # Frontend usa a porta 8765
+      - "8765:5173" # Frontend usa a porta 8765
     volumes:
       - ./:/app 
       - /app/node_modules 
