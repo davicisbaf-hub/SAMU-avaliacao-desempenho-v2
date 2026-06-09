@@ -1,21 +1,59 @@
 services:
-
-  postgres:
-    image: postgres:16
+  db:
+    image: postgres:15-alpine
+    container_name: samu-db
+    restart: always
     environment:
       POSTGRES_USER: samu
       POSTGRES_PASSWORD: samu
       POSTGRES_DB: samu
     ports:
-      - "5432:5432"
+      - "5490:5432"
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "samu"]
-      interval: 10s
-      retries: 5
-      start_period: 5s
+      - pgdata:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d/
+    networks:
+      - samu_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: samu-api
     restart: always
-  
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=db # Variável que o seu app.js vai ler para achar o banco
+    volumes:
+      - ./:/app # Espelha o código local para dentro do container (git pull atualiza na hora)
+      - /app/node_modules # Protege a pasta node_modules do container
+    depends_on:
+      - db
+    networks:
+      - samu_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: samu-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app # Espelha o código local (git pull atualiza na hora)
+      - /app/node_modules # Protege a pasta node_modules do container
+    depends_on:
+      - api
+    networks:
+      - samu_network
+
 volumes:
-  postgres-db-volume:
+  pgdata:
+
+networks:
+  samu_network:
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16 # Resolve aquele erro antigo de IP cheio

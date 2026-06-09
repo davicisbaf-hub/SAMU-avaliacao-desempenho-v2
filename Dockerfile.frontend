@@ -4,7 +4,7 @@ FROM node:20-alpine
 # Define a pasta de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos de dependência primeiro (otimiza o cache do Docker)
+# Copia os arquivos de dependência
 COPY package*.json ./
 
 # Instala as dependências
@@ -13,8 +13,8 @@ RUN npm install
 # Copia o resto do projeto
 COPY . .
 
-# Expõe a porta que o app.js usa
-EXPOSE 3001
+# Expõe a porta do Vite
+EXPOSE 5173
 
-# Comando para rodar a API
-CMD ["node", "app.js"]
+# Comando para rodar o Vite liberando o IP local
+CMD ["npm", "run", "dev", "--", "--host"]
