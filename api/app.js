@@ -5,17 +5,18 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-const port = 8026;
+const port = 3001;
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://192.168.1.10:5173",
-    "http://192.168.1.10:3011"
-  ]
-}));
+// app.use(cors({
+//  origin: [
+//    "http://localhost:5173",
+//    "http://127.0.0.1:5173",
+//    "http://192.168.1.10:5173",
+//    "http://192.168.1.10:3011"
+//  ]
+// }));
 
+app.use(cors());
 
 
 const pool = new pg.Pool({
@@ -25,6 +26,7 @@ const pool = new pg.Pool({
   password: "samu",
   database: "samu"
 });
+
 app.get("/api/fichas", async (req, res) => {
   try {
     const { rows } = await pool.query(`
@@ -137,33 +139,61 @@ app.post("/api/avaliacoes", async (req, res) => {
   try {
     const {
       usuarioId,
-      respostas,
+      tipoAvaliacao,
+      resultado,
     } = req.body;
 
-    await pool.query(
+    const { rows } = await pool.query(
       `
       INSERT INTO avaliacoes
       (
         usuario_id,
+        tipo_avaliacao,
         resultado
       )
       VALUES
-      ($1, $2)
+      ($1, $2, $3)
+      RETURNING *
       `,
       [
         usuarioId,
-        JSON.stringify(respostas),
+        tipoAvaliacao,
+        JSON.stringify(resultado),
       ]
     );
 
-    res.json({
-      sucesso: true,
-    });
+    res.status(201).json(rows[0]);
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      erro: "Erro ao salvar",
+      erro: error.message,
+    });
+  }
+});
+
+app.get("/api/avaliacoes", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        a.id,
+        a.usuario_id,
+        u.nome,
+        a.tipo_avaliacao,
+        a.resultado,
+        a.criado_em
+      FROM avaliacoes a
+      INNER JOIN usuarios u
+        ON u.id = a.usuario_id
+      ORDER BY a.criado_em DESC
+    `);
+
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      erro: error.message,
     });
   }
 });
@@ -272,43 +302,6 @@ app.get("/api/bases", async (req, res) => {
   res.json(bases.rows);
 });
 
-
-
-app.post("/api/usuarios", async (req, res) => {
-  const {
-    nome,
-    email,
-    senha,
-    funcao,
-    perfil,
-  } = req.body;
-
-  const resultado = await pool.query(
-    `
-    INSERT INTO usuarios
-    (
-      nome,
-      email,
-      senha,
-      funcao,
-      perfil
-    )
-    VALUES
-    ($1,$2,$3,$4,$5)
-    RETURNING *
-    `,
-    [
-      nome,
-      email,
-      senha,
-      funcao,
-      perfil,
-    ]
-  );
-
-  res.status(201).json(resultado.rows[0]);
-});
-
 app.post("/api/criterios-avaliacao", async (req, res) => {
   const {
     tipo,
@@ -320,7 +313,7 @@ app.post("/api/criterios-avaliacao", async (req, res) => {
   } = req.body;
 
   const { rows } = await pool.query(
-    `
+  `
     INSERT INTO criterios_avaliacao
     (
       tipo,
@@ -331,9 +324,9 @@ app.post("/api/criterios-avaliacao", async (req, res) => {
       indicador
     )
     VALUES
-    ($1,$2,$3,$4,$5,$6,$7)
+    ($1,$2,$3,$4,$5,$6)
     RETURNING *
-    `,
+  `,
     [
       tipo,
       categoria,
@@ -424,11 +417,123 @@ app.get("/api/usuarios", async (req, res) => {
       SELECT *
       FROM usuarios
       WHERE ativo = true
+      ORDER BY nome
     `);
 
     res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({
+      erro: error.message,
+    });
+  }
+});
+
+// Cadastrar usuário
+app.post("/api/usuarios", async (req, res) => {
+  try {
+    const {
+      nome,
+      email,
+      senha,
+      funcao,
+      perfil,
+      base,
+    } = req.body;
+
+    const { rows } = await pool.query(
+      `
+      INSERT INTO usuarios
+      (
+        nome,
+        email,
+        senha,
+        funcao,
+        perfil,
+        base
+      )
+      VALUES
+      ($1,$2,$3,$4,$5,$6)
+      RETURNING *
+      `,
+      [
+        nome,
+        email,
+        senha,
+        funcao,
+        perfil,
+        base,
+      ]
+    );
+
+    res.status(201).json(rows[0]);
+  } catch (error) {
+    res.status(500).json({
+      erro: error.message,
+    });
+  }
+});
+
+app.put("/api/usuarios/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      nome,
+      email,
+      funcao,
+      perfil,
+      base,
+    } = req.body;
+
+    const { rows } = await pool.query(
+      `
+      UPDATE usuarios
+      SET
+        nome = $1,
+        email = $2,
+        funcao = $3,
+        perfil = $4,
+        base = $5
+      WHERE id = $6
+      RETURNING *
+      `,
+      [
+        nome,
+        email,
+        funcao,
+        perfil,
+        base,
+        id,
+      ]
+    );
+
+    res.json(rows[0]);
+  } catch (error) {
+    res.status(500).json({
+      erro: error.message,
+    });
+  }
+});
+
+app.put("/api/usuarios/:id/inativar", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { rows } = await pool.query(
+      `
+      UPDATE usuarios
+      SET ativo = false
+      WHERE id = $1
+      RETURNING *
+      `,
+      [id]
+    );
+
+    res.json(rows[0]);
+  } catch (error) {
+    res.status(500).json({
+      erro: error.message,
+    });
   }
 });
 

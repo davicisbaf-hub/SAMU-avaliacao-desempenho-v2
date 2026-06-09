@@ -20,7 +20,7 @@ services:
     container_name: samu-api
     restart: always
     ports:
-      - "${FICHA_SAMU_BACK}:3001" # API usa a porta 8026
+      - "${FICHA_SAMU_BACK}:3001" # API usa a porta 3001
     environment:
       - DB_HOST=db 
     volumes:
