@@ -51,11 +51,11 @@ export default function AvaliacaoPage() {
 
 
 	useEffect(() => {
-	fetch("http://localhost:3001/api/escala-likert")
+	fetch("http://192.168.1.10:8026/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://localhost:3001/api/pesos-avaliacao")
+	fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -83,7 +83,7 @@ export default function AvaliacaoPage() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:3001/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://192.168.1.10:8026/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -102,7 +102,7 @@ export default function AvaliacaoPage() {
 	const enviarAvaliacao = async () => {
 		try {
 			const response = await fetch(
-			"http://localhost:3001/api/avaliacoes",
+			"http://192.168.1.10:8026/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
