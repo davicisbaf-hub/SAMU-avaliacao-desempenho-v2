@@ -134,38 +134,28 @@ app.get("/api/fichas-avaliacao/:tipo", async (req, res) => {
 
 
 app.post("/api/avaliacoes", async (req, res) => {
-  try {
     const {
-      usuarioId,
-      respostas,
+        usuarioId,
+        tipoAvaliacao,
+        resultado
     } = req.body;
 
-    await pool.query(
-      `
-      INSERT INTO avaliacoes
-      (
-        usuario_id,
-        resultado
-      )
-      VALUES
-      ($1, $2)
-      `,
-      [
+    const query = `
+        INSERT INTO avaliacoes
+        (usuario_id, tipo_avaliacao, resultado)
+        VALUES ($1, $2, $3)
+        RETURNING *
+    `;
+
+    const values = [
         usuarioId,
-        JSON.stringify(respostas),
-      ]
-    );
+        tipoAvaliacao,
+        JSON.stringify(resultado)
+    ];
 
-    res.json({
-      sucesso: true,
-    });
-  } catch (error) {
-    console.error(error);
+    const { rows } = await pool.query(query, values);
 
-    res.status(500).json({
-      erro: "Erro ao salvar",
-    });
-  }
+    res.json(rows[0]);
 });
 
 app.post("/login", async (req, res) => {
@@ -492,6 +482,31 @@ app.put("/api/usuarios/:id", async (req, res) => {
   );
 
   res.json(rows[0]);
+});
+
+app.get("/api/avaliacoes", async (req, res) => {
+    try {
+        const { rows } = await pool.query(`
+            SELECT
+                a.id,
+                a.tipo_avaliacao,
+                a.resultado,
+                a.criado_em,
+                u.id AS usuario_id,
+                u.nome
+            FROM avaliacoes a
+            JOIN usuarios u
+                ON u.id = a.usuario_id
+            ORDER BY a.criado_em DESC
+        `);
+
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            erro: "Erro ao buscar avaliações"
+        });
+    }
 });
 
 app.listen(port, () => {

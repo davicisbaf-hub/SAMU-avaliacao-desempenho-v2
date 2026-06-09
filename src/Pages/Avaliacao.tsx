@@ -101,16 +101,20 @@ export default function AvaliacaoPage() {
 
 	const enviarAvaliacao = async () => {
 		try {
-			const response = await fetch("http://localhost:3001/api/avaliacoes", {
+			const response = await fetch(
+			"http://localhost:3001/api/avaliacoes",
+			{
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json",
+				"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
 					usuarioId: user?.id,
-					respostas: notas,
+					tipoAvaliacao,
+					resultado: notas,
 				}),
-			});
+			}
+			);
 
 			const data = await response.json();
 
@@ -118,7 +122,7 @@ export default function AvaliacaoPage() {
 		} catch (error) {
 			console.error(error);
 		}
-	};
+		};
 	return (
 		<div>
 			<div className="flex h-screen w-screen bg-white text-black">

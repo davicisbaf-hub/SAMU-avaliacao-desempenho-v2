@@ -18,7 +18,7 @@ VALUES
     '123456',
     'Medico',
     'Nova Iguaçu',
-    '🔑 Administrador — Todas as bases'
+    'Administrador'
     
 ),
 (
@@ -27,6 +27,6 @@ VALUES
     '123456',
     'enfermeiro',
     'Nova Iguaçu',
-    'profissional'
+    'Usuario'
     
 );
