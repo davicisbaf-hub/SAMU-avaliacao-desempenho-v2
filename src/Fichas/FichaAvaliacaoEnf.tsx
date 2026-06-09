@@ -38,9 +38,9 @@ type Peso = {
 };
 
 
-export default function FichaAvaliacaoEnf() {
+export default function FichaAvaliacaoTecEnf() {
 
-	const [tipoAvaliacao, setTipoAvaliacao] = useState("Enfermeiro");
+	const [tipoAvaliacao, setTipoAvaliacao] = useState("Técnico de Enfermagem");
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
 
@@ -138,9 +138,9 @@ export default function FichaAvaliacaoEnf() {
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
 									<p className='text-xs text-muted-foreground mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
-								<button onClick={() => setTipoAvaliacao("Enfermeiro")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
-									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Enfermeiro</p>
-									<p className='text-xs text-muted-foreground mt-1'>O enfermeiro avalia sua própria performance técnica e comportamental</p>
+								<button onClick={() => setTipoAvaliacao("Técnico de Enfermagem")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Técnico de Enfermagem</p>
+									<p className='text-xs text-muted-foreground mt-1'>O técnico de enfermagem avalia sua própria performance técnica e comportamental</p>
 								</button>
 							</div>
 
@@ -325,10 +325,3 @@ export default function FichaAvaliacaoEnf() {
 		</div>
 	)
 }
-
-
-
-
-
-
-

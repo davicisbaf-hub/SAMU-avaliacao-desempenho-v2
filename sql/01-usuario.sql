@@ -4,29 +4,24 @@ CREATE TABLE usuarios (
     email VARCHAR(255) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
     funcao VARCHAR(255) NOT NULL,
-    base VARCHAR(255) NOT NULL,
     perfil VARCHAR(100) NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO usuarios (nome, email, senha, funcao, base, perfil)
+INSERT INTO usuarios (nome, email, senha, funcao, perfil)
 VALUES
 (
     'Davi',
     'admin@admin.com',
     '123456',
     'Medico',
-    'Nova Iguaçu',
-    'Administrador'
-    
+    '🔑 Administrador — Todas as bases'
 ),
 (
     'João Silva',
     'joao@samu192.com',
     '123456',
     'enfermeiro',
-    'Nova Iguaçu',
-    'Usuario'
-    
+    'profissional'
 );

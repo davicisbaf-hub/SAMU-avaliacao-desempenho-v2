@@ -8,12 +8,10 @@ services:
       POSTGRES_PASSWORD: samu
       POSTGRES_DB: samu
     ports:
-      - "5490:5432"
+      - "5490:5432" # Deixamos o banco na 5490 fixa para você acessar no DBeaver
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./sql:/docker-entrypoint-initdb.d/
-    networks:
-      - samu_network
 
   api:
     build:
@@ -22,16 +20,14 @@ services:
     container_name: samu-api
     restart: always
     ports:
-      - "3001:3001"
+      - "${FICHA_SAMU_BACK}:3001" # API usa a porta 8026
     environment:
-      - DB_HOST=db # Variável que o seu app.js vai ler para achar o banco
+      - DB_HOST=db 
     volumes:
-      - ./:/app # Espelha o código local para dentro do container (git pull atualiza na hora)
-      - /app/node_modules # Protege a pasta node_modules do container
+      - ./:/app 
+      - /app/node_modules 
     depends_on:
       - db
-    networks:
-      - samu_network
 
   frontend:
     build:
@@ -40,20 +36,12 @@ services:
     container_name: samu-frontend
     restart: always
     ports:
-      - "5173:5173"
+      - "${FICHA_SAMU_FRONT}:5173" # Frontend usa a porta 8765
     volumes:
-      - ./:/app # Espelha o código local (git pull atualiza na hora)
-      - /app/node_modules # Protege a pasta node_modules do container
+      - ./:/app 
+      - /app/node_modules 
     depends_on:
       - api
-    networks:
-      - samu_network
 
 volumes:
   pgdata:
-
-networks:
-  samu_network:
-    ipam:
-      config:
-        - subnet: 10.5.0.0/16 # Resolve aquele erro antigo de IP cheio

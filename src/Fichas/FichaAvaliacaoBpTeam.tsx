@@ -321,10 +321,3 @@ export default function FichaAvaliacaoTecEnf() {
 		</div>
 	)
 }
-
-
-
-
-
-
-

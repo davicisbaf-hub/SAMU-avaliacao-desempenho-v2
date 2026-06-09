@@ -325,10 +325,3 @@ export default function FichaAvaliacaoMedico() {
 		</div>
 	)
 }
-
-
-
-
-
-
-
