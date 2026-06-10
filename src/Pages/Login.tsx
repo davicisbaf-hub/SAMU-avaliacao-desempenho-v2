@@ -105,7 +105,7 @@ function App() {
                 onClick={() => setPerfil("admin")}
                 className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
                   perfil === "admin"
-                    ? "border-primary bg-primary/5 text-primary"
+                    ? "border-[#cd0048] bg-[#cd0048]/5 text-[#cd0048]"
                     : "border-gray-200 text-gray-500"
                 }`}
               >
@@ -135,7 +135,7 @@ function App() {
                 onClick={() => setPerfil("profissional")}
                 className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
                   perfil === "profissional"
-                    ? "border-primary bg-primary/5 text-primary"
+                    ? "border-[#cd0048] bg-[#cd0048]/5 text-[#cd0048]"
                     : "border-gray-200 text-gray-500"
                 }`}
               >
@@ -176,7 +176,7 @@ function App() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Digite seu e-mail..."
-                className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
+                className="w-full border border-input bg-[#fcfcfc] rounded-lg px-3 py-2.5 text-sm"
               />
             </div>
 
@@ -190,7 +190,7 @@ function App() {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 placeholder="Digite sua senha..."
-                className="w-full border border-input bg-background rounded-lg px-3 py-2.5 text-sm"
+                className="w-full border border-input bg-[#fcfcfc] rounded-lg px-3 py-2.5 text-sm"
               />
             </div>
 

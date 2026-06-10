@@ -48,9 +48,9 @@ export default function TableAvaliacao({
 );
 
   return (
-    <tr className="border-t hover:bg-muted/30 transition-colors group">
+    <tr className="border-t hover:bg-[#e5ecf1]/30 transition-colors group">
       <td className="py-3 px-4 w-32">
-        <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+        <span className="text-xs font-mono [text-#555f69] bg-[#e5ecf1] px-1.5 py-0.5 rounded">
           {codigo}
         </span>
       </td>
@@ -58,7 +58,7 @@ export default function TableAvaliacao({
       <td className="py-3 px-4">
         <p className="text-sm text-foreground leading-snug">
           {criterio}
-          <span className="block text-xs my-2 text-muted-foreground italic">
+          <span className="block text-xs my-2 [text-#555f69] italic">
             {indicador}
           </span>
         </p>
@@ -89,7 +89,7 @@ export default function TableAvaliacao({
                 onClick={() => onSelecionarNota(criterio, nota)}
                 className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all duration-150 ${
                   notaSelecionada !== nota
-                    ? "bg-background border-border text-muted-foreground hover:border-primary/50"
+                    ? "bg-[#fcfcfc] border-[#d2d8de] [text-#555f69] hover:border-[#cd0048]/50"
                     : ""
                 }`}
                 style={

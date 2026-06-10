@@ -16,22 +16,22 @@ export default function FichasCard({
   return (
     <a
       href={link}
-      className="block bg-card border border-border rounded-xl p-5 hover:border-primary/40 hover:shadow-md transition-all group"
+      className="block bg-[#f6f6f6] border border-border border-[#d2d8de] rounded-xl p-5 hover:border-[#cd0048]/40 hover:shadow-md transition-all group"
     >
       <div className="flex items-start gap-3">
         <span className="text-2xl">{icon}</span>
 
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-card-foreground text-left text-sm group-hover:text-primary transition-colors">
+          <p className="font-semibold text-[#0e1216] text-left text-sm group-hover:text-[#cd0048] transition-colors">
             {cargo}
           </p>
 
-          <p className="text-xs text-muted-foreground mt-1 text-left">
+          <p className="text-xs [text-#555f69] mt-1 text-left">
             {criterios} critérios de avaliação
           </p>
         </div>
 
-        <span className="text-muted-foreground group-hover:text-primary transition-colors text-lg">
+        <span className="[text-#555f69] group-hover:text-[#cd0048] transition-colors text-lg">
           →
         </span>
       </div>
@@ -40,7 +40,7 @@ export default function FichasCard({
         {tags.map((tag) => (
           <span
             key={tag}
-            className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full"
+            className="text-xs bg-[#e5ecf1] [text-#555f69] px-2 py-0.5 rounded-full"
           >
             {tag}
           </span>

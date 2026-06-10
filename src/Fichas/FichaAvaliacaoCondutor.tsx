@@ -130,17 +130,17 @@ export default function FichaAvaliacaoCondutor() {
 
 							{/* titulo */}
 							<h1 className='text-2xl font-bold text-foreground'>Autoavaliação & Simulação bp-TEAM</h1>
-							<p className='text-muted-foreground mt-1 text-sm'>O profissional avalia sua própria performance, ou aplique a ferramenta bp-TEAM validada em cenários de simulação realística</p>
+							<p className='[text-#555f69] mt-1 text-sm'>O profissional avalia sua própria performance, ou aplique a ferramenta bp-TEAM validada em cenários de simulação realística</p>
 
 							{/* selecao ficha */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-								<button onClick={() => setTipoAvaliacao("BP-TEAM")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+								<button onClick={() => setTipoAvaliacao("BP-TEAM")} className='text-left p-4 rounded-xl border-2 transition-all border-[#cd0048] bg-[#cd0048]/5'>
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
-									<p className='text-xs text-muted-foreground mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
+									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
-								<button onClick={() => setTipoAvaliacao("Condutor")} className='text-left p-4 rounded-xl border-2 transition-all border-primary bg-primary/5'>
+								<button onClick={() => setTipoAvaliacao("Condutor")} className='text-left p-4 rounded-xl border-2 transition-all border-[#cd0048] bg-[#cd0048]/5'>
 									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Condutor</p>
-									<p className='text-xs text-muted-foreground mt-1'>O condutor avalia sua própria performance técnica e comportamental</p>
+									<p className='text-xs [text-#555f69] mt-1'>O condutor avalia sua própria performance técnica e comportamental</p>
 								</button>
 							</div>
 
@@ -154,43 +154,43 @@ export default function FichaAvaliacaoCondutor() {
 									</div>
 									<div className='flex-1'>
 										<div className='flex items-center gap-2 flex-wrap'>
-											<h1 className='text-lg font-bold text-secondary-foreground'>Ficha de Avaliação de Desempenho</h1>
-											<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Autoavaliação: {tipoAvaliacao}</span>
+											<h1 className='text-lg font-bold text-[#f8f8f8]'>Ficha de Avaliação de Desempenho</h1>
+											<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[[#cd0048]]/30'>Autoavaliação: {tipoAvaliacao}</span>
 										</div>
-										<p className='text-secondary-foreground/70 text-sm mt-0.5'>{tipoAvaliacao} — SAMU 192 / CRUR-BF / CISBAF</p>
+										<p className='text-[#f8f8f8]/70 text-sm mt-0.5'>{tipoAvaliacao} — SAMU 192 / CRUR-BF / CISBAF</p>
 									</div>
 									<div className='text-right hidden sm:block'>
-										<p className='text-secondary-foreground/60 text-xs'>Data</p>
-										<p className='text-secondary-foreground font-mono text-sm'>05/06/2026</p>
+										<p className='text-[#f8f8f8]/60 text-xs'>Data</p>
+										<p className='text-[#f8f8f8] font-mono text-sm'>05/06/2026</p>
 									</div>
 								</div>
-								<div className='bg-secondary/50 px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4'>
+								<div className='bg-[#061c31]/50 px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4'>
 									<div>
-										<label className='text-secondary-foreground/70 text-xs font-medium block mb-1'>Base de Lotação</label>
-										<select className='w-full bg-background/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-primary appearance-none'>
+										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Base de Lotação</label>
+										<select className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] focus:outline-none focus:ring-2 focus:ring-[#cd0048] appearance-none'>
 											<option>
 												Selecione a base…
 											</option>
 										</select>
 									</div>
 									<div>
-										<label className='text-secondary-foreground/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
-										<input className='w-full bg-background/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-secondary-foreground placeholder:text-secondary-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary' placeholder="Ex: Dr. Roberto Alves"></input>
+										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
+										<input className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"></input>
 									</div>
 									<div>
-										<label className='text-secondary-foreground/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
-										<input className='w-full bg-background/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-secondary-foreground placeholder:text-secondary-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary' placeholder="Ex: Dr. Roberto Alves"></input>
+										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
+										<input className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"></input>
 									</div>
 									<div>
-										<label className='text-secondary-foreground/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
-										<input className='w-full bg-background/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-secondary-foreground placeholder:text-secondary-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary' placeholder="Ex: Dr. Roberto Alves"></input>
+										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
+										<input className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"></input>
 									</div>
 								</div>
 							</div>
 
 							{/* escala de pontuacao */}
-							<div className="bg-muted/50 rounded-xl p-4 ">
-								<p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+							<div className="bg-[#e5ecf1]/50 rounded-xl p-4 ">
+								<p className="text-xs font-semibold [text-#555f69] uppercase tracking-wider mb-3">
 									Escala de Pontuação Likert — 1 a 5
 								</p>
 
@@ -214,7 +214,7 @@ export default function FichaAvaliacaoCondutor() {
 													{item.titulo}
 												</span>
 
-												<span className="text-muted-foreground">
+												<span className="[text-#555f69]">
 													{" "}
 													— {item.descricao}
 												</span>
@@ -223,7 +223,7 @@ export default function FichaAvaliacaoCondutor() {
 										))}
 								</div>
 
-								<div className="flex flex-wrap gap-4 mt-4 text-xs text-muted-foreground border-t border-border pt-3">
+								<div className="flex flex-wrap gap-4 mt-4 text-xs [text-#555f69] border-t border-border pt-3">
 									{pesos.map((peso) => (
 										<span
 											key={peso.valor}
@@ -249,12 +249,12 @@ export default function FichaAvaliacaoCondutor() {
 								([categoria, itens]) => (
 									<div key={categoria} className="bg-card border border-border rounded-xl overflow-hidden">
 
-										<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-muted/30 transition-colors text-left">
+										<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-[#e5ecf1]/30 transition-colors text-left">
 											<div className="flex items-center gap-3">
 												<div className="w-1.5 h-5 rounded-full bg-[#cd0048]" />
 
-												<h2 className="font-semibold text-card-foreground text-sm">{categoria}</h2>
-												<span className="text-xs text-muted-foreground">0 / {itens.length} respondidos</span>
+												<h2 className="font-semibold text-[#0e1216] text-sm">{categoria}</h2>
+												<span className="text-xs [text-#555f69]">0 / {itens.length} respondidos</span>
 											</div>
 											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
 										</button>
@@ -263,7 +263,7 @@ export default function FichaAvaliacaoCondutor() {
 
 												<table className="w-full">
 													<thead>
-														<tr className="bg-muted/50 text-xs text-muted-foreground border-b border-border">
+														<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-border">
 															<th className="px-4 py-2 text-left w-28">Código</th>
 															<th className="px-4 py-2 text-left">
 																Critério de Avaliação / Indicador
@@ -305,7 +305,7 @@ export default function FichaAvaliacaoCondutor() {
 								<TextArea titulo="Plano de Ação / PDI Sugerido" placeholder="Cursos, treinamentos, simulações, mentoria, prazo previsto..." />
 							</div>
 							<div className='bg-card border border-border rounded-xl p-5'>
-								<h3 className='text-sm font-semibold text-card-foreground mb-4'>Assinaturas e Ciência</h3>
+								<h3 className='text-sm font-semibold text-[#0e1216] mb-4'>Assinaturas e Ciência</h3>
 								<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
 									<Assinatura Responsavel="Avaliador" />
 									<Assinatura Responsavel="Avaliado / Profissional" />
@@ -315,7 +315,7 @@ export default function FichaAvaliacaoCondutor() {
 							<button onClick={enviarAvaliacao} className='mt-4 px-4 py-2 bg-red-500 text-black rounded-lg hover:bg-red-500/90 transition-colors'>
 								Finalizar e Imprimir Ficha
 							</button>
-							<p className='text-xs text-muted-foreground text-center print:hidden'>
+							<p className='text-xs [text-#555f69] text-center print:hidden'>
 								Instrumento baseado em bp-TEAM (validado em português), Habilidades Não Técnicas (NTS), Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023). Avaliação com foco na melhoria contínua da qualidade assistencial — caráter educativo, não punitivo.
 							</p>
 						</div>

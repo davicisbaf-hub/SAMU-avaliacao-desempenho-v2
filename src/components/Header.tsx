@@ -5,9 +5,9 @@ export default function Header() {
     const { user } = useUserSession();
 
     return (
-        <header className='shrink-0 h-14 border-b border-border bg-background/95 flex items-center gap-4 px-4'>
-            <div className='flex items-center gap-2 text-sm text-muted-foreground truncate'>
-                <span className='font-semibold text-foreground'>Avaliação de Desempenho</span>
+        <header className='shrink-0 h-14 border-b border-border bg-[#fcfcfc]/95 flex items-center gap-4 px-4'>
+            <div className='flex items-center gap-2 text-sm [text-#555f69] truncate'>
+                <span className='font-semibold text-[#080c0f]'>Avaliação de Desempenho</span>
                 <span className='hidden sm:inline'>·</span>
                 <span className='hidden sm:inline'>Equipe SAMU 192</span>
             </div>

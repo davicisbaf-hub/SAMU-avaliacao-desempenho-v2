@@ -204,7 +204,7 @@ export default function CadastroPage() {
                                 <h1 className="text-2xl font-bold text-foreground">
                                     Cadastro de Profissionais
                                 </h1>
-                                <p className="text-muted-foreground mt-1 text-sm">
+                                <p className="[text-#555f69] mt-1 text-sm">
                                     Registre os profissionais e líderes de cada base.
                                 </p>
                             </div>
@@ -220,8 +220,8 @@ export default function CadastroPage() {
                                             onClick={() => setBaseSelecionada(base)}
                                             className={`flex items-center gap-2 px-3 py-1 rounded-lg border text-sm transition
                                             ${baseSelecionada?.id === base.id
-                                                    ? "bg-primary text-primary-foreground"
-                                                    : "hover:bg-muted"
+                                                    ? "bg-[#cd0048] text-[#fcfcfc]"
+                                                    : "hover:bg-[#e5ecf1]"
                                                 }`}
                                         >
                                             <span
@@ -263,7 +263,7 @@ export default function CadastroPage() {
                             {/* Formulário */}
                             <div className="bg-card border border-border rounded-xl overflow-hidden">
 
-                                <div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-muted/30">
+                                <div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-[#e5ecf1]/30">
                                     <h2 className="text-sm font-semibold">
                                         Adicionar Profissional
                                     </h2>
@@ -367,7 +367,7 @@ export default function CadastroPage() {
                                     <div className="mt-4 flex gap-2">
                                         <button
                                             type="submit"
-                                            className="px-5 py-2 bg-primary border text-black rounded-lg text-sm"
+                                            className="px-5 py-2 bg-[#cd0048] border text-black rounded-lg text-sm"
                                         >
                                             Adicionar
                                         </button>
@@ -378,7 +378,7 @@ export default function CadastroPage() {
                             {/* Lista */}
                             <div className="bg-card border border-border rounded-xl overflow-hidden">
 
-                                <div className="px-5 py-3 border-b border-border bg-muted/30">
+                                <div className="px-5 py-3 border-b border-border bg-[#e5ecf1]/30">
                                     <h2 className="text-sm font-semibold">
                                         Profissionais Cadastrados
                                     </h2>
@@ -391,13 +391,13 @@ export default function CadastroPage() {
                                             <div className="text-left gap-3">
                                                 <p className="text-sm font-semibold">{user.nome}</p>
                                                 
-                                                <p className="text-xs text-muted-foreground">
+                                                <p className="text-xs [text-#555f69]">
                                                     Matrícula: {user.matricula}
                                                 </p>
-                                                <p className="text-xs text-muted-foreground">
+                                                <p className="text-xs [text-#555f69]">
                                                     Função: {user.funcao}
                                                 </p>
-                                                <p className="text-xs text-muted-foreground">
+                                                <p className="text-xs [text-#555f69]">
                                                     Base: {user.base}
                                                 </p>
                                             </div>
@@ -483,12 +483,12 @@ export default function CadastroPage() {
 
                         <label className="text-xs font-semibold">Perfil</label>
                         <select
-                            value={perfil}
-                            onChange={(e) => setPerfil(e.target.value)}
-                            className="w-full border rounded-lg px-3 py-2"
+                                value={perfil}
+                                onChange={(e) => setPerfil(e.target.value)}
+                                className="w-full border rounded-lg px-3 py-2"
                             >
-                        <option value="Administrador">Administrador</option>
-                        <option value="Usuario">Usuário</option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Usuario">Usuário</option>
                         </select>
                     </div>
 

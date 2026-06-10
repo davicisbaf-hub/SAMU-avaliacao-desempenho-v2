@@ -1,24 +1,59 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: IBM Plex Mono, 'Courier New', monospace;
+  --radius: 0.5rem;
+  --background: #fcfcfc;
+  --foreground: oklch(0.15 0.01 250);
+  --card: #fcf7f8;
+  --card-foreground: oklch(0.18 0.01 250);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: oklch(0.15 0.01 250);
+  --primary: #cd0048;
+  --primary-foreground: #fcfcfc;
+  --secondary: #020202;
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.94 0.01 240);
+  --muted-foreground: oklch(0.48 0.02 250);
+  --accent: oklch(0.92 0.02 240);
+  --accent-foreground: oklch(0.22 0.05 250);
+  --destructive: oklch(0.55 0.22 15);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: #d2d8de;
+  --input: oklch(0.88 0.01 240);
+  --ring: oklch(0.52 0.24 10);
+  --chart-1: oklch(0.52 0.24 10);
+  --chart-2: oklch(0.22 0.05 250);
+  --chart-3: oklch(0.58 0.18 150);
+  --chart-4: oklch(0.65 0.20 50);
+  --chart-5: oklch(0.55 0.15 280);
+  --sidebar: oklch(0.22 0.05 250);
+  --sidebar-foreground: oklch(0.92 0.01 240);
+  --sidebar-primary: oklch(0.52 0.24 10);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.30 0.06 250);
+  --sidebar-accent-foreground: oklch(0.95 0.01 240);
+  --sidebar-border: oklch(0.28 0.05 250);
+  --sidebar-ring: oklch(0.52 0.24 10);
+}
 
 body{
-    background-color: #061c31;
+  background-color: #061c31;
+  overflow-x: hidden;
 }
 
 #root {
-    width: 1126px;
-    max-width: 100%;
-    text-align: center;
-    border-inline: 0px solid var(--border);
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
+  width: 1126px;
+  max-width: 100%;
+  text-align: center;
+  border-inline: 0px solid var(--border);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
-body {
-    overflow-x: hidden;
-}
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;

@@ -13,10 +13,10 @@ export default function FrequenciaTable({
   dados,
 }: FrequenciaTableProps) {
   return (
-    <div className="bg-card border-t border-l border-r rounded-xl overflow-hidden">
+    <div className="bg-card border-[#d2d8de] border-t border-l border-r rounded-xl overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-muted/50 text-xs text-muted-foreground border-b border-border">
+          <tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-border border-[#d2d8de]">
             <th className="px-4 py-2.5 text-left">Frequência</th>
             <th className="px-4 py-2.5 text-left">Instrumento / Ação</th>
             <th className="px-4 py-2.5 text-left">Responsável</th>
@@ -27,13 +27,13 @@ export default function FrequenciaTable({
           {dados.map((item, index) => (
             <tr
               key={item.id}
-              className={`border-b border-border ${
+              className={`border-b border-[#d2d8de] border-border ${
                 index % 2 === 0
-                  ? "bg-background"
-                  : "bg-muted/20"
+                  ? "bg-[#fcfcfc]"
+                  : "bg-[#e5ecf1]/20"
               }`}
             >
-              <td className="px-4 py-2.5 font-semibold text-primary text-xs text-red-500">
+              <td className="px-4 py-2.5 font-semibold text-[#cd0048] text-xs text-red-500">
                 {item.frequencia}
               </td>
 
@@ -41,7 +41,7 @@ export default function FrequenciaTable({
                 {item.instrumento_acao}
               </td>
 
-              <td className="px-4 py-2.5 text-muted-foreground text-xs">
+              <td className="px-4 py-2.5 [text-#555f69] text-xs">
                 {item.responsavel}
               </td>
             </tr>

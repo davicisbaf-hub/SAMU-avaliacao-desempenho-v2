@@ -81,21 +81,21 @@ export default function Inicio() {
                   
                   <div className='flex items-center gap-3 flex-wrap'>
                     <div className='flex items-center gap-2 flex-wrap mb-1'>
-                      <h1 className='text-xl md:text-2xl font-bold text-secondary-foreground'>Instrumento de Avaliação de Desempenho</h1>
-                      <span className='bg-[#cd0048] text-primary-foreground text-xs px-2.5 py-1 rounded-full font-semibold'>360°</span>
+                      <h1 className='text-xl md:text-2xl font-bold text-[#f8f8f8]'>Instrumento de Avaliação de Desempenho</h1>
+                      <span className='bg-[#cd0048] text-[#fcfcfc] text-xs px-2.5 py-1 rounded-full font-semibold'>360°</span>
                     </div>
-                    <span className='inline-flex items-center gap-1.5 bg-[#cd0048]/30 text-primary-foreground text-xs px-2.5 py-1 rounded-full font-medium'>{user?.perfil}</span>
+                    <span className='inline-flex items-center gap-1.5 bg-[#cd0048]/30 text-[#fcfcfc] text-xs px-2.5 py-1 rounded-full font-medium'>{user?.perfil}</span>
                   </div>
 
-                  <p className='text-secondary-foreground/70 text-sm'>Equipes de Intervenção SAMU 192 — CRUR-BF / CISBAF — Baixada Fluminense, RJ</p>
-                  <p className='text-secondary-foreground/50 text-xs mt-1'>Baseado em bp-TEAM, NTS, Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023)</p>
+                  <p className='text-[#f8f8f8]/70 text-sm'>Equipes de Intervenção SAMU 192 — CRUR-BF / CISBAF — Baixada Fluminense, RJ</p>
+                  <p className='text-[#f8f8f8]/50 text-xs mt-1'>Baseado em bp-TEAM, NTS, Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023)</p>
                   
                   <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mt-6'>
                     
                     {fluxos.map((fluxo) => (
                       <div key={fluxo.id} className='bg-sidebar/50 rounded-xl p-3'>
-                        <p className='text-secondary-foreground text-xs font-semibold'>{fluxo.titulo}</p>
-                        <p className='text-secondary-foreground/60 text-xs mt-0.5'>{fluxo.descricao}</p>
+                        <p className='text-[#f8f8f8] text-xs font-semibold'>{fluxo.titulo}</p>
+                        <p className='text-[#f8f8f8]/60 text-xs mt-0.5'>{fluxo.descricao}</p>
                       </div>
                     ))}
                   </div>
@@ -136,7 +136,7 @@ export default function Inicio() {
             <div className='mb-8'>
               <div className='flex items-center justify-between mb-3 flex-wrap gap-2'>
                 <h2 className='font-semibold text-foreground'>Fichas de Avaliação por Função</h2>
-                <a href='#' className='flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity'>
+                <a href='/BaixarFicha' className='flex items-center gap-2 px-4 py-2 rounded-xl bg-[#cd0048] text-[#fcfcfc] text-sm font-semibold hover:opacity-90 transition-opacity'>
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
                   Baixar Todas as Fichas (PDF)
                 </a>
