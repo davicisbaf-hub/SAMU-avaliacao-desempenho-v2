@@ -6,7 +6,7 @@ import "../App.css";
 
 
 function App() {
-  const [perfil, setPerfil] = useState();
+  
 
 
   const navigate = useNavigate();

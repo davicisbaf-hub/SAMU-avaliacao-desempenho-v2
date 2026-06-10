@@ -17,7 +17,7 @@ app.use(cors({
  ]
 }));
 
-app.use(cors());
+// app.use(cors());
 
 const pool = new pg.Pool({
   host: process.env.DB_HOST || "db",
