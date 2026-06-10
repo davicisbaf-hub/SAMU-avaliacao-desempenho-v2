@@ -13,6 +13,7 @@ type Usuario = {
   id: number;
   nome: string;
   email: string;
+  senha: string;
   funcao: string;
   base: string;
   perfil: string;
@@ -59,6 +60,7 @@ export default function CadastroPage() {
             body: JSON.stringify({
                 nome,
                 email,
+                senha,
                 funcao,
                 base,
                 perfil,
@@ -133,6 +135,7 @@ export default function CadastroPage() {
             setSenha("");
             setFuncao("");
             setPerfil("");
+            setBase("");
         } catch (error) {
             console.error(error);
             alert("Erro ao cadastrar usuário");
@@ -178,6 +181,7 @@ export default function CadastroPage() {
         setFuncao(usuario.funcao);
         setPerfil(usuario.perfil);
         setBase(usuario.base);
+        setSenha(usuario.senha);
 
         setModalAberto(true);
     }
@@ -355,7 +359,7 @@ export default function CadastroPage() {
                                                     {base.nome}
                                                     </option>
                                                 ))}
-                                                </select>
+                                            </select>
                                         </div>
 
                                     </div>
@@ -416,12 +420,6 @@ export default function CadastroPage() {
                                     ))}
                                 </div>
                             </div>
-
-                            {/* Aviso */}
-                            <div className="bg-muted/40 rounded-xl p-4 text-xs text-muted-foreground">
-                                Os nomes cadastrados aparecem nas fichas de avaliação.
-                            </div>
-
                         </div>
 
 
@@ -435,19 +433,42 @@ export default function CadastroPage() {
                         Editar Profissional
                     </h2>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 text-left">
+                        <label className="text-xs font-semibold">Nome</label>
                         <input
                         value={nome}
                         onChange={(e) => setNome(e.target.value)}
                         className="w-full border rounded-lg px-3 py-2"
                         />
-
+                        <label className="text-xs font-semibold">Email</label>
                         <input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
                         />
+                        <label className="text-xs font-semibold">Senha</label>  
+                            <input
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                        />
+                        <label className="text-xs font-semibold">Função</label>
+                        <select
+                            value={base}
+                            onChange={(e) => setBase(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2 text-sm"
+                            required
+                            >
+                            <option value={base}>{base}</option>
 
+                            {bases.map((base) => (
+                                <option key={base.id} value={base.nome}>
+                                {base.nome}
+                                </option>
+                            ))}
+                        </select>
+                        
+                        <label className="text-xs font-semibold">Função</label>
                         <select
                         value={funcao}
                         onChange={(e) => setFuncao(e.target.value)}
@@ -460,11 +481,12 @@ export default function CadastroPage() {
                         ))}
                         </select>
 
+                        <label className="text-xs font-semibold">Perfil</label>
                         <select
-                        value={perfil}
-                        onChange={(e) => setPerfil(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
-                        >
+                            value={perfil}
+                            onChange={(e) => setPerfil(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2"
+                            >
                         <option value="Administrador">Administrador</option>
                         <option value="Usuario">Usuário</option>
                         </select>

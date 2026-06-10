@@ -5,7 +5,7 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-const port = 3001;
+const port = 8026;
 
 // app.use(cors({
 //  origin: [
@@ -480,6 +480,7 @@ app.put("/api/usuarios/:id", async (req, res) => {
     const {
       nome,
       email,
+      senha,
       funcao,
       perfil,
       base,
@@ -491,15 +492,17 @@ app.put("/api/usuarios/:id", async (req, res) => {
       SET
         nome = $1,
         email = $2,
-        funcao = $3,
-        perfil = $4,
-        base = $5
-      WHERE id = $6
+        senha = $3,
+        funcao = $4,
+        perfil = $5,
+        base = $6
+      WHERE id = $7
       RETURNING *
       `,
       [
         nome,
         email,
+        senha,
         funcao,
         perfil,
         base,
