@@ -49,7 +49,7 @@ ReactDOM.createRoot(root!).render(
           }
         />
         <Route
-          path="/avaliacao"
+          path="/Autoavaliacao"
           element={
             <PrivateRoute>
               <AvaliacaoPage />
