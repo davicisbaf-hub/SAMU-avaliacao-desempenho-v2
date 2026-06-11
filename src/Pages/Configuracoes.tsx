@@ -67,8 +67,8 @@ export default function ConfiguracaoPage() {
     }
 
     const url = editandoId
-      ? `http://192.168.1.10:8026/api/criterios-avaliacao/${editandoId}`
-      : "http://192.168.1.10:8026/api/criterios-avaliacao";
+      ? `http://localhost:44331/api/criterios-avaliacao/${editandoId}`
+      : "http://localhost:44331/api/criterios-avaliacao";
 
     const method = editandoId ? "PUT" : "POST";
 
@@ -116,7 +116,7 @@ export default function ConfiguracaoPage() {
     await Promise.all(
       selecionados.map((id) =>
         fetch(
-          `http://192.168.1.10:8026/api/criterios-avaliacao/${id}/inativar`,
+          `http://localhost:44331/api/criterios-avaliacao/${id}/inativar`,
           {
             method: "PUT",
           }
@@ -139,7 +139,7 @@ export default function ConfiguracaoPage() {
   }, [tipoSelecionado]);
 
   async function carregarTipos() {
-    const res = await fetch("http://192.168.1.10:8026/api/tipos-avaliacao");
+    const res = await fetch("http://localhost:44331/api/tipos-avaliacao");
     const data = await res.json();
 
     setTipos(Array.isArray(data) ? data : []);
@@ -147,7 +147,7 @@ export default function ConfiguracaoPage() {
 
   async function carregarCriterios() {
     const res = await fetch(
-      `http://192.168.1.10:8026/api/criterios-avaliacao/${tipoSelecionado}`
+      `http://localhost:44331/api/criterios-avaliacao/${tipoSelecionado}`
     );
 
     const data = await res.json();

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TableAvaliacao from '../components/table-avaliacao';
 import TextArea from '../components/TextArea';
 import Assinatura from '../components/Assinatura';
+import { useUserSession } from "../contexts/UserSession";
 
 type Criterios = {
 	categoria: string;
@@ -37,22 +38,41 @@ type Peso = {
   cor: string;
 };
 
+type Base = {
+    id: number;
+    nome: string;
+    cor: string;
+};
+
 
 export default function FichaAvaliacaoCondutor() {
+	const [bases, setBases] = useState<Base[]>([]);
+	const { user } = useUserSession();
 
-	const [tipoAvaliacao, setTipoAvaliacao] = useState("Condutor");
+	const [tipoAvaliacao, setTipoAvaliacao] = useState(`Condutor`);
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
-
+	
 	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
 	const [pesos, setPesos] = useState<Peso[]>([]);
 
 	useEffect(() => {
-	fetch("http://192.168.1.10:8026/api/escala-likert")
+        async function carregarBases() {
+            const res = await fetch("http://localhost:44331/api/bases"); // sua rota backend
+            const data = await res.json();
+
+            setBases(data);
+        }
+        carregarBases();
+    }, []);
+
+
+	useEffect(() => {
+	fetch("http://localhost:44331/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+	fetch("http://localhost:44331/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -63,8 +83,6 @@ export default function FichaAvaliacaoCondutor() {
 				...prev,
 				[codigo]: nota,
 			};
-
-			console.log("📊 Notas atualizadas:", atualizado);
 
 			return atualizado;
 		});
@@ -82,7 +100,7 @@ export default function FichaAvaliacaoCondutor() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:44331/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -100,13 +118,20 @@ export default function FichaAvaliacaoCondutor() {
 
 	const enviarAvaliacao = async () => {
 		try {
-			const response = await fetch("http://192.168.1.10:8026/api/avaliacoes", {
+			const response = await fetch(
+			"http://localhost:44331/api/avaliacoes",
+			{
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json",
+				"Content-Type": "application/json",
 				},
-				body: JSON.stringify(notas),
-			});
+				body: JSON.stringify({
+					usuarioId: user?.id,
+					tipoAvaliacao,
+					resultado: notas,
+				}),
+			}
+			);
 
 			const data = await response.json();
 
@@ -114,7 +139,7 @@ export default function FichaAvaliacaoCondutor() {
 		} catch (error) {
 			console.error(error);
 		}
-	};
+		};
 	return (
 		<div>
 			<div className="flex h-screen w-screen bg-white text-black">
@@ -132,15 +157,27 @@ export default function FichaAvaliacaoCondutor() {
 							<h1 className='text-2xl font-bold text-foreground'>Autoavaliação & Simulação bp-TEAM</h1>
 							<p className='[text-#555f69] mt-1 text-sm'>O profissional avalia sua própria performance, ou aplique a ferramenta bp-TEAM validada em cenários de simulação realística</p>
 
+							{/* acesso */}
+							<div className='flex items-center gap-3 bg-[#cd0048]/10 border border-[#cd0048]/30 rounded-xl px-4 py-3'>
+								<span className='text-2xl'>💉</span>
+								<div>
+									<p className='font-semibold text-sm text-foreground'>
+										Acesso como:
+										<span className='text-[#cd0048]'> {user?.funcao}</span>
+									</p>
+									<p className='text-xs [text-#555f69]'>Você tem acesso à sua autoavaliação e à simulação bp-TEAM.</p>
+								</div>
+							</div>
+
 							{/* selecao ficha */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-								<button onClick={() => setTipoAvaliacao("BP-TEAM")} className='text-left p-4 rounded-xl border-2 transition-all border-[#cd0048] bg-[#cd0048]/5'>
+								<button onClick={() => setTipoAvaliacao("BP-TEAM")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
-								<button onClick={() => setTipoAvaliacao("Condutor")} className='text-left p-4 rounded-xl border-2 transition-all border-[#cd0048] bg-[#cd0048]/5'>
-									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Condutor</p>
-									<p className='text-xs [text-#555f69] mt-1'>O condutor avalia sua própria performance técnica e comportamental</p>
+								<button onClick={() => setTipoAvaliacao("Condutor")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
+									<p className='font-semibold text-sm text-foreground'>Simulação Condutor</p>
+									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
 							</div>
 
@@ -155,22 +192,27 @@ export default function FichaAvaliacaoCondutor() {
 									<div className='flex-1'>
 										<div className='flex items-center gap-2 flex-wrap'>
 											<h1 className='text-lg font-bold text-[#f8f8f8]'>Ficha de Avaliação de Desempenho</h1>
-											<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[[#cd0048]]/30'>Autoavaliação: {tipoAvaliacao}</span>
+											<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Autoavaliação: {tipoAvaliacao}</span>
 										</div>
 										<p className='text-[#f8f8f8]/70 text-sm mt-0.5'>{tipoAvaliacao} — SAMU 192 / CRUR-BF / CISBAF</p>
 									</div>
 									<div className='text-right hidden sm:block'>
 										<p className='text-[#f8f8f8]/60 text-xs'>Data</p>
-										<p className='text-[#f8f8f8] font-mono text-sm'>05/06/2026</p>
+										<p className='text-[#f8f8f8] font-mono text-sm'>{new Date().toLocaleDateString()}</p>
 									</div>
 								</div>
 								<div className='bg-[#061c31]/50 px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4'>
 									<div>
 										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Base de Lotação</label>
 										<select className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] focus:outline-none focus:ring-2 focus:ring-[#cd0048] appearance-none'>
-											<option>
+											<option className='text-black'>
 												Selecione a base…
 											</option>
+											{bases.map((bases) => (
+												<option key={bases.id} value={bases.id} className='text-black'>
+													{bases.nome}
+												</option>
+											))}
 										</select>
 									</div>
 									<div>
@@ -247,7 +289,7 @@ export default function FichaAvaliacaoCondutor() {
 							{/* PErguntas */}
 							{Object.entries(criteriosPorCategoria).map(
 								([categoria, itens]) => (
-									<div key={categoria} className="bg-card border border-border rounded-xl overflow-hidden">
+									<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden">
 
 										<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-[#e5ecf1]/30 transition-colors text-left">
 											<div className="flex items-center gap-3">
@@ -263,7 +305,7 @@ export default function FichaAvaliacaoCondutor() {
 
 												<table className="w-full">
 													<thead>
-														<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-border">
+														<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-[#d2d8de]">
 															<th className="px-4 py-2 text-left w-28">Código</th>
 															<th className="px-4 py-2 text-left">
 																Critério de Avaliação / Indicador

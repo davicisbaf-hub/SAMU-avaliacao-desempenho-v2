@@ -47,18 +47,18 @@ type Base = {
 
 export default function AvaliacaoPage() {
 	const [bases, setBases] = useState<Base[]>([]);
+	const { user } = useUserSession();
 
-	const [tipoAvaliacao, setTipoAvaliacao] = useState("BP-TEAM");
+	const [tipoAvaliacao, setTipoAvaliacao] = useState(`${user?.funcao}`);
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
-	const { user } = useUserSession();
 	
 	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
 	const [pesos, setPesos] = useState<Peso[]>([]);
 
 	useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:44331/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -68,11 +68,11 @@ export default function AvaliacaoPage() {
 
 
 	useEffect(() => {
-	fetch("http://192.168.1.10:8026/api/escala-likert")
+	fetch("http://localhost:44331/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+	fetch("http://localhost:44331/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -100,7 +100,7 @@ export default function AvaliacaoPage() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:44331/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -119,7 +119,7 @@ export default function AvaliacaoPage() {
 	const enviarAvaliacao = async () => {
 		try {
 			const response = await fetch(
-			"http://192.168.1.10:8026/api/avaliacoes",
+			"http://localhost:44331/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
@@ -175,21 +175,9 @@ export default function AvaliacaoPage() {
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
-								<button onClick={() => setTipoAvaliacao("Condutor")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
-									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Condutor</p>
+								<button onClick={() => setTipoAvaliacao(`${user?.funcao}`)} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
+									<p className='font-semibold text-sm text-foreground'>Autoavaliação: {user?.funcao}</p>
 									<p className='text-xs [text-#555f69] mt-1'>O condutor avalia sua própria performance técnica e comportamental</p>
-								</button>
-								<button onClick={() => setTipoAvaliacao("Técnico de Enfermagem")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
-									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Tecnico de Enfermagem</p>
-									<p className='text-xs [text-#555f69] mt-1'>O técnico de enfermagem avalia sua própria performance</p>
-								</button>
-								<button onClick={() => setTipoAvaliacao("Enfermeiro")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
-									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Enfermeiro</p>
-									<p className='text-xs [text-#555f69] mt-1'>O enfermeiro avalia sua própria performance assistencial e de liderança</p>
-								</button>
-								<button onClick={() => setTipoAvaliacao("Médico")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
-									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Médico</p>
-									<p className='text-xs [text-#555f69] mt-1'>O médico intervencionista avalia sua própria performance clínica</p>
 								</button>
 							</div>
 

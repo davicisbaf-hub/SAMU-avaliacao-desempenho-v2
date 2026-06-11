@@ -10,6 +10,7 @@ type Avaliacao = {
     usuario_id: number;
     tipo_avaliacao: string;
     resultado: Record<string, number>;
+    funcao: string;    
     criado_em: string;
 };
 
@@ -18,7 +19,7 @@ export default function BaixarFicha() {
     const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
 
     useEffect(() => {
-        fetch("http://192.168.1.10:8026/api/avaliacoes")
+        fetch("http://localhost:44331/api/avaliacoes")
             .then((res) => res.json())
             .then(setAvaliacoes)
             .catch(console.error);
@@ -42,41 +43,73 @@ export default function BaixarFicha() {
                             {avaliacoes.map((avaliacao) => (
                                 <div
                                     key={avaliacao.id}
-                                    className="border rounded-xl p-4 bg-white shadow-sm text-left"
+                                    className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
                                 >
-                                    <div className="mb-3 pl-4">
-                                        <p>
-                                            <strong>Usuário:</strong>{" "}
-                                            {avaliacao.nome}
-                                        </p>
+                                    {/* Cabeçalho */}
+                                    <div className="bg-gray-50 border-b px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                        <div>
 
-                                        <p>
-                                            <strong>Ficha:</strong>{" "}
-                                            {avaliacao.tipo_avaliacao}
-                                        </p>
+                                            <div className="flex gap-2 mt-2 flex-wrap">
+                                                <h2 className="font-semibold text-lg text-gray-900">
+                                                    {avaliacao.nome}
+                                                </h2>
+                                                <span className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full">
+                                                    <span className="font-bold">Função:</span> {avaliacao.funcao}
+                                                </span>
 
-                                        <p>
-                                            <strong>Data:</strong>{" "}
-                                            {new Date(
-                                                avaliacao.criado_em
-                                            ).toLocaleString("pt-BR")}
-                                        </p>
+                                                <span className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-full">
+                                                    <span className="font-bold">Tipo de Avaliação:</span> {avaliacao.tipo_avaliacao}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="text-sm text-gray-500">
+                                            {new Date(avaliacao.criado_em).toLocaleString("pt-BR")}
+                                        </div>
                                     </div>
 
-                                    <div className="bg-gray-50 rounded p-3">
-                                        <strong>Respostas:</strong>
+                                    {/* Respostas */}
+                                    <div className="p-6">
+                                        <h3 className="font-medium text-gray-700 mb-3">
+                                            Resultados da Avaliação
+                                        </h3>
 
-                                        {Object.entries(avaliacao.resultado).map(
-                                            ([codigo, nota]) => (
-                                                <div
-                                                    key={codigo}
-                                                    className="flex justify-between border-b py-1"
-                                                >
-                                                    <span>{codigo}</span>
-                                                    <span>{nota}</span>
-                                                </div>
-                                            )
-                                        )}
+                                        <div className="overflow-hidden rounded-xl border">
+                                            <table className="w-full">
+                                                <thead className="bg-gray-100">
+                                                    <tr>
+                                                        <th className="text-left px-4 py-3">
+                                                            Critério
+                                                        </th>
+
+                                                        <th className="text-right px-4 py-3">
+                                                            Nota
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    {Object.entries(avaliacao.resultado).map(
+                                                        ([codigo, nota]) => (
+                                                            <tr
+                                                                key={codigo}
+                                                                className="border-t hover:bg-gray-50"
+                                                            >
+                                                                <td className="px-4 py-3 font-medium">
+                                                                    {codigo}
+                                                                </td>
+
+                                                                <td className="px-4 py-3 text-right">
+                                                                    <span className="inline-flex items-center justify-center min-w-[40px] px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
+                                                                        {nota}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

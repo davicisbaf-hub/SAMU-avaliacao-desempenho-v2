@@ -5,7 +5,7 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-const port = 8026;
+const port = 3001;
 
 app.use(cors({
  origin: [
@@ -179,6 +179,9 @@ app.get("/api/avaliacoes", async (req, res) => {
         a.id,
         a.usuario_id,
         u.nome,
+        u.funcao,
+        u.base,
+        u.perfil,
         a.tipo_avaliacao,
         a.resultado,
         a.criado_em

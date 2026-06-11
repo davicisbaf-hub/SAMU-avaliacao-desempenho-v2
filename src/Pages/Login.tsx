@@ -20,7 +20,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://192.168.1.10:8026/login",
+        "http://localhost:44331/login",
         {
           method: "POST",
           headers: {
