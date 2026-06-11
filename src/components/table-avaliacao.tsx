@@ -24,6 +24,9 @@ type Props = {
 
   onSelecionarNota: (criterio: string, nota: number) => void;
   notaSelecionada: number;
+
+  obrigatorio: boolean;
+  tentouEnviar: boolean;
 };
 
 
@@ -36,7 +39,9 @@ export default function TableAvaliacao({
   onSelecionarNota,
   notaSelecionada,
   escalaLikert,
-  pesos
+  pesos,
+  obrigatorio,
+  tentouEnviar
 }: Props) {
 
   const classificacao = escalaLikert.find(
@@ -48,7 +53,13 @@ export default function TableAvaliacao({
 );
 
   return (
-    <tr className="border-t hover:bg-[#e5ecf1]/30 transition-colors group">
+    <tr
+      className={`border-t transition-colors ${
+        tentouEnviar && obrigatorio === undefined
+          ? "bg-red-50"
+          : "hover:bg-[#e5ecf1]/30"
+      }`}
+    >
       <td className="py-3 px-4 w-32">
         <span className="text-xs font-mono [text-#555f69] bg-[#e5ecf1] px-1.5 py-0.5 rounded">
           {codigo}
