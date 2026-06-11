@@ -172,12 +172,26 @@ export default function FichaAvaliacaoMedico() {
 
 							{/* selecao ficha */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-								<button onClick={() => setTipoAvaliacao("BP-TEAM")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
+								<button
+									onClick={() => setTipoAvaliacao("BP-TEAM")}
+									className={`text-left p-4 rounded-xl border-2 transition-all ${
+										tipoAvaliacao === "BP-TEAM"
+											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
+											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
+									}`}
+								>
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
-								<button onClick={() => setTipoAvaliacao("Médico")} className='text-left p-4 rounded-xl border-2 transition-all border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40'>
-									<p className='font-semibold text-sm text-foreground'>Simulação Médico</p>
+								<button
+									onClick={() => setTipoAvaliacao("Médico")}
+									className={`text-left p-4 rounded-xl border-2 transition-all ${
+										tipoAvaliacao === "Médico"
+											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
+											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
+									}`}
+								>
+									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Médico</p>
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
 							</div>
