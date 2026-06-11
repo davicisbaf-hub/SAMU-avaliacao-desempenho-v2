@@ -56,6 +56,46 @@ export default function FichaAvaliacaoTecEnf() {
 	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
 	const [pesos, setPesos] = useState<Peso[]>([]);
 
+	const [tentouEnviar, setTentouEnviar] = useState(false);
+
+	const enviarAvaliacao = async () => {
+		setTentouEnviar(true);
+
+		const criteriosNaoRespondidos = criterios.filter(
+			(criterio) => notas[criterio.criterio] === undefined
+		);
+
+		if (criteriosNaoRespondidos.length > 0) {
+			alert(
+				`Existem ${criteriosNaoRespondidos.length} perguntas sem resposta.`
+			);
+			return;
+		}
+
+		try {
+			const response = await fetch(
+			"http://localhost:44331/api/avaliacoes",
+			{
+				method: "POST",
+				headers: {
+				"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+				usuarioId: user?.id,
+				tipoAvaliacao,
+				resultado: notas,
+				}),
+			}
+			);
+
+			const data = await response.json();
+
+			console.log("Salvo:", data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	useEffect(() => {
         async function carregarBases() {
             const res = await fetch("http://localhost:44331/api/bases"); // sua rota backend
@@ -114,32 +154,6 @@ export default function FichaAvaliacaoTecEnf() {
 
 		return acc;
 	}, {} as Record<string, Criterios[]>);
-
-
-	const enviarAvaliacao = async () => {
-		try {
-			const response = await fetch(
-			"http://localhost:44331/api/avaliacoes",
-			{
-				method: "POST",
-				headers: {
-				"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					usuarioId: user?.id,
-					tipoAvaliacao,
-					resultado: notas,
-				}),
-			}
-			);
-
-			const data = await response.json();
-
-			console.log("Salvo:", data);
-		} catch (error) {
-			console.error(error);
-		}
-		};
 	return (
 		<div>
 			<div className="flex h-screen w-screen bg-white text-black">
@@ -335,6 +349,9 @@ export default function FichaAvaliacaoTecEnf() {
 																escalaLikert={escalaLikert}
 																notaSelecionada={notas[criterio.criterio]}
 																onSelecionarNota={selecionarNota}
+																obrigatorio={!notas[criterio.criterio]}
+																tentouEnviar={tentouEnviar}
+
 															/>
 														))}
 													</tbody>
