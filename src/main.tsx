@@ -22,7 +22,7 @@ import CadastroPage from "./Pages/Cadastro.tsx";
 import { UserSessionProvider } from "./contexts/UserSession";
 import Configuracoes from "./Pages/Configuracoes.tsx";
 import BaixarFicha from "./Pages/BaixarFicha.tsx";
-import { Painel } from "./Pages/Painel.tsx";
+import Painel from "./Pages/Painel.tsx";
 
 const root = document.getElementById("root");
 
