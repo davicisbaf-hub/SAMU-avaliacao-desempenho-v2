@@ -11,6 +11,9 @@ type User = {
   email: string;
   funcao: string;
   perfil: string;
+  base: string;
+  ativo: boolean;
+  criadoEm: string;
 };
 type UserSessionType = {
   user: User | null;

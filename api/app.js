@@ -223,6 +223,9 @@ app.post("/login", async (req, res) => {
     email: usuario.email,
     funcao: usuario.funcao,
     perfil: usuario.perfil,
+    base: usuario.base,
+    ativo: usuario.ativo,
+    criadoEm: usuario.criado_em,
   });
 });
 

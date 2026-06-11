@@ -20,7 +20,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://localhost:44331/login",
+        "http://localhost:42495/login",
         {
           method: "POST",
           headers: {
@@ -31,9 +31,12 @@ function App() {
             senha,
           }),
         }
+        
+        
       );
 
       const data = await response.json();
+
 
       if (!response.ok) {
         alert(data.erro);
@@ -48,7 +51,7 @@ function App() {
       alert("Erro ao conectar ao servidor");
     }
   };
-
+  
   return (
     <div className="login w-[100vw] text-center flex items-center justify-center p-4">
       <div className="w-full max-w-md">

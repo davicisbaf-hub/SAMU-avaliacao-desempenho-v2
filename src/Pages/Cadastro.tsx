@@ -1,5 +1,7 @@
 import Header from '../components/Header'
 import Nav from '../components/Nav'
+import { useUserSession } from "../contexts/UserSession";
+
 
 import { useEffect, useState } from "react";
 
@@ -35,6 +37,8 @@ type Ficha = {
 
 
 export default function CadastroPage() {
+    const { user } = useUserSession();
+
     const [bases, setBases] = useState<Base[]>([]);
     const [baseSelecionada, setBaseSelecionada] = useState<Base | null>(null);
     const [nome, setNome] = useState("");
@@ -47,11 +51,13 @@ export default function CadastroPage() {
     const [modalAberto, setModalAberto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
     
+    const usuariosFiltrados = user?.perfil === "🔑 Administrador — Todas as bases" ? usuarios : usuarios.filter( (u) => u.base === user?.base );
+
     async function salvarEdicao() {
         if (!usuarioEditando) return;
 
         await fetch(
-            `http://localhost:44331/api/usuarios/${usuarioEditando.id}`,
+            `http://localhost:42495/api/usuarios/${usuarioEditando.id}`,
             {
             method: "PUT",
             headers: {
@@ -80,7 +86,7 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            const res = await fetch("http://localhost:44331/api/usuarios");
+            const res = await fetch("http://localhost:42495/api/usuarios");
             const data = await res.json();
 
             setUsuarios(Array.isArray(data) ? data : []);
@@ -92,7 +98,7 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://localhost:44331/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:42495/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -101,12 +107,13 @@ export default function CadastroPage() {
         carregarBases();
     }, []);
 
+    console.log("User completo:", user);
 
     const cadastrarUsuario = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const response = await fetch(
-                "http://localhost:44331/api/usuarios",
+                "http://localhost:42495/api/usuarios",
                 {
                     method: "POST",
                     headers: {
@@ -156,7 +163,7 @@ export default function CadastroPage() {
       };
     
       useEffect(() => {
-        carregar("http://localhost:44331/api/fichas", setFichas);
+        carregar("http://localhost:42495/api/fichas", setFichas);
       }, []);
 
       async function removerUsuario(id: number) {
@@ -165,7 +172,7 @@ export default function CadastroPage() {
         }
 
         await fetch(
-            `http://localhost:44331/api/usuarios/${id}/inativar`,
+            `http://localhost:42495/api/usuarios/${id}/inativar`,
             {
             method: "PUT",
             }
@@ -251,7 +258,7 @@ export default function CadastroPage() {
 
                                         <p className="font-black">
                                             {
-                                                usuarios.filter(
+                                                usuariosFiltrados.filter(
                                                 (u) => u.funcao === ficha.nome
                                                 ).length
                                             }
@@ -386,7 +393,7 @@ export default function CadastroPage() {
 
                                 <div className="divide-y divide-border">
 
-                                    {usuarios.map((user: any) => (
+                                    {usuariosFiltrados.map((user: any) => (
                                         <div className="flex items-center justify-between px-5 py-3">
                                             <div className="text-left gap-3">
                                                 <p className="text-sm font-semibold">{user.nome}</p>

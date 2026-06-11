@@ -20,7 +20,7 @@ export default function Nav() {
 
 
     useEffect(() => {
-    fetch("http://localhost:44331/api/fichas")
+    fetch("http://localhost:42495/api/fichas")
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);

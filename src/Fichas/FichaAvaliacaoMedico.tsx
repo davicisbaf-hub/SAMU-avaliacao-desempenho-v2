@@ -75,7 +75,7 @@ export default function FichaAvaliacaoMedico() {
 
 		try {
 			const response = await fetch(
-			"http://localhost:44331/api/avaliacoes",
+			"http://localhost:42495/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
@@ -99,7 +99,7 @@ export default function FichaAvaliacaoMedico() {
 
 	useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://localhost:44331/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:42495/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -109,11 +109,11 @@ export default function FichaAvaliacaoMedico() {
 
 
 	useEffect(() => {
-	fetch("http://localhost:44331/api/escala-likert")
+	fetch("http://localhost:42495/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://localhost:44331/api/pesos-avaliacao")
+	fetch("http://localhost:42495/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -141,7 +141,7 @@ export default function FichaAvaliacaoMedico() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:44331/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:42495/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
