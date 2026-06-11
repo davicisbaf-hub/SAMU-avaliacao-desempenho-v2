@@ -1,5 +1,7 @@
 import Header from '../components/Header'
 import Nav from '../components/Nav'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { useEffect, useState } from "react";
 
@@ -15,7 +17,11 @@ type Avaliacao = {
 };
 
 export default function BaixarFicha() {
-
+    const [filtroUsuario, setFiltroUsuario] = useState("");
+    const [filtroFuncao, setFiltroFuncao] = useState("");
+    const [filtroTipo, setFiltroTipo] = useState("");
+    const [dataInicio, setDataInicio] = useState<Date | null>(null);
+    const [dataFim, setDataFim] = useState<Date | null>(null);
     const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
 
     useEffect(() => {
@@ -25,6 +31,38 @@ export default function BaixarFicha() {
             .catch(console.error);
     }, []);
 
+    const usuarios = [...new Set(avaliacoes.map(a => a.nome))];
+    const funcoes = [...new Set(avaliacoes.map(a => a.funcao))];
+    const tipos = [...new Set(avaliacoes.map(a => a.tipo_avaliacao))];
+
+    const avaliacoesFiltradas = avaliacoes.filter((avaliacao) => {
+    const dataAvaliacao = new Date(avaliacao.criado_em);
+
+    const passouUsuario =
+        !filtroUsuario || avaliacao.nome === filtroUsuario;
+
+    const passouFuncao =
+        !filtroFuncao || avaliacao.funcao === filtroFuncao;
+
+    const passouTipo =
+        !filtroTipo || avaliacao.tipo_avaliacao === filtroTipo;
+
+    const passouDataInicio =
+    !dataInicio ||
+    dataAvaliacao >= dataInicio;
+
+    const passouDataFim =
+        !dataFim ||
+        dataAvaliacao <= dataFim;
+
+    return (
+        passouUsuario &&
+        passouFuncao &&
+        passouTipo &&
+        passouDataInicio &&
+        passouDataFim
+    );
+});
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -36,11 +74,90 @@ export default function BaixarFicha() {
                     {/* conteudo */}
                     <div className='custom-scrollbar p-[32px] overflow-y-auto'>
                         <div className="space-y-4">
+
+
                             <h1 className="text-2xl font-bold">
                                 Avaliações Enviadas
                             </h1>
 
-                            {avaliacoes.map((avaliacao) => (
+                            <div className="bg-white border rounded-xl p-4 grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3">
+                                <select
+                                    value={filtroUsuario}
+                                    onChange={(e) => setFiltroUsuario(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                >
+                                    <option value="">Todos os usuários</option>
+
+                                    {usuarios.map(usuario => (
+                                        <option key={usuario} value={usuario}>
+                                            {usuario}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <select
+                                    value={filtroFuncao}
+                                    onChange={(e) => setFiltroFuncao(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                >
+                                    <option value="">Todas as funções</option>
+
+                                    {funcoes.map(funcao => (
+                                        <option key={funcao} value={funcao}>
+                                            {funcao}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <select
+                                    value={filtroTipo}
+                                    onChange={(e) => setFiltroTipo(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                >
+                                    <option value="">Todos os tipos</option>
+
+                                    {tipos.map(tipo => (
+                                        <option key={tipo} value={tipo}>
+                                            {tipo}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="flex gap-2">
+                                    <DatePicker
+                                        selected={dataInicio}
+                                        onChange={(date: Date | null) => setDataInicio(date)}
+                                        dateFormat="dd/MM/yyyy"
+                                        placeholderText="Data inicial"
+                                        className="border rounded-lg px-3 py-2 w-full react-datepicker"
+                                    />
+                                        
+                                        
+
+                                    <DatePicker
+                                        selected={dataFim}
+                                        onChange={(date: Date | null) => setDataFim(date)}
+                                        dateFormat="dd/MM/yyyy"
+                                        placeholderText="Data final"
+                                        className="border rounded-lg px-3 py-2 w-full react-datepicker"
+                                    />
+                                </div>
+                                    
+                                    
+                                <button
+                                    onClick={() => {
+                                        setFiltroUsuario("");
+                                        setFiltroFuncao("");
+                                        setFiltroTipo("");
+                                        setDataInicio(null);
+                                        setDataFim(null);
+                                    }}
+                                    className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+                                >
+                                    Limpar filtros
+                                </button>
+                                
+                            </div>
+                            {avaliacoesFiltradas.map((avaliacao) => (
                                 <div
                                     key={avaliacao.id}
                                     className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
