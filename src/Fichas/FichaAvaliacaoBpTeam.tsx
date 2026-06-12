@@ -74,7 +74,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 		try {
 			const response = await fetch(
-			"http://localhost:46241/api/avaliacoes",
+			"http://http://192.168.1.10:8026/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
@@ -98,7 +98,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://localhost:46241/api/bases"); // sua rota backend
+            const res = await fetch("http://http://192.168.1.10:8026/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -108,11 +108,11 @@ export default function FichaAvaliacaoTecEnf() {
 
 
 	useEffect(() => {
-	fetch("http://localhost:46241/api/escala-likert")
+	fetch("http://http://192.168.1.10:8026/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://localhost:46241/api/pesos-avaliacao")
+	fetch("http://http://192.168.1.10:8026/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -140,7 +140,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:46241/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://http://192.168.1.10:8026/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
