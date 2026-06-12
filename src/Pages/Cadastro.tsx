@@ -60,7 +60,7 @@ export default function CadastroPage() {
         if (!usuarioEditando) return;
 
         await fetch(
-            `http://http://192.168.1.10:8026/api/usuarios/${usuarioEditando.id}`,
+            `http://localhost:3001/api/usuarios/${usuarioEditando.id}`,
             {
             method: "PUT",
             headers: {
@@ -89,7 +89,7 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            const res = await fetch("http://http://192.168.1.10:8026/api/usuarios");
+            const res = await fetch("http://localhost:3001/api/usuarios");
             const data = await res.json();
 
             setUsuarios(Array.isArray(data) ? data : []);
@@ -101,7 +101,7 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://http://192.168.1.10:8026/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -116,7 +116,7 @@ export default function CadastroPage() {
         e.preventDefault();
         try {
             const response = await fetch(
-                "http://http://192.168.1.10:8026/api/usuarios",
+                "http://localhost:3001/api/usuarios",
                 {
                     method: "POST",
                     headers: {
@@ -166,7 +166,7 @@ export default function CadastroPage() {
       };
     
       useEffect(() => {
-        carregar("http://http://192.168.1.10:8026/api/fichas", setFichas);
+        carregar("http://localhost:3001/api/fichas", setFichas);
       }, []);
 
       async function removerUsuario(id: number) {
@@ -175,7 +175,7 @@ export default function CadastroPage() {
         }
 
         await fetch(
-            `http://http://192.168.1.10:8026/api/usuarios/${id}/inativar`,
+            `http://localhost:3001/api/usuarios/${id}/inativar`,
             {
             method: "PUT",
             }
@@ -325,10 +325,10 @@ export default function CadastroPage() {
                                                 required
                                             >
                                                 <option value="">Selecione</option>
-                                                <option value="Condutor Socorrista">Condutor Socorrista</option>
+                                                <option value="Condutor">Condutor</option>
                                                 <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
                                                 <option value="Enfermeiro">Enfermeiro</option>
-                                                <option value="Médico Intervencionista">Médico Intervencionista</option>
+                                                <option value="Médico">Médico</option>
                                             </select>
                                         </div>
                                         <div className="space-y-1">

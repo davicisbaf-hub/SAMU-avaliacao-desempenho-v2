@@ -20,8 +20,8 @@ app.use(cors({
 // app.use(cors());
 
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "db",
-  port: 5432,
+  host: process.env.DB_HOST || "192.168.1.10",
+  port: 5490,
   user: "samu",
   password: "samu",
   database: "samu"
@@ -138,36 +138,39 @@ app.get("/api/fichas-avaliacao/:tipo", async (req, res) => {
 app.post("/api/avaliacoes", async (req, res) => {
   try {
     const {
-      usuarioId,
+      avaliadorId,
+      avaliadoId,
       tipoAvaliacao,
-      resultado,
+      resultado
     } = req.body;
 
     const { rows } = await pool.query(
       `
       INSERT INTO avaliacoes
       (
-        usuario_id,
+        avaliador_id,
+        avaliado_id,
         tipo_avaliacao,
         resultado
       )
-      VALUES
-      ($1, $2, $3)
+      VALUES ($1,$2,$3,$4)
       RETURNING *
       `,
       [
-        usuarioId,
+        avaliadorId,
+        avaliadoId,
         tipoAvaliacao,
-        JSON.stringify(resultado),
+        resultado
       ]
     );
 
     res.status(201).json(rows[0]);
+
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      erro: error.message,
+      erro: error.message
     });
   }
 });
@@ -177,18 +180,28 @@ app.get("/api/avaliacoes", async (req, res) => {
     const { rows } = await pool.query(`
       SELECT
         a.id,
-        a.usuario_id,
-        u.nome,
-        u.funcao,
-        u.base,
-        u.perfil,
+
+        avaliador.nome AS avaliador_nome,
+        avaliador.funcao AS avaliador_funcao,
+        
+        avaliado.nome AS avaliado_nome,
+        avaliado.funcao AS avaliado_funcao,
+
+        avaliado.funcao,
+
         a.tipo_avaliacao,
         a.resultado,
         a.criado_em
+
       FROM avaliacoes a
-      INNER JOIN usuarios u
-        ON u.id = a.usuario_id
-      ORDER BY a.criado_em DESC
+
+      JOIN usuarios avaliador
+          ON avaliador.id = a.avaliador_id
+
+      JOIN usuarios avaliado
+          ON avaliado.id = a.avaliado_id
+
+      ORDER BY a.criado_em DESC;
     `);
 
     res.json(rows);

@@ -5,14 +5,20 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { useEffect, useState } from "react";
 
-
 type Avaliacao = {
     id: number;
-    nome: string;
-    usuario_id: number;
+
+    avaliador_nome: string;
+    avaliador_funcao: string;
+
+    avaliado_nome: string;
+    avaliado_funcao: string;
+
+    funcao: string;
+
     tipo_avaliacao: string;
-    resultado: Record<string, number>;
-    funcao: string;    
+
+    resultado: Record<string,{nota: number;peso: number;}>;
     criado_em: string;
 };
 
@@ -25,13 +31,13 @@ export default function BaixarFicha() {
     const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
 
     useEffect(() => {
-        fetch("http://http://192.168.1.10:8026/api/avaliacoes")
+        fetch("http://localhost:3001/api/avaliacoes")
             .then((res) => res.json())
             .then(setAvaliacoes)
             .catch(console.error);
     }, []);
 
-    const usuarios = [...new Set(avaliacoes.map(a => a.nome))];
+    const usuarios = [...new Set(avaliacoes.map(a => a.avaliado_nome))];
     const funcoes = [...new Set(avaliacoes.map(a => a.funcao))];
     const tipos = [...new Set(avaliacoes.map(a => a.tipo_avaliacao))];
 
@@ -39,7 +45,7 @@ export default function BaixarFicha() {
     const dataAvaliacao = new Date(avaliacao.criado_em);
 
     const passouUsuario =
-        !filtroUsuario || avaliacao.nome === filtroUsuario;
+        !filtroUsuario || avaliacao.avaliado_nome === filtroUsuario;
 
     const passouFuncao =
         !filtroFuncao || avaliacao.funcao === filtroFuncao;
@@ -164,16 +170,10 @@ export default function BaixarFicha() {
                                 >
                                     {/* Cabeçalho */}
                                     <div className="bg-gray-50 border-b px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                                        <div>
-
+                                        <div className='text-left'>
+                                            <p className="font-semibold text-lg text-gray-900">Avaliador: {avaliacao.avaliador_nome} - {avaliacao.avaliador_funcao} </p>
+                                            <p className="font-semibold text-lg text-gray-900">Avaliado: {avaliacao.avaliado_nome} - {avaliacao.avaliado_funcao}</p>
                                             <div className="flex gap-2 mt-2 flex-wrap">
-                                                <h2 className="font-semibold text-lg text-gray-900">
-                                                    {avaliacao.nome}
-                                                </h2>
-                                                <span className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full">
-                                                    <span className="font-bold">Função:</span> {avaliacao.funcao}
-                                                </span>
-
                                                 <span className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-full">
                                                     <span className="font-bold">Tipo de Avaliação:</span> {avaliacao.tipo_avaliacao}
                                                 </span>
@@ -198,8 +198,11 @@ export default function BaixarFicha() {
                                                         <th className="text-left px-4 py-3">
                                                             Critério
                                                         </th>
-
                                                         <th className="text-right px-4 py-3">
+                                                            peso
+                                                        </th>
+                                                        <th
+                                                         className="text-right px-4 py-3">
                                                             Nota
                                                         </th>
                                                     </tr>
@@ -207,20 +210,11 @@ export default function BaixarFicha() {
 
                                                 <tbody>
                                                     {Object.entries(avaliacao.resultado).map(
-                                                        ([codigo, nota]) => (
-                                                            <tr
-                                                                key={codigo}
-                                                                className="border-t hover:bg-gray-50"
-                                                            >
-                                                                <td className="px-4 py-3 font-medium">
-                                                                    {codigo}
-                                                                </td>
-
-                                                                <td className="px-4 py-3 text-right">
-                                                                    <span className="inline-flex items-center justify-center min-w-[40px] px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
-                                                                        {nota}
-                                                                    </span>
-                                                                </td>
+                                                        ([codigo, resultado]) => (
+                                                            <tr key={codigo}>
+                                                            <td>{codigo}</td>
+                                                            <td>{resultado.peso}</td>
+                                                            <td>{resultado.nota}</td>
                                                             </tr>
                                                         )
                                                     )}

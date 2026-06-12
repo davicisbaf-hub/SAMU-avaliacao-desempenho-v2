@@ -58,6 +58,8 @@ export default function FichaAvaliacaoTecEnf() {
 
 	const [tentouEnviar, setTentouEnviar] = useState(false);
 
+	
+
 	const enviarAvaliacao = async () => {
 		setTentouEnviar(true);
 
@@ -72,25 +74,31 @@ export default function FichaAvaliacaoTecEnf() {
 			return;
 		}
 
+		const resultado = criterios.reduce((acc, criterio) => {
+			acc[criterio.criterio] = {
+				nota: notas[criterio.criterio],
+				peso: 1
+			};
+
+		return acc;
+		}, {} as Record<string, { nota: number; peso: number }>);
+
 		try {
-			const response = await fetch(
-			"http://http://192.168.1.10:8026/api/avaliacoes",
+			await fetch(
+			"http://localhost:3001/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
 				"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-				usuarioId: user?.id,
-				tipoAvaliacao,
-				resultado: notas,
-				}),
+					avaliadorId: user?.id,
+					avaliadoId: user?.id,
+					tipoAvaliacao,
+					resultado
+				})
 			}
 			);
-
-			const data = await response.json();
-
-			console.log("Salvo:", data);
 		} catch (error) {
 			console.error(error);
 		}
@@ -98,7 +106,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://http://192.168.1.10:8026/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -108,11 +116,11 @@ export default function FichaAvaliacaoTecEnf() {
 
 
 	useEffect(() => {
-	fetch("http://http://192.168.1.10:8026/api/escala-likert")
+	fetch("http://localhost:3001/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://http://192.168.1.10:8026/api/pesos-avaliacao")
+	fetch("http://localhost:3001/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -140,7 +148,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
 		carregar(
-			`http://http://192.168.1.10:8026/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -233,16 +241,12 @@ export default function FichaAvaliacaoTecEnf() {
 										</select>
 									</div>
 									<div>
-										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
-										<input className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"></input>
-									</div>
-									<div>
-										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
-										<input className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"></input>
-									</div>
-									<div>
-										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
-										<input className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"></input>
+										<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do AutoAvaliador</label>
+										<input
+											className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"
+											value={user?.nome || ""}
+											disabled
+										/>
 									</div>
 								</div>
 							</div>
@@ -344,7 +348,7 @@ export default function FichaAvaliacaoTecEnf() {
 																key={criterio.codigo}
 																codigo={criterio.codigo}
 																criterio={criterio.criterio}
-																peso={criterio.peso}
+																peso={1}
 																indicador={criterio.indicador}
 																escalaLikert={escalaLikert}
 																notaSelecionada={notas[criterio.criterio]}
