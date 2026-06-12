@@ -53,9 +53,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("http://localhost:3001/api/fichas", setFichas);
-    carregar("http://localhost:3001/api/frequencias", setFrequencias);
-    carregar("http://localhost:3001/api/fluxos-avaliacao", setFluxos);
+    carregar("http://192.168.1.10:8766/api/fichas", setFichas);
+    carregar("http://192.168.1.10:8766/api/frequencias", setFrequencias);
+    carregar("http://192.168.1.10:8766/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (

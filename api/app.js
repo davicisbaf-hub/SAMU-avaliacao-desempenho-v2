@@ -5,7 +5,9 @@ import cors from "cors";
 
 const app = express();
 app.use(express.json());
-const port = 3001;
+
+const port = process.env.PORT || 3001;
+
 
 app.use(cors({
  origin: [
@@ -20,7 +22,7 @@ app.use(cors({
 // app.use(cors());
 
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "192.168.1.10",
+  host: process.env.DB_HOST || "db",
   port: 5490,
   user: "samu",
   password: "samu",

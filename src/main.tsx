@@ -18,7 +18,6 @@ import FichaAvaliacaoBpTeam from "./Fichas/FichaAvaliacaoBpTeam.tsx";
 import CadastroPage from "./Pages/Cadastro.tsx";
 
 
-
 import { UserSessionProvider } from "./contexts/UserSession";
 import Configuracoes from "./Pages/Configuracoes.tsx";
 import BaixarFicha from "./Pages/BaixarFicha.tsx";
