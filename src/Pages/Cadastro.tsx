@@ -60,7 +60,7 @@ export default function CadastroPage() {
         if (!usuarioEditando) return;
 
         await fetch(
-            `http://localhost:42495/api/usuarios/${usuarioEditando.id}`,
+            `http://localhost:46241/api/usuarios/${usuarioEditando.id}`,
             {
             method: "PUT",
             headers: {
@@ -89,7 +89,7 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            const res = await fetch("http://localhost:42495/api/usuarios");
+            const res = await fetch("http://localhost:46241/api/usuarios");
             const data = await res.json();
 
             setUsuarios(Array.isArray(data) ? data : []);
@@ -101,7 +101,7 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://localhost:42495/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:46241/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -116,7 +116,7 @@ export default function CadastroPage() {
         e.preventDefault();
         try {
             const response = await fetch(
-                "http://localhost:42495/api/usuarios",
+                "http://localhost:46241/api/usuarios",
                 {
                     method: "POST",
                     headers: {
@@ -166,7 +166,7 @@ export default function CadastroPage() {
       };
     
       useEffect(() => {
-        carregar("http://localhost:42495/api/fichas", setFichas);
+        carregar("http://localhost:46241/api/fichas", setFichas);
       }, []);
 
       async function removerUsuario(id: number) {
@@ -175,7 +175,7 @@ export default function CadastroPage() {
         }
 
         await fetch(
-            `http://localhost:42495/api/usuarios/${id}/inativar`,
+            `http://localhost:46241/api/usuarios/${id}/inativar`,
             {
             method: "PUT",
             }

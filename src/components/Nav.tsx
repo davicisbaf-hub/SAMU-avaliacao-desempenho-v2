@@ -20,8 +20,17 @@ export default function Nav() {
     };
 
 
+    const fichasVisiveis =
+    user?.perfil === "Usuario"
+        ? fichas.filter(
+            (ficha) =>
+            ficha.nome === user.funcao ||
+            ficha.nome === "Liderança / Coordenação"
+        )
+        : fichas;
+
     useEffect(() => {
-    fetch("http://localhost:42495/api/fichas")
+    fetch("http://localhost:46241/api/fichas")
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);
@@ -106,7 +115,7 @@ export default function Nav() {
                         <p className='px-3 text-[12px] font-semibold text-sidebar-foreground/40 uppercase tracking-wider mb-1'>
                             Fichas de Avaliação
                         </p>
-                        {fichas.map((ficha) => (
+                        {fichasVisiveis.map((ficha) => (
                             <NavLink
                                 key={ficha.nome}
                                 to={ficha.link}
@@ -143,18 +152,20 @@ export default function Nav() {
                             Autoavaliação / bp-TEAM
                         </NavLink>
 
-                        <NavLink to="/plano-desenvolvimento" 
-                            className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-                                    isActive
-                                        ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent"
-                                }`
-                            }>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg>
-                            Plano de Desenvolvimento
-                        </NavLink>
-                            
+                        {user?.perfil !== "Usuario" && (
+                            <NavLink to="/plano-desenvolvimento" 
+                                className={({ isActive }) =>
+                                    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+                                        isActive
+                                            ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
+                                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent"
+                                    }`
+                                }>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg>
+                                Plano de Desenvolvimento
+                            </NavLink>
+                        )}
+
                         {user?.perfil !== "Usuario" && (
                             <NavLink to="/cadastro" 
                                 className={({ isActive }) =>

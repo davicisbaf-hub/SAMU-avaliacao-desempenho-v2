@@ -23,7 +23,7 @@ const iconByTipo: Record<string, string> = {
 	"Técnico de Enfermagem": "💉",
 	"Enfermeiro": "🩺",
 	"Médico": "⚕️",
-	"Liderança / Coordenação": "👤",
+	"Liderança": "👤",
 };
 
 type EscalaLikert = {
@@ -40,9 +40,9 @@ type Peso = {
 };
 
 type Base = {
-    id: number;
-    nome: string;
-    cor: string;
+	id: number;
+	nome: string;
+	cor: string;
 };
 
 
@@ -50,7 +50,7 @@ export default function FichaAvaliacaoLideranca() {
 	const [bases, setBases] = useState<Base[]>([]);
 	const { user } = useUserSession();
 
-	const [tipoAvaliacao, setTipoAvaliacao] = useState(`Liderança / Coordenação`);
+	const [tipoAvaliacao, setTipoAvaliacao] = useState(`Liderança`);
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
 	
@@ -75,7 +75,7 @@ export default function FichaAvaliacaoLideranca() {
 
 		try {
 			const response = await fetch(
-			"http://localhost:42495/api/avaliacoes",
+			"http://localhost:46241/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
@@ -98,22 +98,22 @@ export default function FichaAvaliacaoLideranca() {
 	};
 
 	useEffect(() => {
-        async function carregarBases() {
-            const res = await fetch("http://localhost:42495/api/bases"); // sua rota backend
-            const data = await res.json();
+		async function carregarBases() {
+			const res = await fetch("http://localhost:46241/api/bases"); // sua rota backend
+			const data = await res.json();
 
-            setBases(data);
-        }
-        carregarBases();
-    }, []);
+			setBases(data);
+		}
+		carregarBases();
+	}, []);
 
 
 	useEffect(() => {
-	fetch("http://localhost:42495/api/escala-likert")
+	fetch("http://localhost:46241/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://localhost:42495/api/pesos-avaliacao")
+	fetch("http://localhost:46241/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -141,7 +141,7 @@ export default function FichaAvaliacaoLideranca() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:42495/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:46241/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -155,6 +155,7 @@ export default function FichaAvaliacaoLideranca() {
 
 		return acc;
 	}, {} as Record<string, Criterios[]>);
+
 	return (
 		<div>
 			<div className="flex h-screen w-screen bg-white text-black">
@@ -198,14 +199,14 @@ export default function FichaAvaliacaoLideranca() {
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
 								<button
-									onClick={() => setTipoAvaliacao("Liderança / Coordenação")}
+									onClick={() => setTipoAvaliacao("Liderança")}
 									className={`text-left p-4 rounded-xl border-2 transition-all ${
-										tipoAvaliacao === "Liderança / Coordenação"
+										tipoAvaliacao === "Liderança"
 											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
 											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
 									}`}
 								>
-									<p className='font-semibold text-sm text-foreground'>Avaliação: Liderança / Coordenação</p>
+									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Liderança</p>
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
 							</div>

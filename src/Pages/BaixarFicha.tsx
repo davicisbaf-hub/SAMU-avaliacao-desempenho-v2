@@ -25,7 +25,7 @@ export default function BaixarFicha() {
     const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
 
     useEffect(() => {
-        fetch("http://localhost:42495/api/avaliacoes")
+        fetch("http://localhost:46241/api/avaliacoes")
             .then((res) => res.json())
             .then(setAvaliacoes)
             .catch(console.error);
