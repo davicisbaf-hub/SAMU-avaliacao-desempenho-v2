@@ -329,7 +329,6 @@ export default function CadastroPage() {
                                                 <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
                                                 <option value="Enfermeiro">Enfermeiro</option>
                                                 <option value="Médico Intervencionista">Médico Intervencionista</option>
-                                                <option value="Liderança / Coordenação">Liderança / Coordenação</option>
                                             </select>
                                         </div>
                                         <div className="space-y-1">
