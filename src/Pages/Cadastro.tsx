@@ -51,7 +51,10 @@ export default function CadastroPage() {
     const [modalAberto, setModalAberto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
     
-    const usuariosFiltrados = user?.perfil === "🔑 Administrador — Todas as bases" ? usuarios : usuarios.filter( (u) => u.base === user?.base );
+    const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases"; 
+
+    const usuariosFiltrados = isAdminGlobal ? usuarios : usuarios.filter( (u) => u.base === user?.base );
+    const basesVisiveis = isAdminGlobal ? bases : bases.filter((base) => base.nome === user?.base);
 
     async function salvarEdicao() {
         if (!usuarioEditando) return;
@@ -221,7 +224,7 @@ export default function CadastroPage() {
                                 <span className="text-sm font-semibold text-foreground">Base:</span>
 
                                 <div className="flex flex-wrap gap-2">
-                                    {bases.map((base) => (
+                                    {basesVisiveis.map((base) => (
                                         <button
                                             key={base.id}
                                             onClick={() => setBaseSelecionada(base)}
@@ -353,17 +356,23 @@ export default function CadastroPage() {
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-xs font-semibold">Base</label>
-                                            <select
+                                           <select
+                                                className="w-full border rounded-lg px-3 py-2 text-sm"
                                                 value={base}
                                                 onChange={(e) => setBase(e.target.value)}
-                                                className="w-full border rounded-lg px-3 py-2 text-sm"
                                                 required
-                                                >
-                                                <option value="">Selecione</option>
+                                            >
+                                                <option className="text-black" value="">
+                                                    Selecione a base...
+                                                </option>
 
-                                                {bases.map((base) => (
-                                                    <option key={base.id} value={base.nome}>
-                                                    {base.nome}
+                                                {basesVisiveis.map((base) => (
+                                                    <option
+                                                        key={base.id}
+                                                        value={base.id}
+                                                        className="text-black"
+                                                    >
+                                                        {base.nome}
                                                     </option>
                                                 ))}
                                             </select>
