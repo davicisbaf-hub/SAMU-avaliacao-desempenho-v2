@@ -53,9 +53,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("http://192.168.1.10:8766/api/fichas", setFichas);
-    carregar("http://192.168.1.10:8766/api/frequencias", setFrequencias);
-    carregar("http://192.168.1.10:8766/api/fluxos-avaliacao", setFluxos);
+    carregar("http://192.168.1.10:8026/api/fichas", setFichas);
+    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
+    carregar("http://192.168.1.10:8026/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (
@@ -142,17 +142,26 @@ export default function Inicio() {
                 </a>
               </div>
 
-              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                {fichas.map((ficha) => (
-                  <FichasCard
-                    link={ficha.link}
-                    key={ficha.id}
-                    icon={ficha.icon}
-                    cargo={ficha.nome}
-                    criterios={ficha.criterios}
-                    tags={ficha.tags}
-                  />
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {fichas
+                  .filter((ficha) => {
+                    if (user?.perfil === "Administrador") return true;
+
+                    return (
+                      ficha.nome === user?.funcao ||
+                      ficha.nome === "Liderança / Coordenação"
+                    );
+                  })
+                  .map((ficha) => (
+                    <FichasCard
+                      link={ficha.link}
+                      key={ficha.id}
+                      icon={ficha.icon}
+                      cargo={ficha.nome}
+                      criterios={ficha.criterios}
+                      tags={ficha.tags}
+                    />
+                  ))}
               </div>
             </div>
 
