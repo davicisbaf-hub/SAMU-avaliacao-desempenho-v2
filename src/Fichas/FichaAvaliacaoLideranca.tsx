@@ -105,7 +105,7 @@ export default function FichaAvaliacaoLideranca() {
 				},
 				body: JSON.stringify({
 					avaliadorId: user?.id,
-					avaliadoId: user?.id,
+					avaliadoId: avaliado?.id,
 					tipoAvaliacao,
 					resultado,
 

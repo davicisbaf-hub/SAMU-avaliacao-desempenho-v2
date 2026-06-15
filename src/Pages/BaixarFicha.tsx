@@ -2,6 +2,9 @@ import Header from '../components/Header'
 import Nav from '../components/Nav'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Eye, Download } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 import { useEffect, useState } from "react";
 
@@ -18,7 +21,7 @@ type Avaliacao = {
 
     tipo_avaliacao: string;
 
-    resultado: Record<string,{nota: number;peso: number;}>;
+    resultado: Record<string, { nota: number; peso: number; }>;
     criado_em: string;
 };
 
@@ -29,6 +32,7 @@ export default function BaixarFicha() {
     const [dataInicio, setDataInicio] = useState<Date | null>(null);
     const [dataFim, setDataFim] = useState<Date | null>(null);
     const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+    const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState<Avaliacao | null>(null);
 
     useEffect(() => {
         fetch("http://localhost:3001/api/avaliacoes")
@@ -42,33 +46,70 @@ export default function BaixarFicha() {
     const tipos = [...new Set(avaliacoes.map(a => a.tipo_avaliacao))];
 
     const avaliacoesFiltradas = avaliacoes.filter((avaliacao) => {
-    const dataAvaliacao = new Date(avaliacao.criado_em);
+        const dataAvaliacao = new Date(avaliacao.criado_em);
 
-    const passouUsuario =
-        !filtroUsuario || avaliacao.avaliado_nome === filtroUsuario;
+        const passouUsuario =
+            !filtroUsuario || avaliacao.avaliado_nome === filtroUsuario;
 
-    const passouFuncao =
-        !filtroFuncao || avaliacao.funcao === filtroFuncao;
+        const passouFuncao =
+            !filtroFuncao || avaliacao.funcao === filtroFuncao;
 
-    const passouTipo =
-        !filtroTipo || avaliacao.tipo_avaliacao === filtroTipo;
+        const passouTipo =
+            !filtroTipo || avaliacao.tipo_avaliacao === filtroTipo;
 
-    const passouDataInicio =
-    !dataInicio ||
-    dataAvaliacao >= dataInicio;
+        const passouDataInicio =
+            !dataInicio ||
+            dataAvaliacao >= dataInicio;
 
-    const passouDataFim =
-        !dataFim ||
-        dataAvaliacao <= dataFim;
+        const passouDataFim =
+            !dataFim ||
+            dataAvaliacao <= dataFim;
 
-    return (
-        passouUsuario &&
-        passouFuncao &&
-        passouTipo &&
-        passouDataInicio &&
-        passouDataFim
-    );
-});
+        return (
+            passouUsuario &&
+            passouFuncao &&
+            passouTipo &&
+            passouDataInicio &&
+            passouDataFim
+        );
+    });
+
+    function gerarPdf(avaliacao: Avaliacao) {
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text("Ficha de Avaliação", 14, 20);
+
+        doc.setFontSize(11);
+
+        doc.text(`Avaliado: ${avaliacao.avaliado_nome}`, 14, 35);
+        doc.text(`Avaliador: ${avaliacao.avaliador_nome}`, 14, 45);
+        doc.text(`Tipo: ${avaliacao.tipo_avaliacao}`, 14, 55);
+
+        autoTable(doc, {
+            startY: 70,
+            head: [["Critério", "Peso", "Nota"]],
+            body: Object.entries(avaliacao.resultado).map(
+                ([criterio, valor]) => [
+                    criterio
+                        .replace(/≤/g, "<=")
+                        .replace(/≥/g, ">=")
+                        .replace(/[–—]/g, "-"),
+                    String(valor.peso),
+                    String(valor.nota),
+                ]
+            ),
+            styles: {
+                fontSize: 8,
+                cellWidth: "wrap",
+            },
+            columnStyles: {
+                0: { cellWidth: 120 },
+            },
+        });
+
+        doc.save(`avaliacao-${avaliacao.avaliado_nome}.pdf`);
+    }
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -136,8 +177,8 @@ export default function BaixarFicha() {
                                         placeholderText="Data inicial"
                                         className="border rounded-lg px-3 py-2 w-full react-datepicker"
                                     />
-                                        
-                                        
+
+
 
                                     <DatePicker
                                         selected={dataFim}
@@ -147,8 +188,8 @@ export default function BaixarFicha() {
                                         className="border rounded-lg px-3 py-2 w-full react-datepicker"
                                     />
                                 </div>
-                                    
-                                    
+
+
                                 <button
                                     onClick={() => {
                                         setFiltroUsuario("");
@@ -161,74 +202,109 @@ export default function BaixarFicha() {
                                 >
                                     Limpar filtros
                                 </button>
-                                
+
                             </div>
-                            {avaliacoesFiltradas.map((avaliacao) => (
-                                <div
-                                    key={avaliacao.id}
-                                    className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
-                                >
-                                    {/* Cabeçalho */}
-                                    <div className="bg-gray-50 border-b px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                                        <div className='text-left'>
-                                            <p className="font-semibold text-lg text-gray-900">Avaliador: {avaliacao.avaliador_nome} - {avaliacao.avaliador_funcao} </p>
-                                            <p className="font-semibold text-lg text-gray-900">Avaliado: {avaliacao.avaliado_nome} - {avaliacao.avaliado_funcao}</p>
-                                            <div className="flex gap-2 mt-2 flex-wrap">
-                                                <span className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-full">
-                                                    <span className="font-bold">Tipo de Avaliação:</span> {avaliacao.tipo_avaliacao}
-                                                </span>
+                            <div className="grid gap-4">
+                                {avaliacoesFiltradas.map((avaliacao) => (
+                                    <div
+                                        key={avaliacao.id}
+                                        className="bg-white border rounded-xl p-4 shadow-sm"
+                                    >
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="font-semibold text-lg">
+                                                    {avaliacao.avaliado_nome}
+                                                </h3>
+
+                                                <p className="text-sm text-gray-500">
+                                                    {avaliacao.avaliado_funcao}
+                                                </p>
+
+                                                <div className="mt-3 space-y-1 text-sm">
+                                                    <p>
+                                                        <strong>Avaliador:</strong>{" "}
+                                                        {avaliacao.avaliador_nome}
+                                                    </p>
+
+                                                    <p>
+                                                        <strong>Tipo:</strong>{" "}
+                                                        {avaliacao.tipo_avaliacao}
+                                                    </p>
+
+                                                    <p>
+                                                        <strong>Data:</strong>{" "}
+                                                        {new Date(
+                                                            avaliacao.criado_em
+                                                        ).toLocaleDateString("pt-BR")}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() =>
+                                                        setAvaliacaoSelecionada(avaliacao)
+                                                    }
+                                                    className="p-2 rounded-lg hover:bg-gray-100"
+                                                >
+                                                    <Eye size={20} />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => gerarPdf(avaliacao)}
+                                                    className="p-2 rounded-lg hover:bg-gray-100"
+                                                >
+                                                    <Download size={20} />
+                                                </button>
                                             </div>
                                         </div>
-
-                                        <div className="text-sm text-gray-500">
-                                            {new Date(avaliacao.criado_em).toLocaleString("pt-BR")}
-                                        </div>
                                     </div>
-
-                                    {/* Respostas */}
-                                    <div className="p-6">
-                                        <h3 className="font-medium text-gray-700 mb-3">
-                                            Resultados da Avaliação
-                                        </h3>
-
-                                        <div className="overflow-hidden rounded-xl border">
-                                            <table className="w-full">
-                                                <thead className="bg-gray-100">
-                                                    <tr>
-                                                        <th className="text-left px-4 py-3">
-                                                            Critério
-                                                        </th>
-                                                        <th className="text-right px-4 py-3">
-                                                            peso
-                                                        </th>
-                                                        <th
-                                                         className="text-right px-4 py-3">
-                                                            Nota
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-
-                                                <tbody>
-                                                    {Object.entries(avaliacao.resultado).map(
-                                                        ([codigo, resultado]) => (
-                                                            <tr key={codigo}>
-                                                            <td>{codigo}</td>
-                                                            <td>{resultado.peso}</td>
-                                                            <td>{resultado.nota}</td>
-                                                            </tr>
-                                                        )
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
+            {avaliacaoSelecionada && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl w-[90%] max-w-4xl max-h-[90vh] overflow-auto p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">
+                                Detalhes da Avaliação
+                            </h2>
+
+                            <button
+                                onClick={() => setAvaliacaoSelecionada(null)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <table className="w-full border">
+                            <thead>
+                                <tr>
+                                    <th>Critério</th>
+                                    <th>Peso</th>
+                                    <th>Nota</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {Object.entries(
+                                    avaliacaoSelecionada.resultado
+                                ).map(([criterio, valor]) => (
+                                    <tr key={criterio}>
+                                        <td>{criterio}</td>
+                                        <td>{valor.peso}</td>
+                                        <td>{valor.nota}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
