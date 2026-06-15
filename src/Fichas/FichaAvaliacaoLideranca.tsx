@@ -62,6 +62,11 @@ export default function FichaAvaliacaoLideranca() {
 	const [avaliadoId, setAvaliadoId] = useState("");
 	const [avaliado, setAvaliado] = useState<any>(null);
 
+	
+	const [observacoes, setObservacoes] = useState("");
+	const [pontosMelhorar, setPontosMelhorar] = useState("");
+	const [planoAcao, setPlanoAcao] = useState("");
+
 	const enviarAvaliacao = async () => {
 		setTentouEnviar(true);
 
@@ -99,10 +104,14 @@ export default function FichaAvaliacaoLideranca() {
 				"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-				avaliadorId: user?.id,
-				avaliadoId: avaliado.id,
-				tipoAvaliacao,
-				resultado
+					avaliadorId: user?.id,
+					avaliadoId: user?.id,
+					tipoAvaliacao,
+					resultado,
+
+					observacoesGerais: observacoes,
+					pontosMelhorar,
+					planoAcao,
 				}),
 			}
 			);
@@ -459,9 +468,29 @@ export default function FichaAvaliacaoLideranca() {
 								)
 							)}
 							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-								<TextArea titulo="Observações Gerais" placeholder="Pontos positivos, contexto da avaliação, situações específicas observadas..." />
-								<TextArea titulo="Pontos a Melhorar (Lacunas Identificadas)" placeholder="Competências que requerem desenvolvimento, erros recorrentes, lacunas técnicas..." />
-								<TextArea titulo="Plano de Ação / PDI Sugerido" placeholder="Cursos, treinamentos, simulações, mentoria, prazo previsto..." />
+								<TextArea
+									titulo="Observações Gerais"
+									placeholder="Pontos positivos..."
+									rows={4}
+									value={observacoes}
+									onChange={(e) => setObservacoes(e.target.value)}
+								/>
+
+								<TextArea
+									titulo="Pontos a Melhorar (Lacunas Identificadas)"
+									placeholder="Competências que requerem desenvolvimento..."
+									rows={4}
+									value={pontosMelhorar}
+									onChange={(e) => setPontosMelhorar(e.target.value)}
+								/>
+
+								<TextArea
+									titulo="Plano de Ação / PDI Sugerido"
+									placeholder="Cursos, treinamentos..."
+									rows={4}
+									value={planoAcao}
+									onChange={(e) => setPlanoAcao(e.target.value)}
+								/>
 							</div>
 							<div className='bg-card border border-border rounded-xl p-5'>
 								<h3 className='text-sm font-semibold text-[#0e1216] mb-4'>Assinaturas e Ciência</h3>
