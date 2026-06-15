@@ -7,6 +7,10 @@ CREATE TABLE avaliacoes (
     tipo_avaliacao VARCHAR(100) NOT NULL,
     resultado JSONB NOT NULL,
 
+    observacoes_gerais TEXT,
+    pontos_melhorar TEXT,
+    plano_acao TEXT,
+
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_avaliador

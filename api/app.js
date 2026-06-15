@@ -15,7 +15,8 @@ app.use(cors({
    "http://127.0.0.1:5173",
    "http://192.168.1.10:5173",
    "http://192.168.1.10:3011",
-   "http://192.168.1.10:8026/"
+   "http://localhost:3001",
+   "http://192.168.1.10:8766"
  ]
 }));
 
@@ -28,6 +29,14 @@ const pool = new pg.Pool({
   password: "samu",
   database: "samu"
 });
+
+// const pool = new pg.Pool({
+//   host: process.env.DB_HOST || "192.168.1.10",
+//   port: 5490,
+//   user: "samu",
+//   password: "samu",
+//   database: "samu"
+// });
 
 app.get("/api/fichas", async (req, res) => {
   try {
@@ -143,7 +152,10 @@ app.post("/api/avaliacoes", async (req, res) => {
       avaliadorId,
       avaliadoId,
       tipoAvaliacao,
-      resultado
+      resultado,
+      observacoesGerais,
+      pontosMelhorar,
+      planoAcao
     } = req.body;
 
     const { rows } = await pool.query(
@@ -153,16 +165,22 @@ app.post("/api/avaliacoes", async (req, res) => {
         avaliador_id,
         avaliado_id,
         tipo_avaliacao,
-        resultado
+        resultado,
+        observacoes_gerais,
+        pontos_melhorar,
+        plano_acao
       )
-      VALUES ($1,$2,$3,$4)
+      VALUES ($1,$2,$3,$4,$5,$6,$7)
       RETURNING *
       `,
       [
         avaliadorId,
         avaliadoId,
         tipoAvaliacao,
-        resultado
+        resultado,
+        observacoesGerais,
+        pontosMelhorar,
+        planoAcao
       ]
     );
 

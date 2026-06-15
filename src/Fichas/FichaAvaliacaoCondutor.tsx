@@ -58,6 +58,10 @@ export default function FichaAvaliacaoCondutor() {
 
 	const [tentouEnviar, setTentouEnviar] = useState(false);
 
+	const [observacoes, setObservacoes] = useState("");
+	const [pontosMelhorar, setPontosMelhorar] = useState("");
+	const [planoAcao, setPlanoAcao] = useState("");
+
 	const enviarAvaliacao = async () => {
 		setTentouEnviar(true);
 
@@ -83,7 +87,7 @@ export default function FichaAvaliacaoCondutor() {
 
 		try {
 			await fetch(
-			"http://192.168.1.10:8026/api/avaliacoes",
+			"http://localhost:3001/api/avaliacoes",
 			{
 				method: "POST",
 				headers: {
@@ -93,8 +97,12 @@ export default function FichaAvaliacaoCondutor() {
 					avaliadorId: user?.id,
 					avaliadoId: user?.id,
 					tipoAvaliacao,
-					resultado
-				})
+					resultado,
+
+					observacoesGerais: observacoes,
+					pontosMelhorar,
+					planoAcao,
+				}),
 			}
 			);
 		} catch (error) {
@@ -104,7 +112,7 @@ export default function FichaAvaliacaoCondutor() {
 
 	useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -114,11 +122,11 @@ export default function FichaAvaliacaoCondutor() {
 
 
 	useEffect(() => {
-	fetch("http://192.168.1.10:8026/api/escala-likert")
+	fetch("http://localhost:3001/api/escala-likert")
 		.then((r) => r.json())
 		.then(setEscalaLikert);
 
-	fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+	fetch("http://localhost:3001/api/pesos-avaliacao")
 		.then((r) => r.json())
 		.then(setPesos);
 	}, []);
@@ -146,7 +154,7 @@ export default function FichaAvaliacaoCondutor() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -375,9 +383,29 @@ export default function FichaAvaliacaoCondutor() {
 								)
 							)}
 							<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-								<TextArea titulo="Observações Gerais" placeholder="Pontos positivos, contexto da avaliação, situações específicas observadas..." />
-								<TextArea titulo="Pontos a Melhorar (Lacunas Identificadas)" placeholder="Competências que requerem desenvolvimento, erros recorrentes, lacunas técnicas..." />
-								<TextArea titulo="Plano de Ação / PDI Sugerido" placeholder="Cursos, treinamentos, simulações, mentoria, prazo previsto..." />
+								<TextArea
+									titulo="Observações Gerais"
+									placeholder="Pontos positivos..."
+									rows={4}
+									value={observacoes}
+									onChange={(e) => setObservacoes(e.target.value)}
+								/>
+
+								<TextArea
+									titulo="Pontos a Melhorar (Lacunas Identificadas)"
+									placeholder="Competências que requerem desenvolvimento..."
+									rows={4}
+									value={pontosMelhorar}
+									onChange={(e) => setPontosMelhorar(e.target.value)}
+								/>
+
+								<TextArea
+									titulo="Plano de Ação / PDI Sugerido"
+									placeholder="Cursos, treinamentos..."
+									rows={4}
+									value={planoAcao}
+									onChange={(e) => setPlanoAcao(e.target.value)}
+								/>
 							</div>
 							<div className='bg-card border border-border rounded-xl p-5'>
 								<h3 className='text-sm font-semibold text-[#0e1216] mb-4'>Assinaturas e Ciência</h3>
