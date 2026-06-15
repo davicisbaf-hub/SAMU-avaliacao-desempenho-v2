@@ -22,6 +22,7 @@ import { UserSessionProvider } from "./contexts/UserSession";
 import Configuracoes from "./Pages/Configuracoes.tsx";
 import BaixarFicha from "./Pages/BaixarFicha.tsx";
 import Painel from "./Pages/Painel.tsx";
+import Ficha from "./components/FichaPdf.tsx";
 
 const root = document.getElementById("root");
 
@@ -141,6 +142,15 @@ ReactDOM.createRoot(root!).render(
           element={
             <PrivateRoute>
               <Painel />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/ficha"
+          element={
+            <PrivateRoute>
+              <Ficha />
             </PrivateRoute>
           }
         />

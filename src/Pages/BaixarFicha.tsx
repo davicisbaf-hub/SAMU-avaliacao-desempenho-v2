@@ -74,6 +74,27 @@ export default function BaixarFicha() {
         );
     });
 
+    function limparTexto(texto: string) {
+        return texto
+            // remove letras separadas por espaço
+            .replace(
+                /(?:[A-Za-zÀ-ÿ]\s){4,}[A-Za-zÀ-ÿ]/g,
+                (match) => match.replace(/\s/g, "")
+            )
+
+            // caracteres especiais
+            .replace(/≤/g, "<=")
+            .replace(/≥/g, ">=")
+
+            // hífens estranhos
+            .replace(/[–—]/g, "-")
+
+            // múltiplos espaços
+            .replace(/\s+/g, " ")
+
+            .trim();
+    }
+
     function gerarPdf(avaliacao: Avaliacao) {
         const doc = new jsPDF();
 
@@ -82,33 +103,70 @@ export default function BaixarFicha() {
 
         doc.setFontSize(11);
 
-        doc.text(`Avaliado: ${avaliacao.avaliado_nome}`, 14, 35);
-        doc.text(`Avaliador: ${avaliacao.avaliador_nome}`, 14, 45);
-        doc.text(`Tipo: ${avaliacao.tipo_avaliacao}`, 14, 55);
+        doc.text(
+            `Avaliado: ${avaliacao.avaliado_nome}`,
+            14,
+            35
+        );
+
+        doc.text(
+            `Avaliador: ${avaliacao.avaliador_nome}`,
+            14,
+            45
+        );
+
+        doc.text(
+            `Tipo: ${avaliacao.tipo_avaliacao}`,
+            14,
+            55
+        );
 
         autoTable(doc, {
             startY: 70,
-            head: [["Critério", "Peso", "Nota"]],
-            body: Object.entries(avaliacao.resultado).map(
-                ([criterio, valor]) => [
-                    criterio
-                        .replace(/≤/g, "<=")
-                        .replace(/≥/g, ">=")
-                        .replace(/[–—]/g, "-"),
-                    String(valor.peso),
-                    String(valor.nota),
-                ]
-            ),
+
+            head: [[
+                "Critério",
+                "Peso",
+                "Nota"
+            ]],
+
+            body: Object.entries(
+                avaliacao.resultado
+            ).map(([criterio, valor]) => [
+                limparTexto(criterio),
+                String(valor.peso),
+                String(valor.nota),
+            ]),
+
             styles: {
                 fontSize: 8,
                 cellWidth: "wrap",
+                overflow: "linebreak",
             },
+
             columnStyles: {
-                0: { cellWidth: 120 },
+                0: {
+                    cellWidth: 120,
+                },
+                1: {
+                    halign: "center",
+                    cellWidth: 20,
+                },
+                2: {
+                    halign: "center",
+                    cellWidth: 20,
+                },
+            },
+
+            headStyles: {
+                fillColor: [205, 0, 72],
+                textColor: [255, 255, 255],
             },
         });
 
-        doc.save(`avaliacao-${avaliacao.avaliado_nome}.pdf`);
+        doc.save(
+            `avaliacao-${avaliacao.avaliado_nome}.pdf`
+        );
     }
     return (
         <div>
