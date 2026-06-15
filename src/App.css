@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 body{
-  background-color: #061c31;
+  /* background-color: #061c31; */
+  background-color: white;
   overflow-x: hidden;
 }
 
@@ -34,3 +35,48 @@ body{
   background: #555f69;
 }
 
+
+@page {
+  size: A4 portrait;
+  margin: 5mm;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #ficha-pdf {
+    font-size: 75% !important;
+    line-height: 1.1 !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 2px 4px !important;
+  }
+
+  h1 {
+    font-size: 16px !important;
+  }
+
+  h2 {
+    font-size: 14px !important;
+  }
+
+  h3 {
+    font-size: 12px !important;
+  }
+}

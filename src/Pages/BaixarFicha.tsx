@@ -204,62 +204,78 @@ export default function BaixarFicha() {
                                 </button>
 
                             </div>
-                            <div className="grid gap-4">
-                                {avaliacoesFiltradas.map((avaliacao) => (
-                                    <div
-                                        key={avaliacao.id}
-                                        className="bg-white border rounded-xl p-4 shadow-sm"
-                                    >
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <h3 className="font-semibold text-lg">
-                                                    {avaliacao.avaliado_nome}
-                                                </h3>
+                            <div className="bg-white rounded-xl border overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-gray-100 border-b">
+                                            <tr className="text-center">
+                                                <th className="px-4 py-3">#</th>
+                                                <th className="px-4 py-3">Avaliado</th>
+                                                <th className="px-4 py-3">Avaliador</th>
+                                                <th className="px-4 py-3">Tipo avaliação</th>
+                                                <th className="px-4 py-3">Data</th>
+                                                <th className="px-4 py-3">Ações</th>
+                                            </tr>
+                                        </thead>
 
-                                                <p className="text-sm text-gray-500">
-                                                    {avaliacao.avaliado_funcao}
-                                                </p>
+                                        <tbody>
+                                            {avaliacoesFiltradas.map((avaliacao) => (
+                                                <tr
+                                                    key={avaliacao.id}
+                                                    className="border-b hover:bg-gray-50"
+                                                >
+                                                    <td className="px-4 py-3">
+                                                        {avaliacao.id}
+                                                    </td>
 
-                                                <div className="mt-3 space-y-1 text-sm">
-                                                    <p>
-                                                        <strong>Avaliador:</strong>{" "}
-                                                        {avaliacao.avaliador_nome}
-                                                    </p>
+                                                    <td className="px-4 py-3 font-medium">
+                                                        {avaliacao.avaliado_nome} - {avaliacao.avaliado_funcao}
+                                                    </td>
 
-                                                    <p>
-                                                        <strong>Tipo:</strong>{" "}
-                                                        {avaliacao.tipo_avaliacao}
-                                                    </p>
+                                                    <td className="px-4 py-3">
+                                                        {avaliacao.avaliador_nome} - {avaliacao.avaliador_funcao}
+                                                    </td>
 
-                                                    <p>
-                                                        <strong>Data:</strong>{" "}
+                                                    <td className="px-4 py-3">
+                                                        <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                                                            {avaliacao.tipo_avaliacao}
+                                                        </span>
+                                                    </td>
+
+                                                    <td className="px-4 py-3">
                                                         {new Date(
                                                             avaliacao.criado_em
                                                         ).toLocaleDateString("pt-BR")}
-                                                    </p>
-                                                </div>
-                                            </div>
+                                                    </td>
 
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() =>
-                                                        setAvaliacaoSelecionada(avaliacao)
-                                                    }
-                                                    className="p-2 rounded-lg hover:bg-gray-100"
-                                                >
-                                                    <Eye size={20} />
-                                                </button>
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex justify-center gap-2">
+                                                            <button
+                                                                onClick={() =>
+                                                                    setAvaliacaoSelecionada(avaliacao)
+                                                                }
+                                                                className="text-black px-3 py-2 rounded-lg"
+                                                                title="Visualizar"
+                                                            >
+                                                                <Eye />
+                                                            </button>
 
-                                                <button
-                                                    onClick={() => gerarPdf(avaliacao)}
-                                                    className="p-2 rounded-lg hover:bg-gray-100"
-                                                >
-                                                    <Download size={20} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                                            <button
+                                                                onClick={() =>
+                                                                    gerarPdf(avaliacao)
+                                                                }
+                                                                className="text-black px-3 py-2 rounded-lg"
+                                                                title="Baixar PDF"
+                                                            >
+                                                                <Download />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 

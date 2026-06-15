@@ -54,7 +54,7 @@ export default function TableAvaliacao({
 
   return (
     <tr
-      className={`border-t transition-colors ${
+      className={`border-t transition-colors  ${
         tentouEnviar && obrigatorio === undefined
           ? "bg-red-50"
           : "hover:bg-[#e5ecf1]/30"

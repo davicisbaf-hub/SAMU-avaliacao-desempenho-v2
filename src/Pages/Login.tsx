@@ -53,7 +53,7 @@ function App() {
   };
   
   return (
-    <div className="login w-[100vw] text-center flex items-center justify-center p-4">
+    <div className="login w-[100vw] bg-[#061c31] text-center flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#cd0048] shadow-lg mb-4">
