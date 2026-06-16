@@ -421,20 +421,27 @@ export default function BaixarFicha() {
                         </div>
 
 						{criterios.length > 0 ? (
-							<FichaAvaliacaoTemplate
-								tipoAvaliacao={avaliacaoSelecionada.tipo_avaliacao}
-								criterios={criterios}
-								notas={avaliacaoSelecionada.resultado}
-								escalaLikert={escalaLikert}
-								pesos={pesos}
-								bases={bases}
-								observacoes={avaliacaoSelecionada.observacoes_gerais || ""}
-								pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
-								planoAcao={avaliacaoSelecionada.plano_acao || ""}
-								userName={avaliacaoSelecionada.avaliado_nome}
-								userBase={avaliacaoSelecionada.base || ""}
-								readOnly={true}
-							/>
+							<>
+								{/* Debug: Mostrar estrutura dos dados */}
+								<div style={{ display: 'none' }}>
+									{console.log('Resultado:', avaliacaoSelecionada.resultado)}
+									{console.log('Criterios:', criterios.map(c => c.criterio))}
+								</div>
+								<FichaAvaliacaoTemplate
+									tipoAvaliacao={avaliacaoSelecionada.tipo_avaliacao}
+									criterios={criterios}
+									notas={avaliacaoSelecionada.resultado}
+									escalaLikert={escalaLikert}
+									pesos={pesos}
+									bases={bases}
+									observacoes={avaliacaoSelecionada.observacoes_gerais || ""}
+									pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
+									planoAcao={avaliacaoSelecionada.plano_acao || ""}
+									userName={avaliacaoSelecionada.avaliado_nome}
+									userBase={avaliacaoSelecionada.base || ""}
+									readOnly={true}
+								/>
+							</>
 						) : (
 							<div className="flex items-center justify-center py-8">
 								<p className="text-gray-500">Carregando dados da avaliação...</p>
