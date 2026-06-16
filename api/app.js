@@ -31,7 +31,7 @@ app.use(cors({
 // });
 
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "192.168.1.10",
+  host: process.env.DB_HOST || "localhost",
   port: 5490,
   user: "samu",
   password: "samu",

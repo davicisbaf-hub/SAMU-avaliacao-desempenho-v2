@@ -8,9 +8,8 @@ CREATE TABLE criterios_avaliacao (
     indicador VARCHAR(100),
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	avaliacao VARCHAR(100),
+	avaliacao VARCHAR(100)
 );
-
 INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
 	 ('Condutor','Técnico Operacional','ABC1','Realiza o checklist completo da viatura no início do plantão (combustível, pneus, equipamentos, kit de emergência).',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
 	 ('Condutor','Técnico Operacional','ABC2','Mantém a ambulância limpa, organizada e em condições sanitárias adequadas após cada atendimento.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
@@ -87,7 +86,7 @@ INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador
 	 ('BP-TEAM','Criterio aqui','Codigo','Pergunta aqui','Indicador',false,'2026-06-10 13:35:37.504952',1,'autoavaliacao'),
 	 ('Médico','Técnico / Clínico','MTC1','Realiza avaliação clínica completa e rápida, formulando diagnóstico sindromático correto no pré-hospitalar.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
 	 ('Médico','Técnico / Clínico','MTC2','Executa procedimentos de SAV com excelência: IOT difícil, acesso intraósseo, drenagem e cardioversão.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Técnico / Clínico','MTC3','Aplica o protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica; cumpre o tempo porta-balão ≤ 90min.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
+	 ('Médico','Técnico / Clínico','MTC3','Aplica o protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica, cumpre o tempo porta-balão ≤ 90min.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
 INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
 	 ('Médico','Técnico / Clínico','MTC4','Aplica o protocolo de AVC (FAST/NIHSS) e aciona a linha de cuidado cerebrovascular conforme POP.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
 	 ('Médico','Técnico / Clínico','MTC5','Conduz a PCR conforme ACLS: algoritmo, ritmo, medicação, tempo de RCP e ROSC — com taxa de retorno adequada.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
@@ -233,4 +232,551 @@ INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador
 	 ('Enfermeiro','Processo e Qualidade','EN-P2','Contribui para metas operacionais: tempo-resposta ≤15min, tempo de cena ≤20min, ROSC em PCR','KPIs operacionais',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
 	 ('Enfermeiro','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação','Procedimentos SAV',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
 	 ('Enfermeiro','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento','Completude do prontuário médico',false,'2026-06-11 15:04:42.69826',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao');
+	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao')
+
+INSERT INTO public.criterios_avaliacao
+(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
+VALUES
+(
+    'Condutor',
+    'Gestão e Liderança',
+    'GL1',
+    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Gestão e Liderança',
+    'GL2',
+    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Gestão e Liderança',
+    'GL3',
+    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Gestão e Liderança',
+    'GL4',
+    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+);INSERT INTO public.criterios_avaliacao
+(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
+VALUES
+(
+    'Condutor',
+    'Desenvolvimento da Equipe',
+    'DE1',
+    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Desenvolvimento da Equipe',
+    'DE2',
+    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Desenvolvimento da Equipe',
+    'DE3',
+    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Gestão de Qualidade',
+    'GQ1',
+    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Gestão de Qualidade',
+    'GQ2',
+    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Gestão de Qualidade',
+    'GQ3',
+    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Relacionamento',
+    'REL1',
+    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Condutor',
+    'Relacionamento',
+    'REL2',
+    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+);
+
+INSERT INTO public.criterios_avaliacao
+(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
+VALUES
+(
+    'Técnico de Enfermagem',
+    'Gestão e Liderança',
+    'TE-GL1',
+    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Gestão e Liderança',
+    'TE-GL2',
+    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Gestão e Liderança',
+    'TE-GL3',
+    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Gestão e Liderança',
+    'TE-GL4',
+    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Desenvolvimento da Equipe',
+    'TE-DE1',
+    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Desenvolvimento da Equipe',
+    'TE-DE2',
+    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Desenvolvimento da Equipe',
+    'TE-DE3',
+    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Gestão de Qualidade',
+    'TE-GQ1',
+    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Gestão de Qualidade',
+    'TE-GQ2',
+    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Gestão de Qualidade',
+    'TE-GQ3',
+    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Relacionamento',
+    'TE-REL1',
+    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Técnico de Enfermagem',
+    'Relacionamento',
+    'TE-REL2',
+    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+);
+
+INSERT INTO public.criterios_avaliacao
+(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
+VALUES
+(
+    'Enfermeiro',
+    'Gestão e Liderança',
+    'ENF-GL1',
+    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Gestão e Liderança',
+    'ENF-GL2',
+    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Gestão e Liderança',
+    'ENF-GL3',
+    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Gestão e Liderança',
+    'ENF-GL4',
+    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Desenvolvimento da Equipe',
+    'ENF-DE1',
+    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Desenvolvimento da Equipe',
+    'ENF-DE2',
+    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Desenvolvimento da Equipe',
+    'ENF-DE3',
+    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Gestão de Qualidade',
+    'ENF-GQ1',
+    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Gestão de Qualidade',
+    'ENF-GQ2',
+    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Gestão de Qualidade',
+    'ENF-GQ3',
+    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Relacionamento',
+    'ENF-REL1',
+    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Enfermeiro',
+    'Relacionamento',
+    'ENF-REL2',
+    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+);
+
+INSERT INTO public.criterios_avaliacao
+(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
+VALUES
+(
+    'Médico',
+    'Gestão e Liderança',
+    'MED-GL1',
+    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Gestão e Liderança',
+    'MED-GL2',
+    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Gestão e Liderança',
+    'MED-GL3',
+    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Gestão e Liderança',
+    'MED-GL4',
+    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Desenvolvimento da Equipe',
+    'MED-DE1',
+    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Desenvolvimento da Equipe',
+    'MED-DE2',
+    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Desenvolvimento da Equipe',
+    'MED-DE3',
+    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Gestão de Qualidade',
+    'MED-GQ1',
+    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Gestão de Qualidade',
+    'MED-GQ2',
+    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Gestão de Qualidade',
+    'MED-GQ3',
+    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Relacionamento',
+    'MED-REL1',
+    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+),
+(
+    'Médico',
+    'Relacionamento',
+    'MED-REL2',
+    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
+    '',
+    true,
+    CURRENT_TIMESTAMP,
+    1,
+    'Liderado > Lider'
+);
+
