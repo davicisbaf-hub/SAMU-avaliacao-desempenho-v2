@@ -142,3 +142,79 @@ INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador
 	 ('Enfermeiro','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação','Procedimentos SAV',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
 	 ('Enfermeiro','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento','Completude do prontuário médico',false,'2026-06-11 15:04:42.69826',1,'autoavaliacao'),
 	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao');
+
+
+
+
+
+
+
+
+
+
+
+
+
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,ativo,peso,avaliacao) VALUES
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC1','Realiza a avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena.',false,1,'Lider > Liderado'),
+ 	 ('Técnico de Enfermagem','Técnico / Clínico','BBC2','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA.',false,1,'Lider > Liderado'),
+ 	 ('Técnico de Enfermagem','Técnico / Clínico','BBC3','Realiza punção venosa periférica e administra medicamentos conforme prescrição do enfermeiro/médico.',false,1,'Lider > Liderado'),
+ 	 ('Técnico de Enfermagem','Técnico / Clínico','BBC4','Manuseia corretamente os equipamentos da USB/USA: oxímetro, monitor cardíaco, respirador e glicosímetro.',false,1,'Lider > Liderado'),
+ 	 ('Técnico de Enfermagem','Técnico / Clínico','BBC5','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS.',false,1,'Lider > Liderado'),
+ 	 ('Técnico de Enfermagem','Técnico / Clínico','BBC6','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação).',false,1,'Lider > Liderado'),
+	 ('Técnico de Enfermagem','Comportamental','COM1','Mantém apresentação pessoal adequada ao cargo e à função.',false,1,'Lider > Liderado'),
+	('Técnico de Enfermagem','Comportamental','COM2','Mantém relacionamento respeitoso com pacientes, familiares e colegas de trabalho.',false,1,'Lider > Liderado'),
+	('Técnico de Enfermagem','Comportamental','COM3','Demonstra responsabilidade e comprometimento com suas atividades.',false,1,'Lider > Liderado'),
+	('Técnico de Enfermagem','Comportamental','COM4','Recebe orientações e feedbacks de forma profissional e com abertura para crescimento.',false,1,'Lider > Liderado'),
+	('Técnico de Enfermagem','Comportamental','COM5','Age com ética e discrição no exercício da função.',false,1,'Lider > Liderado'),
+	('Técnico de Enfermagem','Comportamental','COM6','Mantém controle emocional e profissionalismo em situações de alta pressão.',false,1,'Lider > Liderado'),
+	('Técnico de Enfermagem','Liderança Situacional','LS1','Participa ativamente do trabalho em equipe, comunicando e recebendo informações de forma clara e organizada.',false,1,'Lider > Liderado'),
+('Técnico de Enfermagem','Liderança Situacional','LS2','Mantém atenção à situação da ocorrência, acompanhando o estado do paciente, os equipamentos e as condições do ambiente.',false,1,'Lider > Liderado'),
+('Técnico de Enfermagem','Liderança Situacional','LS3','Demonstra compromisso com a segurança, utilizando corretamente os EPIs e adotando medidas de proteção para si, para o paciente e para a equipe.',false,1,'Lider > Liderado'),
+('Técnico de Enfermagem','Liderança Situacional','LS4','Mantém foco e equilíbrio emocional em situações de pressão, agindo com profissionalismo e respeito.',false,1,'Lider > Liderado'),
+('Técnico de Enfermagem','Processo e Qualidade','PQ1','Preenche corretamente os registros de atendimento com informações precisas e no tempo adequado.',false,1,'Lider > Liderado'),
+('Técnico de Enfermagem','Processo e Qualidade','PQ2','Executa o transporte seguro de pacientes críticos, sem agravar lesões existentes.',false,1,'Lider > Liderado')
+-- Técnico / Clínico
+('Enfermeiro','Técnico / Clínico','ETC1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos.',false,1,'Lider > Liderado'),
+('Enfermeiro','Técnico / Clínico','ETC2','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada e desfibrilação.',false,1,'Lider > Liderado'),
+('Enfermeiro','Técnico / Clínico','ETC3','Administra medicamentos de urgência com segurança, verificando prescrição, dose, via e tempo de administração.',false,1,'Lider > Liderado'),
+('Enfermeiro','Técnico / Clínico','ETC4','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR.',false,1,'Lider > Liderado'),
+('Enfermeiro','Técnico / Clínico','ETC5','Reconhece limitações técnicas e aciona o médico regulador/intervencionista nos momentos adequados.',false,1,'Lider > Liderado'),
+('Enfermeiro','Técnico / Clínico','ETC6','Supervisiona o técnico de enfermagem e o condutor, orientando procedimentos e prevenindo erros.',false,1,'Lider > Liderado'),
+
+-- Liderança
+('Enfermeiro','Liderança','ELD1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento.',false,1,'Lider > Liderado'),
+('Enfermeiro','Liderança','ELD2','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico.',false,1,'Lider > Liderado'),
+('Enfermeiro','Liderança','ELD3','Mantém e compartilha a consciência situacional com toda a equipe (briefing e atualização contínua).',false,1,'Lider > Liderado'),
+('Enfermeiro','Liderança','ELD4','Encontra soluções criativas e adequadas diante de cenários complexos ou com recursos limitados.',false,1,'Lider > Liderado'),
+('Enfermeiro','Liderança','ELD5','Lidera pelo exemplo no uso correto de EPIs e na aplicação de precauções de segurança em toda a cena.',false,1,'Lider > Liderado'),
+
+-- Comportamental
+('Enfermeiro','Comportamental','ECO1','Registra o Processo de Enfermagem de forma completa, legível e juridicamente válida.',false,1,'Lider > Liderado'),
+('Enfermeiro','Comportamental','ECO2','Contribui para as metas operacionais: tempo-resposta ≤ 15min, tempo de cena ≤ 20min e ROSC em PCR.',false,1,'Lider > Liderado'),
+('Enfermeiro','Comportamental','ECO3','Mantém postura ética e discrição absoluta em todas as situações de atendimento.',false,1,'Lider > Liderado'),
+('Enfermeiro','Comportamental','ECO4','Demonstra responsabilidade e comprometimento, sendo referência de conduta para a equipe.',false,1,'Lider > Liderado'),
+('Enfermeiro','Comportamental','ECO5','Mantém comunicação clara, respeitosa e empática com pacientes, familiares e equipe.',false,1,'Lider > Liderado'),
+
+-- Técnico / Clínico
+('Médico','Técnico / Clínico','MTC1','Realiza avaliação clínica completa e rápida, formulando diagnóstico sindromático correto no pré-hospitalar.',false,1,'Lider > Liderado'),
+('Médico','Técnico / Clínico','MTC2','Executa procedimentos de SAV com excelência: IOT difícil, acesso intraósseo, drenagem e cardioversão.',false,1,'Lider > Liderado'),
+('Médico','Técnico / Clínico','MTC3','Aplica o protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica; cumpre o tempo porta-balão ≤ 90min.',false,1,'Lider > Liderado'),
+('Médico','Técnico / Clínico','MTC4','Aplica o protocolo de AVC (FAST/NIHSS) e aciona a linha de cuidado cerebrovascular conforme POP.',false,1,'Lider > Liderado'),
+('Médico','Técnico / Clínico','MTC5','Conduz a PCR conforme ACLS: algoritmo, ritmo, medicação, tempo de RCP e ROSC — com taxa de retorno adequada.',false,1,'Lider > Liderado'),
+('Médico','Técnico / Clínico','MTC6','Comunica-se eficientemente com o médico regulador da CRUR-BF: informações precisas, decisão conjunta e tempo de regulação.',false,1,'Lider > Liderado'),
+('Médico','Técnico / Clínico','MTC7','Prescreve, verifica e supervisiona a administração de medicamentos de urgência com segurança e precisão.',false,1,'Lider > Liderado'),
+
+-- Liderança
+('Médico','Liderança','MLD1','Lidera a equipe USA com autoridade, clareza e empatia: define papéis, distribui tarefas e mantém a segurança.',false,1,'Lider > Liderado'),
+('Médico','Liderança','MLD2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação.',false,1,'Lider > Liderado'),
+('Médico','Liderança','MLD3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta.',false,1,'Lider > Liderado'),
+('Médico','Liderança','MLD4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado.',false,1,'Lider > Liderado'),
+('Médico','Liderança','MLD5','Utiliza comunicação em loop com a equipe, confirmando ordens e mantendo registro verbal das condutas.',false,1,'Lider > Liderado'),
+
+-- Comportamental
+('Médico','Comportamental','MCO1','Documenta o atendimento médico de forma completa: hipótese diagnóstica, condutas, medicamentos e encaminhamento.',false,1,'Lider > Liderado'),
+('Médico','Comportamental','MCO2','Aborda paciente e família com empatia, respeito, escuta ativa e informação adequada mesmo em cenários críticos.',false,1,'Lider > Liderado'),
+('Médico','Comportamental','MCO3','Mantém postura ética e discrição absoluta em todas as situações de atendimento.',false,1,'Lider > Liderado'),
+('Médico','Comportamental','MCO4','Demonstra responsabilidade e comprometimento, sendo referência de conduta profissional para toda a equipe.',false,1,'Lider > Liderado'),
+('Médico','Comportamental','MCO4','Contribui para o cumprimento dos indicadores de qualidade operacional e clínica.',false,1,'Lider > Liderado')
