@@ -1,15 +1,3 @@
-CREATE TABLE criterios_avaliacao (
-    id SERIAL PRIMARY KEY,
-    tipo VARCHAR(50) NOT NULL,
-    categoria VARCHAR(100) NOT NULL,
-    codigo VARCHAR(20) NOT NULL,
-    criterio TEXT NOT NULL,
-    peso INTEGER NOT NULL,
-    indicador VARCHAR(100),
-    ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	avaliacao VARCHAR(100)
-);
 INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
 	 ('Condutor','Técnico Operacional','ABC1','Realiza o checklist completo da viatura no início do plantão (combustível, pneus, equipamentos, kit de emergência).',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
 	 ('Condutor','Técnico Operacional','ABC2','Mantém a ambulância limpa, organizada e em condições sanitárias adequadas após cada atendimento.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
@@ -232,7 +220,7 @@ INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador
 	 ('Enfermeiro','Processo e Qualidade','EN-P2','Contribui para metas operacionais: tempo-resposta ≤15min, tempo de cena ≤20min, ROSC em PCR','KPIs operacionais',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
 	 ('Enfermeiro','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação','Procedimentos SAV',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
 	 ('Enfermeiro','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento','Completude do prontuário médico',false,'2026-06-11 15:04:42.69826',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao')
+	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao');
 
 INSERT INTO public.criterios_avaliacao
 (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)

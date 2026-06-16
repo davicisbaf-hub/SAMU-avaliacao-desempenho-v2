@@ -48,7 +48,7 @@ type Base = {
 };
 
 
-export default function FichaAvaliacaoLiderancaLiderado() {
+export default function FichaAvaliacaoLideradoLiderado() {
 	const [bases, setBases] = useState<Base[]>([]);
 	const { user } = useUserSession();
 
@@ -184,7 +184,7 @@ export default function FichaAvaliacaoLiderancaLiderado() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:3001/api/criterios-avaliacao-lider/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);

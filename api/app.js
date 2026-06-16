@@ -102,11 +102,11 @@ app.get("/api/criterios-avaliacao-lider/:tipo", async (req, res) => {
         peso,
         indicador,
         avaliacao
-      FROM criterios_avaliacao  
-      WHERE tipo  = $1
-      AND avaliacao = 'Lider > Liderado'
-      AND ativo = true
-      ORDER BY categoria, codigo;
+      FROM criterios_avaliacao
+      WHERE avaliacao = 'Lider > Liderado'
+        AND tipo = $1
+        AND ativo = true
+      ORDER BY categoria, codigo
       `,
       [tipo]
     );
@@ -135,10 +135,10 @@ app.get("/api/criterios-avaliacao-liderado/:tipo", async (req, res) => {
         indicador,
         avaliacao
       FROM criterios_avaliacao
-      WHERE tipo = $1
-      AND avaliacao  = 'Liderado > Lider'
-      AND ativo = true
-      ORDER BY categoria, codigo;
+      WHERE avaliacao = 'Liderado > Lider'
+        AND tipo = $1
+        AND ativo = true
+      ORDER BY categoria, codigo
       `,
       [tipo]
     );
