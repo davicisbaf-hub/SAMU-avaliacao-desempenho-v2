@@ -7,7 +7,8 @@ CREATE TABLE criterios_avaliacao (
     peso INTEGER NOT NULL,
     indicador VARCHAR(100),
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	avaliacao VARCHAR(100),
 );
 
 INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
