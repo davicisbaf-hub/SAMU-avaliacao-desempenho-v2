@@ -47,7 +47,7 @@ type Base = {
 };
 
 
-export default function FichaAvaliacaoTecEnf() {
+export default function FichaAvaliacaoBpTeam() {
 	const [bases, setBases] = useState<Base[]>([]);
 	const { user } = useUserSession();
 
@@ -166,6 +166,7 @@ export default function FichaAvaliacaoTecEnf() {
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
+
 
 	const criteriosPorCategoria = criterios.reduce((acc, criterio) => {
 		if (!acc[criterio.categoria]) {

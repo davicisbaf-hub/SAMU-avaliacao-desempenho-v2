@@ -24,8 +24,13 @@ export default function Nav() {
     user?.perfil === "Usuario"
         ? fichas.filter(
             (ficha) =>
-            ficha.nome === user.funcao ||
-            ficha.nome === "Liderança / Coordenação"
+                ficha.nome === user.funcao ||
+                ficha.nome === "Liderado > Liderança" ||
+                ficha.nome === "Autoavaliação / Simulação bp-TEAM"
+        )
+        : user?.perfil === "Administrador"
+        ? fichas.filter(
+            (ficha) => ficha.nome !== "Liderado > Liderança"
         )
         : fichas;
 
@@ -52,13 +57,9 @@ export default function Nav() {
 
                 <div className="px-4 py-3 border-b border-sidebar-border">
                     <div className="rounded-lg px-3 py-2 text-xs text-left bg-[#cd0048]/20">
-                        <span className="text-[[#cd0048]] text-[10px] font-bold uppercase tracking-wide">🔑 Administrador</span>
-                        <p className="text-sidebar-foreground font-semibold leading-tight truncate">Administrador CRUR-BF</p>
+                        <span className="text-[[#cd0048]] text-[10px] font-bold uppercase tracking-wide">{user?.perfil}</span>
+                        <p className="text-sidebar-foreground font-semibold leading-tight truncate">{user?.nome}</p>
                     </div>
-                </div>
-
-                <div className="relative px-3 pb-2 pt-2">
-                    Todas as bases
                 </div>
 
                 <nav className="custom-scrollbar flex-1 overflow-y-auto px-3 py-2 space-y-0.5 text-left">
