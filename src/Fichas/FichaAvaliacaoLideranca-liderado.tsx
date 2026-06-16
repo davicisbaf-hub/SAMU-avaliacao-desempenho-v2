@@ -206,39 +206,26 @@ export default function FichaAvaliacaoLideradoLiderado() {
 			.then(setUsuarios);
 	}, []);
 
-	const usuariosDisponiveis = usuarios.filter((u) => {
-		// MÉDICO
-		if (user?.funcao === "Médico") {
-			return (
-				u.funcao === "Médico" &&
-				u.perfil !== user.perfil
-			);
-		}
-
-		// CONDUTOR
-		if (user?.funcao === "Condutor") {
-			return (
-				u.funcao === "Condutor" &&
-				u.perfil !== user.perfil
-			);
-		}
-
-		// ENFERMEIRO E TÉCNICO
-		if (
-			user?.funcao === "Enfermeiro" ||
-			user?.funcao === "Técnico de Enfermagem"
-		) {
-			return (
-				(
-					u.funcao === "Enfermeiro" ||
-					u.funcao === "Técnico de Enfermagem"
-				) &&
-				u.perfil !== user.perfil
-			);
-		}
-
+	const usuariosDisponiveis = usuarios.filter((u: any) => {
+	// mesma base
+	if (u.base !== user?.base) {
 		return false;
-	});
+	}
+
+	// Enfermeiro e Técnico enxergam os dois cargos
+	if (
+		user?.funcao === "Enfermeiro" ||
+		user?.funcao === "Técnico de Enfermagem"
+	) {
+		return (
+			u.funcao === "Enfermeiro" ||
+			u.funcao === "Técnico de Enfermagem"
+		);
+	}
+
+	// Demais cargos enxergam apenas o próprio cargo
+	return u.funcao === user?.funcao;
+});
 	return (
 		<div>
 			<div className="flex h-screen w-screen bg-white text-black">
@@ -336,14 +323,18 @@ export default function FichaAvaliacaoLideradoLiderado() {
 										<div>
 											<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Base de Lotação</label>
 											<select className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] focus:outline-none focus:ring-2 focus:ring-[#cd0048] appearance-none'>
-												<option className='text-black'>
-													Selecione a base…
-												</option>
-												{bases.map((bases) => (
-													<option key={bases.id} value={bases.id} className='text-black'>
-														{bases.nome}
-													</option>
-												))}
+												{bases
+													.filter(base => base.nome === user?.base)
+													.map(base => (
+														<option
+														key={base.id}
+														value={base.id}
+														className="text-black"
+														>
+														{base.nome}
+														</option>
+													))
+												}
 											</select>
 										</div>
 										<div>

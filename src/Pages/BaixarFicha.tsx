@@ -191,7 +191,7 @@ export default function BaixarFicha() {
                                     onChange={(e) => setFiltroUsuario(e.target.value)}
                                     className="border rounded-lg px-3 py-2"
                                 >
-                                    <option value="">Todos os usuários</option>
+                                    <option value="">Avaliados</option>
 
                                     {usuarios.map(usuario => (
                                         <option key={usuario} value={usuario}>
@@ -205,7 +205,7 @@ export default function BaixarFicha() {
                                     onChange={(e) => setFiltroFuncao(e.target.value)}
                                     className="border rounded-lg px-3 py-2"
                                 >
-                                    <option value="">Todas as funções</option>
+                                    <option value="">Funções</option>
 
                                     {funcoes.map(funcao => (
                                         <option key={funcao} value={funcao}>
@@ -219,7 +219,7 @@ export default function BaixarFicha() {
                                     onChange={(e) => setFiltroTipo(e.target.value)}
                                     className="border rounded-lg px-3 py-2"
                                 >
-                                    <option value="">Todos os tipos</option>
+                                    <option value="">Tipos</option>
 
                                     {tipos.map(tipo => (
                                         <option key={tipo} value={tipo}>

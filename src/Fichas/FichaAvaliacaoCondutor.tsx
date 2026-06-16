@@ -258,14 +258,18 @@ export default function FichaAvaliacaoCondutor() {
 										<div>
 											<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Base de Lotação</label>
 											<select className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] focus:outline-none focus:ring-2 focus:ring-[#cd0048] appearance-none'>
-												<option className='text-black'>
-													Selecione a base…
-												</option>
-												{bases.map((bases) => (
-													<option key={bases.id} value={bases.id} className='text-black'>
-														{bases.nome}
-													</option>
-												))}
+												{bases
+													.filter(base => base.nome === user?.base)
+													.map(base => (
+														<option
+														key={base.id}
+														value={base.id}
+														className="text-black"
+														>
+														{base.nome}
+														</option>
+													))
+												}
 											</select>
 										</div>
 										<div>
