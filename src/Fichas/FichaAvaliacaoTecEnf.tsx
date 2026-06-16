@@ -162,7 +162,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:3001/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);

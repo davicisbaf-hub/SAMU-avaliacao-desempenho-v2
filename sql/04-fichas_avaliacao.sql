@@ -63,7 +63,7 @@ VALUES
     '12 critérios de avaliação',
     12,
     ARRAY['Técnico', 'Comportamental', 'Processo'],
-    '/avaliacao/lideranca-coordenacao',
+    '/avaliacao/lideranca-liderado',
     5
 ),
 (
@@ -72,7 +72,7 @@ VALUES
     '12 critérios de avaliação',
     12,
     ARRAY['Técnico', 'Comportamental', 'Processo'],
-    '/avaliacao/lideranca-coordenacao',
+    '/avaliacao/liderado-lideranca',
     5
 ),
 (

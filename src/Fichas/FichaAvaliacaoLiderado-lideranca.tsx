@@ -184,7 +184,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:3001/api/criterios-avaliacao/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);

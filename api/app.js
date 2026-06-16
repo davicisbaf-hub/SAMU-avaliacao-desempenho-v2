@@ -87,7 +87,7 @@ app.get("/api/fluxos-avaliacao", async (req, res) => {
   }
 });
 
-app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
+app.get("/api/criterios-avaliacao-lider/:tipo", async (req, res) => {
   try {
     const { tipo } = req.params;
 
@@ -100,9 +100,75 @@ app.get("/api/criterios-avaliacao/:tipo", async (req, res) => {
         codigo,
         criterio,
         peso,
-        indicador
+        indicador,
+        avaliacao
+      FROM criterios_avaliacao  
+      WHERE tipo  = $1
+      AND avaliacao = 'Lider > Liderado'
+      AND ativo = true
+      ORDER BY categoria, codigo;
+      `,
+      [tipo]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+app.get("/api/criterios-avaliacao-liderado/:tipo", async (req, res) => {
+  try {
+    const { tipo } = req.params;
+
+    const { rows } = await pool.query(
+      `
+      SELECT
+        id,
+        tipo,
+        categoria,
+        codigo,
+        criterio,
+        peso,
+        indicador,
+        avaliacao
       FROM criterios_avaliacao
       WHERE tipo = $1
+      AND avaliacao  = 'Liderado > Lider'
+      AND ativo = true
+      ORDER BY categoria, codigo;
+      `,
+      [tipo]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+});
+
+app.get("/api/criterios-avaliacao-autoavaliacao/:tipo", async (req, res) => {
+  try {
+    const { tipo } = req.params;
+
+    const { rows } = await pool.query(
+      `
+      SELECT
+        id,
+        tipo,
+        categoria,
+        codigo,
+        criterio,
+        peso,
+        indicador,
+        avaliacao
+      FROM criterios_avaliacao
+      WHERE tipo = $1
+      AND avaliacao = 'autoavaliacao'
       AND ativo = true
       ORDER BY categoria, codigo;
       `,
