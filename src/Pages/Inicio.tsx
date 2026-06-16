@@ -13,10 +13,8 @@ type Ficha = {
   descricao: string;
   criterios: number;
   tags: string[];
-  ordem: number;
   link: string;
-  ativo: boolean;
-  created_at: string;
+  ordem: number;
 };
 
 type FrequenciaAplicacao = {
@@ -53,9 +51,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("http://192.168.1.10:8026/api/fichas", setFichas);
-    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
-    carregar("http://192.168.1.10:8026/api/fluxos-avaliacao", setFluxos);
+    carregar("http://localhost:3001/api/fichasVw", setFichas);
+    carregar("http://localhost:3001/api/frequencias", setFrequencias);
+    carregar("http://localhost:3001/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (
@@ -145,7 +143,7 @@ export default function Inicio() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {fichas
                   .filter((ficha) => {
-                    if (user?.perfil === "Administrador") return true;
+                    if (user?.perfil === "Administrador" || "🔑 Administrador — Todas as bases") return true;
 
                     return (
                       ficha.nome === user?.funcao ||
