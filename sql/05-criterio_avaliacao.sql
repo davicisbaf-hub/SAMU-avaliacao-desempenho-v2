@@ -1,770 +1,260 @@
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Condutor','Técnico Operacional','ABC1','Realiza o checklist completo da viatura no início do plantão (combustível, pneus, equipamentos, kit de emergência).',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Técnico Operacional','ABC2','Mantém a ambulância limpa, organizada e em condições sanitárias adequadas após cada atendimento.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Técnico Operacional','ABC3','Pratica direção defensiva com habilidade, respeitando sinalização e garantindo a segurança da equipe e do paciente no deslocamento de emergência.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Técnico Operacional','ABC4','Conhece e utiliza corretamente rotas de acesso, vias alternativas e GPS para otimização do tempo-resposta.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Técnico Operacional','ABC5','Auxilia a equipe nos procedimentos de Suporte Básico de Vida (SBV): RCP, imobilização e oxigenoterapia básica.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Técnico Operacional','ABC6','Manuseia corretamente a maca, cadeira de rodas, prancha longa e colar cervical.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Comportamental','ABC7','Integra-se ativamente à equipe, antecipando necessidades, cooperando na cena e comunicando informações relevantes.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Comportamental','ABC8','Comunica-se de forma clara e objetiva com a equipe e com a Central de Regulação (CRUR-BF) durante o atendimento.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Comportamental','ABC9','Avalia a segurança da cena antes de se aproximar e comunica os riscos à equipe (tráfego, violência, substâncias).',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Comportamental','BBC1','Mantém controle emocional em cenários de alta tensão, múltiplas vítimas, violência ou óbito.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Condutor','Comportamental','BBC2','Trata pacientes, familiares e equipe com respeito, sigilo e ética, preservando a dignidade humana.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Comportamental','BBC3','Administra o tempo de forma racional, cumprindo os prazos e determinações estabelecidas.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Processo e Qualidade','BBC4','Preenche corretamente o registro de saída e chegada da viatura, tempo de deslocamento e ocorrências relevantes.',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Condutor','Processo e Qualidade','BBC5','Contribui para o cumprimento do tempo-resposta ≤ 15 minutos da central ao local (parâmetro SAMU/Portaria 2.048).',NULL,false,'2026-06-16 13:01:16.376169',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC1','Realiza a avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC2','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC3','Realiza punção venosa periférica e administra medicamentos conforme prescrição do enfermeiro/médico.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC4','Manuseia corretamente os equipamentos da USB/USA: oxímetro, monitor cardíaco, respirador e glicosímetro.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC5','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC6','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação).',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Técnico de Enfermagem','Comportamental','COM1','Mantém apresentação pessoal adequada ao cargo e à função.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM2','Mantém relacionamento respeitoso com pacientes, familiares e colegas de trabalho.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM3','Demonstra responsabilidade e comprometimento com suas atividades.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM4','Recebe orientações e feedbacks de forma profissional e com abertura para crescimento.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM5','Age com ética e discrição no exercício da função.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM6','Mantém controle emocional e profissionalismo em situações de alta pressão.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS1','Participa ativamente do trabalho em equipe, comunicando e recebendo informações de forma clara e organizada.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS2','Mantém atenção à situação da ocorrência, acompanhando o estado do paciente, os equipamentos e as condições do ambiente.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS3','Demonstra compromisso com a segurança, utilizando corretamente os EPIs e adotando medidas de proteção para si, para o paciente e para a equipe.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS4','Mantém foco e equilíbrio emocional em situações de pressão, agindo com profissionalismo e respeito.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Técnico de Enfermagem','Processo e Qualidade','PQ1','Preenche corretamente os registros de atendimento com informações precisas e no tempo adequado.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','PQ2','Executa o transporte seguro de pacientes críticos, sem agravar lesões existentes.',NULL,false,'2026-06-16 13:09:10.993845',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC1','Realiza a avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC2','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC3','Realiza punção venosa periférica e administra medicamentos conforme prescrição do enfermeiro/médico.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC4','Manuseia corretamente os equipamentos da USB/USA: oxímetro, monitor cardíaco, respirador e glicosímetro.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC5','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Técnico / Clínico','BBC6','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação).',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM1','Mantém apresentação pessoal adequada ao cargo e à função.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM2','Mantém relacionamento respeitoso com pacientes, familiares e colegas de trabalho.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Técnico de Enfermagem','Comportamental','COM3','Demonstra responsabilidade e comprometimento com suas atividades.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM4','Recebe orientações e feedbacks de forma profissional e com abertura para crescimento.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM5','Age com ética e discrição no exercício da função.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Comportamental','COM6','Mantém controle emocional e profissionalismo em situações de alta pressão.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS1','Participa ativamente do trabalho em equipe, comunicando e recebendo informações de forma clara e organizada.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS2','Mantém atenção à situação da ocorrência, acompanhando o estado do paciente, os equipamentos e as condições do ambiente.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS3','Demonstra compromisso com a segurança, utilizando corretamente os EPIs e adotando medidas de proteção para si, para o paciente e para a equipe.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Liderança Situacional','LS4','Mantém foco e equilíbrio emocional em situações de pressão, agindo com profissionalismo e respeito.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','PQ1','Preenche corretamente os registros de atendimento com informações precisas e no tempo adequado.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','PQ2','Executa o transporte seguro de pacientes críticos, sem agravar lesões existentes.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Enfermeiro','Técnico / Clínico','ETC1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Técnico / Clínico','ETC2','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada e desfibrilação.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Técnico / Clínico','ETC3','Administra medicamentos de urgência com segurança, verificando prescrição, dose, via e tempo de administração.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Técnico / Clínico','ETC4','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Técnico / Clínico','ETC5','Reconhece limitações técnicas e aciona o médico regulador/intervencionista nos momentos adequados.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Técnico / Clínico','ETC6','Supervisiona o técnico de enfermagem e o condutor, orientando procedimentos e prevenindo erros.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Liderança','ELD1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Liderança','ELD2','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Liderança','ELD3','Mantém e compartilha a consciência situacional com toda a equipe (briefing e atualização contínua).',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Liderança','ELD4','Encontra soluções criativas e adequadas diante de cenários complexos ou com recursos limitados.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Enfermeiro','Liderança','ELD5','Lidera pelo exemplo no uso correto de EPIs e na aplicação de precauções de segurança em toda a cena.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Comportamental','ECO1','Registra o Processo de Enfermagem de forma completa, legível e juridicamente válida.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Comportamental','ECO2','Contribui para as metas operacionais: tempo-resposta ≤ 15min, tempo de cena ≤ 20min e ROSC em PCR.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Comportamental','ECO3','Mantém postura ética e discrição absoluta em todas as situações de atendimento.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Comportamental','ECO4','Demonstra responsabilidade e comprometimento, sendo referência de conduta para a equipe.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Enfermeiro','Comportamental','ECO5','Mantém comunicação clara, respeitosa e empática com pacientes, familiares e equipe.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('BP-TEAM','Criterio aqui','Codigo','Pergunta aqui','Indicador',false,'2026-06-10 13:35:37.504952',1,'autoavaliacao'),
-	 ('Médico','Técnico / Clínico','MTC1','Realiza avaliação clínica completa e rápida, formulando diagnóstico sindromático correto no pré-hospitalar.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Técnico / Clínico','MTC2','Executa procedimentos de SAV com excelência: IOT difícil, acesso intraósseo, drenagem e cardioversão.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Técnico / Clínico','MTC3','Aplica o protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica, cumpre o tempo porta-balão ≤ 90min.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Médico','Técnico / Clínico','MTC4','Aplica o protocolo de AVC (FAST/NIHSS) e aciona a linha de cuidado cerebrovascular conforme POP.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Técnico / Clínico','MTC5','Conduz a PCR conforme ACLS: algoritmo, ritmo, medicação, tempo de RCP e ROSC — com taxa de retorno adequada.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Técnico / Clínico','MTC6','Comunica-se eficientemente com o médico regulador da CRUR-BF: informações precisas, decisão conjunta e tempo de regulação.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Técnico / Clínico','MTC7','Prescreve, verifica e supervisiona a administração de medicamentos de urgência com segurança e precisão.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Liderança','MLD1','Lidera a equipe USA com autoridade, clareza e empatia: define papéis, distribui tarefas e mantém a segurança.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Liderança','MLD2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Liderança','MLD3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Liderança','MLD4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Liderança','MLD5','Utiliza comunicação em loop com a equipe, confirmando ordens e mantendo registro verbal das condutas.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Comportamental','MCO1','Documenta o atendimento médico de forma completa: hipótese diagnóstica, condutas, medicamentos e encaminhamento.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Médico','Comportamental','MCO2','Aborda paciente e família com empatia, respeito, escuta ativa e informação adequada mesmo em cenários críticos.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Comportamental','MCO3','Mantém postura ética e discrição absoluta em todas as situações de atendimento.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Comportamental','MCO4','Demonstra responsabilidade e comprometimento, sendo referência de conduta profissional para toda a equipe.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Comportamental','MCO4','Contribui para o cumprimento dos indicadores de qualidade operacional e clínica.',NULL,false,'2026-06-16 14:33:45.376645',1,'Lider > Liderado'),
-	 ('Médico','Trabalho em Equipe','3','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.','',true,'2026-06-11 17:48:02.009131',1,'autoavaliacao'),
-	 ('Enfermeiro','Liderança','EN-L4','Mantém e compartilha a consciência situacional com toda a equipe (briefing / atualização contínua)','Consciência situacional coletiva',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Trabalho em Equipe','a4','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.','',true,'2026-06-11 18:10:30.85717',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:24.55669',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:24.382685',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:21.75744',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:24.807627',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:18.555715',1,'autoavaliacao'),
-	 ('BP-TEAM','Gerenciamento de Tarefas','BT-GT2','As intervenções são priorizadas corretamente conforme critérios de gravidade e tempo-crítico','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Habilidades Não Técnicas (NTS)','BT-NTS1','A equipe demonstra consciência situacional compartilhada: cena, paciente, recursos, tempo','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Gerenciamento de Tarefas','BT-GT3','Os procedimentos são executados com técnica correta, sem erros ou omissões significativas','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Trabalho em Equipe','BT-TT1','A equipe utiliza comunicação em loop fechado (call-out + check-back) de forma consistente','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Trabalho em Equipe','BT-TT3','Todos os membros compartilham o mesmo modelo mental do quadro clínico e plano de ação','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T1','Realiza avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena','Avaliação primária ABCDE',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T2','Identifica e comunica sinais de gravidade imediata ao Enfermeiro/médico com precisão e agilidade','Triagem e comunicação',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T3','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA conforme protocolo','RCP e DEA',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T4','Realiza punção venosa periférica, coleta e administra medicamentos conforme prescrição do Enfermeiro/médico','Punção venosa / medicação',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T5','Manuseia corretamente: oxímetro, monitor cardíaco, respirador, glicosímetro e demais equipamentos da USB/USA','Manuseio de equipamentos',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T6','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS','Imobilização PHTLS',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T7','Executa técnica correta de movimentação e transporte de pacientes críticos sem agravar lesões','Técnica de transporte',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T8','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação)','Adesão a protocolos',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Comportamental','TE-B1','Participa ativamente do trabalho em equipe, recebe e transmite informações de forma padronizada (SBAR)','Comunicação SBAR / trabalho em equipe',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Comportamental','TE-B2','Mantém consciência situacional: monitora o estado do paciente, equipamentos e ambiente simultaneamente','Consciência situacional NTS',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Comportamental','TE-B3','Usa corretamente todos os EPIs e adota medidas de segurança para si, paciente e equipe em toda cena','Segurança / EPIs',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Comportamental','TE-B4','Mantém foco e equilíbrio emocional em situações de alta pressão (PCR, múltiplas vítimas, violência)','Controle emocional',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','TE-P1','Preenche corretamente a ficha de atendimento pré-hospitalar com completude, clareza e fidelidade aos achados','Qualidade do prontuário',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Condutor','Comportamental','C-B2','Comunica-se de forma clara e objetiva com a equipe e com a Central de Regulação (CRUR-BF) durante o atendimento','Comunicação operacional',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T1','Realiza checklist completo da viatura no início do plantão (combustível, pneus, equipamentos, kit de emergência)','Checklist preenchido',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T3','Mantém a ambulância limpa, organizada e em condições sanitárias adequadas após cada atendimento','Higienização ambulância',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T5','Conhece e utiliza corretamente rotas de acesso, vias alternativas e GPS para otimização do tempo-resposta','Geolocalização / rotas',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:20.360317',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','teste','teste','teste','teste',false,'2026-06-16 15:06:21.094899',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T6','Auxilia a equipe nos procedimentos de Suporte Básico de Vida (SBV): RCP, imobilização, oxigenoterapia básica','Competência SBV',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T4','Pratica direção defensiva com habilidade, respeitando sinalização e segurança da equipe e paciente no deslocamento de emergência','Direção defensiva',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T7','Manuseia corretamente a maca, cadeira de rodas, prancha longa e colar cervical','Manuseio de equipamentos',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Comportamental','C-B6','Trata pacientes, familiares e equipe com respeito, sigilo e ética, respeitando a dignidade humana','Ética e humanização',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Condutor','Comportamental','C-B4','Avalia a segurança da cena antes de aproximação e comunica riscos à equipe (tráfego, violência, substâncias)','Segurança da cena',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Comportamental','C-B5','Mantém controle emocional em cenários de alta tensão, múltiplas vítimas, violência ou óbito','Controle emocional',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Processo e Qualidade','C-P2','Contribui para o cumprimento do tempo-resposta ≤15 minutos da central ao local (Portaria MS 2.048/2002)','Tempo-resposta ≤15min',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Processo e Qualidade','C-P1','Preenche corretamente o registro de saída e chegada da viatura, tempo de deslocamento e ocorrências relevantes','Completude dos registros',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Comportamental','C-B3','Utiliza corretamente todos os EPIs obrigatórios (luvas, máscara, avental) em todos os atendimentos','Uso de EPIs',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Liderança','BT-L1','O líder dirige a equipe com clareza, define papéis e responsabilidades desde o início do atendimento','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Liderança','BT-L3','O líder adapta o plano de cuidado conforme evolução clínica do paciente e novos achados da cena','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Trabalho em Equipe','BT-TT2','Os membros monitoram e apoiam uns aos outros, antecipando necessidades sem solicitação','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Gerenciamento de Tarefas','BT-GT1','A avaliação do paciente é sistemática (ABCDE), rápida e sem etapas omitidas','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Condutor','Técnico-Operacional','C-T2','Verifica e registra o estado dos equipamentos médicos (DEA, oxímetro, monitor cardíaco, maca)','Conformidade equipamentos',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Condutor','teste','C-B1','Comunica-se com a equipe, antecipando necessidades, cooperando na cena e comunicando informações relevantes','Trabalho em equipe',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos','Avaliação SAMPLA/ABCDE',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T5','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR','Decisão clínica em urgências',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T6','Reconhece limitações e aciona o médico regulador/intervencionista nos momentos adequados','Escalada de cuidados',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Liderança','EN-L2','Usa comunicação em loop fechado (call-out, check-back) para garantir compreensão das ordens na cena','Comunicação em loop (NTS)',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Liderança','EN-L3','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico','Gerenciamento de tarefas (bp-TEAM)',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','EN-P1','Registra o Processo de Enfermagem no SAMU de forma completa, legível e juridicamente válida','Completude do Registro PE/SAMU (IVC ≥0,80)',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','EN-P2','Contribui para metas operacionais: tempo-resposta ≤15min, tempo de cena ≤20min, ROSC em PCR','KPIs operacionais',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Técnico-Clínico','MD-T1','Realiza avaliação clínica completa e rápida, formulando diagnóstico sindromático correto no pré-hospitalar','Diagnóstico pré-hospitalar',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Médico','Técnico-Clínico','MD-T2','Executa procedimentos de SAV com excelência: IOT difícil, acesso intraósseo, drenagem, cardioversão','Procedimentos SAV avançados',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Técnico-Clínico','MD-T5','Conduz a PCR conforme ACLS: algoritmo, ritmo, medicação, tempo de RCP, ROSC — taxa de retorno adequada','PCR / ROSC (taxa retorno circulação)',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Técnico-Clínico','MD-T6','Comunica-se eficientemente com o médico regulador da CRUR-BF: informações precisas, decisão conjunta, tempo de regulação','Qualidade da telemedicina / regulação',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L1','Lidera a equipe USA com autoridade, clareza e empatia: define papéis, distribui tarefas, mantém hierarquia e segurança','Liderança bp-TEAM (domínio: Liderança)',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado','Consciência situacional NTS',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta','Tomada de decisão NTS',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Comportamental','MD-B1','Comunica decisões de forma clara, utiliza comunicação em loop com a equipe e mantém registro verbal de ordens','Comunicação efetiva em loop',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Comportamental','MD-B2','Aborda paciente e família com empatia, respeito, escuta ativa e informação adequada mesmo em cenários críticos','Humanização do cuidado',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação','Gerenciamento de tarefas bp-TEAM',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta','Tomada de decisão NTS',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Médico','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento','Completude do prontuário médico',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado','Consciência situacional NTS',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L5','Promove o trabalho em equipe, a comunicação efetiva e o ambiente de segurança psicológica para toda a equipe','Clima de equipe / segurança psicológica',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Liderança','EN-L1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento','Liderança (bp-TEAM: domínio Liderança)',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Processo e Qualidade','TE-P2','Repõe materiais e medicamentos utilizados após cada atendimento, mantendo o estoque da viatura padronizado','Reposição de materiais',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T2','Desenvolve e registra o Processo de Enfermagem (PE) conforme CIPE® e protocolos internacionais (PHTLS/ACLS)','Processo de Enfermagem / CIPE®',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Liderança','EN-L4','Mantém e compartilha a consciência situacional com toda a equipe (briefing / atualização contínua)','Consciência situacional coletiva',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T7','Supervisiona o técnico de enfermagem e o condutor, orientando procedimentos e prevenindo erros','Supervisão técnica da equipe',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T4','Administra medicamentos de urgência com segurança, verificando via, dose, concentração e registro','Administração de medicamentos',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação','Procedimentos SAV',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Técnico de Enfermagem','Gestão e Liderança','01','Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.
+CREATE TABLE public.criterios_avaliacao (
+	id serial4 NOT NULL,
+	tipo varchar(50) NOT NULL,
+	categoria varchar(100) NOT NULL,
+	codigo varchar(20) NOT NULL,
+	criterio text NOT NULL,
+	peso int4 NOT NULL,
+	indicador varchar(100) NULL,
+	ativo bool DEFAULT true NOT NULL,
+	created_at timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	avaliacao varchar(100) NULL,
+	CONSTRAINT criterios_avaliacao_pkey PRIMARY KEY (id)
+);
 
-','',true,'2026-06-11 17:42:26.875394',1,'autoavaliacao'),
-	 ('Médico','Técnico-Clínico','MD-T7','Prescreve, verifica e supervisa a administração de medicamentos de urgência com segurança e precisão','Farmacologia de urgência',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Habilidades Não Técnicas (NTS)','BT-NTS2','A equipe mantém desempenho técnico adequado mesmo em cenários de alta carga emocional','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('BP-TEAM','Liderança','BT-L2','O líder toma decisões de forma assertiva, sem hesitação excessiva, mesmo sob pressão extrema','',true,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Técnico-Clínico','MD-T4','Aplica protocolo de AVC (FAST/NIHSS), ativação da linha de cuidado cerebrovascular conforme POP','AVC / Protocolo cerebrovascular',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Técnico-Clínico','MD-T3','Aplica protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica. Tempo porta-balão: cumpre ≤90min','IAM / Tempo porta-balão ≤90min',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
-	 ('Médico','Trabalho em Equipe','2','Utilizo comunicação em loop fechado (call-out e check-back) de forma consistente nos atendimentos.','',true,'2026-06-11 17:47:31.017876',1,'autoavaliacao'),
-	 ('Médico','Liderança','MD-L2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação','Gerenciamento de tarefas bp-TEAM',false,'2026-06-10 10:02:38.389329',1,'autoavaliacao'),
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
 	 ('Médico','Habilidades Não Técnicas','4','
-Mantenho a calma e o tom de voz firme para estabilizar a equipe, o paciente e os familiares em momentos de desespero ou conflito.','',true,'2026-06-11 17:49:41.318069',1,'autoavaliacao'),
-	 ('Condutor','Trabalho em Equipe','a1','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.','',true,'2026-06-11 17:55:34.775804',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Condutor','Habilidades Não Técnicas','a2','Realizo a conferência rigorosa da viatura (checklist) no início de cada plantão.','',true,'2026-06-11 17:56:13.906028',1,'autoavaliacao'),
-	 ('Técnico de Enfermagem','Trabalho em Equipe','a3','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.','',true,'2026-06-11 17:58:51.235499',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T1','Realiza avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena','Avaliação primária ABCDE',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T3','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA conforme protocolo','RCP e DEA',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T6','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS','Imobilização PHTLS',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T7','Executa técnica correta de movimentação e transporte de pacientes críticos sem agravar lesões','Técnica de transporte',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','TE-B1','Participa ativamente do trabalho em equipe, recebe e transmite informações de forma padronizada (SBAR)','Comunicação SBAR / trabalho em equipe',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','TE-B2','Mantém consciência situacional: monitora o estado do paciente, equipamentos e ambiente simultaneamente','Consciência situacional NTS',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','TE-B3','Usa corretamente todos os EPIs e adota medidas de segurança para si, paciente e equipe em toda cena','Segurança / EPIs',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','TE-B4','Mantém foco e equilíbrio emocional em situações de alta pressão (PCR, múltiplas vítimas, violência)','Controle emocional',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Enfermeiro','Processo e Qualidade','TE-P1','Preenche corretamente a ficha de atendimento pré-hospitalar com completude, clareza e fidelidade aos achados','Qualidade do prontuário',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Processo e Qualidade','TE-P2','Repõe materiais e medicamentos utilizados após cada atendimento, mantendo o estoque da viatura padronizado','Reposição de materiais',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','EN-T4','Administra medicamentos de urgência com segurança, verificando via, dose, concentração e registro','Administração de medicamentos',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Liderança','EN-L1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento','Liderança (bp-TEAM: domínio Liderança)',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Liderança','EN-L2','Usa comunicação em loop fechado (call-out, check-back) para garantir compreensão das ordens na cena','Comunicação em loop (NTS)',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Liderança','EN-L3','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico','Gerenciamento de tarefas (bp-TEAM)',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','EN-T1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos','Avaliação SAMPLA/ABCDE',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T2','Identifica e comunica sinais de gravidade imediata ao Enfermeiro/médico com precisão e agilidade','Triagem e comunicação',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T4','Realiza punção venosa periférica, coleta e administra medicamentos conforme prescrição do Enfermeiro/médico','Punção venosa / medicação',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T8','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação)','Adesão a protocolos',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao');
-INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao) VALUES
-	 ('Enfermeiro','Técnico-Clínico','EN-T7','Supervisiona o Enfermeiro e o condutor, orientando procedimentos e prevenindo erros','Supervisão técnica da equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','EN-T2','Desenvolve e registra o Processo de Enfermagem (PE) conforme CIPE® e protocolos internacionais (PHTLS/ACLS)','Processo de Enfermagem / CIPE®',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','EN-T6','Reconhece limitações e aciona o médico regulador/intervencionista nos momentos adequados','Escalada de cuidados',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','TE-T5','Manuseia corretamente: oxímetro, monitor cardíaco, respirador, glicosímetro e demais equipamentos da USB/USA','Manuseio de equipamentos',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','EN-T5','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR','Decisão clínica em urgências',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Processo e Qualidade','EN-P1','Registra o Processo de Enfermagem no SAMU de forma completa, legível e juridicamente válida','Completude do Registro PE/SAMU (IVC ≥0,80)',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Processo e Qualidade','EN-P2','Contribui para metas operacionais: tempo-resposta ≤15min, tempo de cena ≤20min, ROSC em PCR','KPIs operacionais',true,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação','Procedimentos SAV',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao'),
-	 ('Enfermeiro','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento','Completude do prontuário médico',false,'2026-06-11 15:04:42.69826',1,'autoavaliacao'),
-	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena','Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675',1,'autoavaliacao');
-
-INSERT INTO public.criterios_avaliacao
-(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
-VALUES
-(
-    'Condutor',
-    'Gestão e Liderança',
-    'GL1',
-    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Gestão e Liderança',
-    'GL2',
-    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Gestão e Liderança',
-    'GL3',
-    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Gestão e Liderança',
-    'GL4',
-    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-);INSERT INTO public.criterios_avaliacao
-(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
-VALUES
-(
-    'Condutor',
-    'Desenvolvimento da Equipe',
-    'DE1',
-    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Desenvolvimento da Equipe',
-    'DE2',
-    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Desenvolvimento da Equipe',
-    'DE3',
-    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Gestão de Qualidade',
-    'GQ1',
-    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Gestão de Qualidade',
-    'GQ2',
-    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Gestão de Qualidade',
-    'GQ3',
-    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Relacionamento',
-    'REL1',
-    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Condutor',
-    'Relacionamento',
-    'REL2',
-    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-);
-
-INSERT INTO public.criterios_avaliacao
-(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
-VALUES
-(
-    'Técnico de Enfermagem',
-    'Gestão e Liderança',
-    'TE-GL1',
-    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Gestão e Liderança',
-    'TE-GL2',
-    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Gestão e Liderança',
-    'TE-GL3',
-    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Gestão e Liderança',
-    'TE-GL4',
-    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Desenvolvimento da Equipe',
-    'TE-DE1',
-    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Desenvolvimento da Equipe',
-    'TE-DE2',
-    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Desenvolvimento da Equipe',
-    'TE-DE3',
-    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Gestão de Qualidade',
-    'TE-GQ1',
-    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Gestão de Qualidade',
-    'TE-GQ2',
-    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Gestão de Qualidade',
-    'TE-GQ3',
-    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Relacionamento',
-    'TE-REL1',
-    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Técnico de Enfermagem',
-    'Relacionamento',
-    'TE-REL2',
-    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-);
-
-INSERT INTO public.criterios_avaliacao
-(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
-VALUES
-(
-    'Enfermeiro',
-    'Gestão e Liderança',
-    'ENF-GL1',
-    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Gestão e Liderança',
-    'ENF-GL2',
-    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Gestão e Liderança',
-    'ENF-GL3',
-    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Gestão e Liderança',
-    'ENF-GL4',
-    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Desenvolvimento da Equipe',
-    'ENF-DE1',
-    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Desenvolvimento da Equipe',
-    'ENF-DE2',
-    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Desenvolvimento da Equipe',
-    'ENF-DE3',
-    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Gestão de Qualidade',
-    'ENF-GQ1',
-    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Gestão de Qualidade',
-    'ENF-GQ2',
-    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Gestão de Qualidade',
-    'ENF-GQ3',
-    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Relacionamento',
-    'ENF-REL1',
-    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Enfermeiro',
-    'Relacionamento',
-    'ENF-REL2',
-    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-);
-
-INSERT INTO public.criterios_avaliacao
-(tipo,categoria,codigo,criterio,indicador,ativo,created_at,peso,avaliacao)
-VALUES
-(
-    'Médico',
-    'Gestão e Liderança',
-    'MED-GL1',
-    'Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Gestão e Liderança',
-    'MED-GL2',
-    'Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Gestão e Liderança',
-    'MED-GL3',
-    'Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Gestão e Liderança',
-    'MED-GL4',
-    'Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Desenvolvimento da Equipe',
-    'MED-DE1',
-    'Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Desenvolvimento da Equipe',
-    'MED-DE2',
-    'Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Desenvolvimento da Equipe',
-    'MED-DE3',
-    'Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Gestão de Qualidade',
-    'MED-GQ1',
-    'Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Gestão de Qualidade',
-    'MED-GQ2',
-    'Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Gestão de Qualidade',
-    'MED-GQ3',
-    'Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Relacionamento',
-    'MED-REL1',
-    'Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-),
-(
-    'Médico',
-    'Relacionamento',
-    'MED-REL2',
-    'Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',
-    '',
-    true,
-    CURRENT_TIMESTAMP,
-    1,
-    'Liderado > Lider'
-);
-
+Mantenho a calma e o tom de voz firme para estabilizar a equipe, o paciente e os familiares em momentos de desespero ou conflito.',1,'',true,'2026-06-11 17:49:41.318069','autoavaliacao'),
+	 ('BP-TEAM','Gerenciamento de Tarefas','BT-GT1','A avaliação do paciente é sistemática (ABCDE), rápida e sem etapas omitidas',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('BP-TEAM','Habilidades Não Técnicas (NTS)','BT-NTS1','A equipe demonstra consciência situacional compartilhada: cena, paciente, recursos, tempo',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('BP-TEAM','Habilidades Não Técnicas (NTS)','BT-NTS2','A equipe mantém desempenho técnico adequado mesmo em cenários de alta carga emocional',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('BP-TEAM','Trabalho em Equipe','BT-TT1','A equipe utiliza comunicação em loop fechado (call-out + check-back) de forma consistente',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Comportamental','MD-B2','Aborda paciente e família com empatia, respeito, escuta ativa e informação adequada mesmo em cenários críticos',1,'Humanização do cuidado',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Comportamental','MCO2','Aborda paciente e família com empatia, respeito, escuta ativa e informação adequada mesmo em cenários críticos.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Desenvolvimento da Equipe','ENF-DE3','Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Desenvolvimento da Equipe','TE-DE3','Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Desenvolvimento da Equipe','MED-DE3','Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Desenvolvimento da Equipe','DE3','Acompanha a prática assistencial diária da equipe e o planejamento de tripulação, orientando os membros em seus primeiros passos.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Técnico / Clínico','ETC3','Administra medicamentos de urgência com segurança, verificando prescrição, dose, via e tempo de administração.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T4','Administra medicamentos de urgência com segurança, verificando via, dose, concentração e registro',1,'Administração de medicamentos',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T4','Administra medicamentos de urgência com segurança, verificando via, dose, concentração e registro',1,'Administração de medicamentos',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Condutor','Comportamental','BBC3','Administra o tempo de forma racional, cumprindo os prazos e determinações estabelecidas.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Comportamental','COM5','Age com ética e discrição no exercício da função.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico / Clínico','MTC4','Aplica o protocolo de AVC (FAST/NIHSS) e aciona a linha de cuidado cerebrovascular conforme POP.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico / Clínico','MTC3','Aplica o protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica, cumpre o tempo porta-balão ≤ 90min.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico-Clínico','MD-T4','Aplica protocolo de AVC (FAST/NIHSS), ativação da linha de cuidado cerebrovascular conforme POP',1,'AVC / Protocolo cerebrovascular',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Técnico-Clínico','MD-T3','Aplica protocolo de IAM (ACLS): ECG, trombolítico, ativação hemodinâmica. Tempo porta-balão: cumpre ≤90min',1,'IAM / Tempo porta-balão ≤90min',false,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('BP-TEAM','Gerenciamento de Tarefas','BT-GT2','As intervenções são priorizadas corretamente conforme critérios de gravidade e tempo-crítico',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Técnico Operacional','ABC5','Auxilia a equipe nos procedimentos de Suporte Básico de Vida (SBV): RCP, imobilização e oxigenoterapia básica.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Condutor','Técnico-Operacional','C-T6','Auxilia a equipe nos procedimentos de Suporte Básico de Vida (SBV): RCP, imobilização, oxigenoterapia básica',1,'Competência SBV',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Comportamental','C-B4','Avalia a segurança da cena antes de aproximação e comunica riscos à equipe (tráfego, violência, substâncias)',1,'Segurança da cena',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Comportamental','ABC9','Avalia a segurança da cena antes de se aproximar e comunica os riscos à equipe (tráfego, violência, substâncias).',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Médico','Comportamental','MD-B1','Comunica decisões de forma clara, utiliza comunicação em loop com a equipe e mantém registro verbal de ordens',1,'Comunicação efetiva em loop',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Gestão e Liderança','MED-GL1','Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão e Liderança','01','Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',1,'',true,'2026-06-11 17:42:26.875394','autoavaliacao'),
+	 ('Técnico de Enfermagem','Gestão e Liderança','TE-GL1','Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','Gestão e Liderança','GL1','Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Enfermeiro','Gestão e Liderança','ENF-GL1','Comunica orientações, mudanças de protocolo e feedbacks de forma clara, direta e respeitosa.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','teste','C-B1','Comunica-se com a equipe, antecipando necessidades, cooperando na cena e comunicando informações relevantes',1,'Trabalho em equipe',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Comportamental','C-B2','Comunica-se de forma clara e objetiva com a equipe e com a Central de Regulação (CRUR-BF) durante o atendimento',1,'Comunicação operacional',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Comportamental','ABC8','Comunica-se de forma clara e objetiva com a equipe e com a Central de Regulação (CRUR-BF) durante o atendimento.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Médico','Técnico / Clínico','MTC6','Comunica-se eficientemente com o médico regulador da CRUR-BF: informações precisas, decisão conjunta e tempo de regulação.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico-Clínico','MD-T6','Comunica-se eficientemente com o médico regulador da CRUR-BF: informações precisas, decisão conjunta, tempo de regulação',1,'Qualidade da telemedicina / regulação',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Técnico / Clínico','MTC5','Conduz a PCR conforme ACLS: algoritmo, ritmo, medicação, tempo de RCP e ROSC — com taxa de retorno adequada.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico-Clínico','MD-T5','Conduz a PCR conforme ACLS: algoritmo, ritmo, medicação, tempo de RCP, ROSC — taxa de retorno adequada',1,'PCR / ROSC (taxa retorno circulação)',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T8','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação)',1,'Adesão a protocolos',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T8','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação)',1,'Adesão a protocolos',true,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC6','Conhece e segue os protocolos clínicos do SAMU-192 (sepse, IAM, AVC, trauma, PCR, intoxicação).',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Condutor','Técnico-Operacional','C-T5','Conhece e utiliza corretamente rotas de acesso, vias alternativas e GPS para otimização do tempo-resposta',1,'Geolocalização / rotas',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Técnico Operacional','ABC4','Conhece e utiliza corretamente rotas de acesso, vias alternativas e GPS para otimização do tempo-resposta.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','ECO2','Contribui para as metas operacionais: tempo-resposta ≤ 15min, tempo de cena ≤ 20min e ROSC em PCR.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Processo e Qualidade','EN-P2','Contribui para metas operacionais: tempo-resposta ≤15min, tempo de cena ≤20min, ROSC em PCR',1,'KPIs operacionais',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Processo e Qualidade','EN-P2','Contribui para metas operacionais: tempo-resposta ≤15min, tempo de cena ≤20min, ROSC em PCR',1,'KPIs operacionais',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Condutor','Processo e Qualidade','BBC5','Contribui para o cumprimento do tempo-resposta ≤ 15 minutos da central ao local (parâmetro SAMU/Portaria 2.048).',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Condutor','Processo e Qualidade','C-P2','Contribui para o cumprimento do tempo-resposta ≤15 minutos da central ao local (Portaria MS 2.048/2002)',1,'Tempo-resposta ≤15min',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Comportamental','MCO4','Contribui para o cumprimento dos indicadores de qualidade operacional e clínica.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Relacionamento','MED-REL1','Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Técnico de Enfermagem','Relacionamento','TE-REL1','Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','Relacionamento','REL1','Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Relacionamento','ENF-REL1','Cria um ambiente de trabalho seguro e colaborativo, onde a equipe se sente à vontade para reportar erros sem receio de represálias.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Liderança Situacional','LS3','Demonstra compromisso com a segurança, utilizando corretamente os EPIs e adotando medidas de proteção para si, para o paciente e para a equipe.',1,NULL,true,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Comportamental','COM3','Demonstra responsabilidade e comprometimento com suas atividades.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','ECO4','Demonstra responsabilidade e comprometimento, sendo referência de conduta para a equipe.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Comportamental','MCO4','Demonstra responsabilidade e comprometimento, sendo referência de conduta profissional para toda a equipe.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T2','Desenvolve e registra o Processo de Enfermagem (PE) conforme CIPE® e protocolos internacionais (PHTLS/ACLS)',1,'Processo de Enfermagem / CIPE®',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T2','Desenvolve e registra o Processo de Enfermagem (PE) conforme CIPE® e protocolos internacionais (PHTLS/ACLS)',1,'Processo de Enfermagem / CIPE®',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Médico','Gestão e Liderança','MED-GL3','Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Gestão e Liderança','GL3','Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão e Liderança','TE-GL3','Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Gestão e Liderança','ENF-GL3','Distribui escalas, atribuições e cargas de trabalho de forma justa e equilibrada entre os membros.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento',1,'Completude do prontuário médico',false,'2026-06-11 15:04:42.69826','autoavaliacao'),
+	 ('Médico','Processo e Qualidade','MD-P1','Documenta o atendimento médico de forma completa, com hipótese diagnóstica, condutas, medicamentos e encaminhamento',1,'Completude do prontuário médico',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Comportamental','MCO1','Documenta o atendimento médico de forma completa: hipótese diagnóstica, condutas, medicamentos e encaminhamento.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Liderança','ELD4','Encontra soluções criativas e adequadas diante de cenários complexos ou com recursos limitados.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Técnico / Clínico','ETC2','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada e desfibrilação.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação',1,'Procedimentos SAV',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T3','Executa com precisão procedimentos de SAV: acesso venoso difícil, intubação orotraqueal, RCP avançada, desfibrilação',1,'Procedimentos SAV',false,'2026-06-11 15:06:08.472675','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T3','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA conforme protocolo',1,'RCP e DEA',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T3','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA conforme protocolo',1,'RCP e DEA',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC2','Executa corretamente compressões torácicas, ventilação (bolsa-valva-máscara) e desfibrilação com DEA.',1,NULL,false,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Processo e Qualidade','PQ2','Executa o transporte seguro de pacientes críticos, sem agravar lesões existentes.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico / Clínico','MTC2','Executa procedimentos de SAV com excelência: IOT difícil, acesso intraósseo, drenagem e cardioversão.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico-Clínico','MD-T2','Executa procedimentos de SAV com excelência: IOT difícil, acesso intraósseo, drenagem, cardioversão',1,'Procedimentos SAV avançados',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T7','Executa técnica correta de movimentação e transporte de pacientes críticos sem agravar lesões',1,'Técnica de transporte',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T7','Executa técnica correta de movimentação e transporte de pacientes críticos sem agravar lesões',1,'Técnica de transporte',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Liderança','EN-L1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento',1,'Liderança (bp-TEAM: domínio Liderança)',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Liderança','EN-L1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento',1,'Liderança (bp-TEAM: domínio Liderança)',true,'2026-06-11 15:06:08.472675','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Enfermeiro','Liderança','ELD1','Exerce liderança na USB/USA: dirige a equipe com clareza, distribui tarefas e coordena o atendimento.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Gestão de Qualidade','MED-GQ1','Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Gestão de Qualidade','ENF-GQ1','Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão de Qualidade','TE-GQ1','Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','Gestão de Qualidade','GQ1','Garante que todos os membros conheçam e sigam os protocolos clínicos e operacionais do SAMU-192/CRUR-BF.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Liderança','MD-L2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação',1,'Gerenciamento de tarefas bp-TEAM',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Liderança','MD-L2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação',1,'Gerenciamento de tarefas bp-TEAM',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Liderança','MLD2','Gerencia simultaneamente múltiplas tarefas críticas: paciente, equipe, comunicação com regulação e documentação.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T2','Identifica e comunica sinais de gravidade imediata ao Enfermeiro/médico com precisão e agilidade',1,'Triagem e comunicação',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T2','Identifica e comunica sinais de gravidade imediata ao Enfermeiro/médico com precisão e agilidade',1,'Triagem e comunicação',false,'2026-06-11 15:06:08.472675','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Comportamental','ABC7','Integra-se ativamente à equipe, antecipando necessidades, cooperando na cena e comunicando informações relevantes.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Médico','Liderança','MLD1','Lidera a equipe USA com autoridade, clareza e empatia: define papéis, distribui tarefas e mantém a segurança.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Liderança','MD-L1','Lidera a equipe USA com autoridade, clareza e empatia: define papéis, distribui tarefas, mantém hierarquia e segurança',1,'Liderança bp-TEAM (domínio: Liderança)',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Gestão de Qualidade','GQ3','Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Gestão de Qualidade','MED-GQ3','Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Gestão de Qualidade','ENF-GQ3','Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão de Qualidade','TE-GQ3','Lidera iniciativas de segurança do paciente e promove o uso rigoroso dos EPIs.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Liderança','ELD5','Lidera pelo exemplo no uso correto de EPIs e na aplicação de precauções de segurança em toda a cena.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena',1,'Segurança do paciente e equipe',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Comportamental','EN-B1','Lidera pelo exemplo no uso de EPIs e na aplicação de precauções de segurança em toda a cena',1,'Segurança do paciente e equipe',true,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Técnico-Operacional','C-T3','Mantém a ambulância limpa, organizada e em condições sanitárias adequadas após cada atendimento',1,'Higienização ambulância',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Técnico Operacional','ABC2','Mantém a ambulância limpa, organizada e em condições sanitárias adequadas após cada atendimento.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Comportamental','COM1','Mantém apresentação pessoal adequada ao cargo e à função.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Liderança Situacional','LS2','Mantém atenção à situação da ocorrência, acompanhando o estado do paciente, os equipamentos e as condições do ambiente.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','ECO5','Mantém comunicação clara, respeitosa e empática com pacientes, familiares e equipe.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Liderança','MD-L4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado',1,'Consciência situacional NTS',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Liderança','MD-L4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado',1,'Consciência situacional NTS',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Liderança','MLD4','Mantém consciência situacional ampla (cena, paciente, equipe, recursos, tempo) e adapta o plano de cuidado.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Comportamental','TE-B2','Mantém consciência situacional: monitora o estado do paciente, equipamentos e ambiente simultaneamente',1,'Consciência situacional NTS',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Comportamental','TE-B2','Mantém consciência situacional: monitora o estado do paciente, equipamentos e ambiente simultaneamente',1,'Consciência situacional NTS',true,'2026-06-11 15:06:08.472675','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Técnico de Enfermagem','Comportamental','COM6','Mantém controle emocional e profissionalismo em situações de alta pressão.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Condutor','Comportamental','C-B5','Mantém controle emocional em cenários de alta tensão, múltiplas vítimas, violência ou óbito',1,'Controle emocional',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Comportamental','BBC1','Mantém controle emocional em cenários de alta tensão, múltiplas vítimas, violência ou óbito.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Liderança','EN-L4','Mantém e compartilha a consciência situacional com toda a equipe (briefing / atualização contínua)',1,'Consciência situacional coletiva',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Liderança','EN-L4','Mantém e compartilha a consciência situacional com toda a equipe (briefing / atualização contínua)',1,'Consciência situacional coletiva',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Enfermeiro','Liderança','ELD3','Mantém e compartilha a consciência situacional com toda a equipe (briefing e atualização contínua).',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','TE-B4','Mantém foco e equilíbrio emocional em situações de alta pressão (PCR, múltiplas vítimas, violência)',1,'Controle emocional',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Comportamental','TE-B4','Mantém foco e equilíbrio emocional em situações de alta pressão (PCR, múltiplas vítimas, violência)',1,'Controle emocional',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Liderança Situacional','LS4','Mantém foco e equilíbrio emocional em situações de pressão, agindo com profissionalismo e respeito.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','ECO3','Mantém postura ética e discrição absoluta em todas as situações de atendimento.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Médico','Comportamental','MCO3','Mantém postura ética e discrição absoluta em todas as situações de atendimento.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Comportamental','COM2','Mantém relacionamento respeitoso com pacientes, familiares e colegas de trabalho.',1,NULL,false,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Condutor','Técnico-Operacional','C-T7','Manuseia corretamente a maca, cadeira de rodas, prancha longa e colar cervical',1,'Manuseio de equipamentos',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Técnico Operacional','ABC6','Manuseia corretamente a maca, cadeira de rodas, prancha longa e colar cervical.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC4','Manuseia corretamente os equipamentos da USB/USA: oxímetro, monitor cardíaco, respirador e glicosímetro.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T5','Manuseia corretamente: oxímetro, monitor cardíaco, respirador, glicosímetro e demais equipamentos da USB/USA',1,'Manuseio de equipamentos',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T5','Manuseia corretamente: oxímetro, monitor cardíaco, respirador, glicosímetro e demais equipamentos da USB/USA',1,'Manuseio de equipamentos',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Médico','Gestão e Liderança','MED-GL4','Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão e Liderança','TE-GL4','Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','Gestão e Liderança','GL4','Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Enfermeiro','Gestão e Liderança','ENF-GL4','Medeia conflitos interpessoais de forma profissional, imparcial e orientada para a solução.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Gestão de Qualidade','MED-GQ2','Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','Gestão de Qualidade','GQ2','Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão de Qualidade','TE-GQ2','Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Gestão de Qualidade','ENF-GQ2','Monitora e divulga os indicadores de desempenho para a equipe, com análise e plano de ação.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('BP-TEAM','Liderança','BT-L3','O líder adapta o plano de cuidado conforme evolução clínica do paciente e novos achados da cena',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('BP-TEAM','Liderança','BT-L1','O líder dirige a equipe com clareza, define papéis e responsabilidades desde o início do atendimento',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('BP-TEAM','Liderança','BT-L2','O líder toma decisões de forma assertiva, sem hesitação excessiva, mesmo sob pressão extrema',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Desenvolvimento da Equipe','DE2','Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Desenvolvimento da Equipe','MED-DE2','Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Enfermeiro','Desenvolvimento da Equipe','ENF-DE2','Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Desenvolvimento da Equipe','TE-DE2','Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Liderança','EN-L3','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico',1,'Gerenciamento de tarefas (bp-TEAM)',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Liderança','EN-L3','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico',1,'Gerenciamento de tarefas (bp-TEAM)',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Enfermeiro','Liderança','ELD2','Organiza as tarefas sequencialmente, priorizando intervenções conforme gravidade e tempo-crítico.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('BP-TEAM','Trabalho em Equipe','BT-TT2','Os membros monitoram e apoiam uns aos outros, antecipando necessidades sem solicitação',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('BP-TEAM','Gerenciamento de Tarefas','BT-GT3','Os procedimentos são executados com técnica correta, sem erros ou omissões significativas',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Liderança Situacional','LS1','Participa ativamente do trabalho em equipe, comunicando e recebendo informações de forma clara e organizada.',1,NULL,false,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Enfermeiro','Comportamental','TE-B1','Participa ativamente do trabalho em equipe, recebe e transmite informações de forma padronizada (SBAR)',1,'Comunicação SBAR / trabalho em equipe',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Comportamental','TE-B1','Participa ativamente do trabalho em equipe, recebe e transmite informações de forma padronizada (SBAR)',1,'Comunicação SBAR / trabalho em equipe',true,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Técnico Operacional','ABC3','Pratica direção defensiva com habilidade, respeitando sinalização e garantindo a segurança da equipe e do paciente no deslocamento de emergência.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Condutor','Técnico-Operacional','C-T4','Pratica direção defensiva com habilidade, respeitando sinalização e segurança da equipe e paciente no deslocamento de emergência',1,'Direção defensiva',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Processo e Qualidade','TE-P1','Preenche corretamente a ficha de atendimento pré-hospitalar com completude, clareza e fidelidade aos achados',1,'Qualidade do prontuário',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Processo e Qualidade','TE-P1','Preenche corretamente a ficha de atendimento pré-hospitalar com completude, clareza e fidelidade aos achados',1,'Qualidade do prontuário',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Processo e Qualidade','C-P1','Preenche corretamente o registro de saída e chegada da viatura, tempo de deslocamento e ocorrências relevantes',1,'Completude dos registros',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Condutor','Processo e Qualidade','BBC4','Preenche corretamente o registro de saída e chegada da viatura, tempo de deslocamento e ocorrências relevantes.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Processo e Qualidade','PQ1','Preenche corretamente os registros de atendimento com informações precisas e no tempo adequado.',1,NULL,true,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Médico','Técnico-Clínico','MD-T7','Prescreve, verifica e supervisa a administração de medicamentos de urgência com segurança e precisão',1,'Farmacologia de urgência',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Técnico / Clínico','MTC7','Prescreve, verifica e supervisiona a administração de medicamentos de urgência com segurança e precisão.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Desenvolvimento da Equipe','ENF-DE1','Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Desenvolvimento da Equipe','DE1','Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Desenvolvimento da Equipe','MED-DE1','Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Desenvolvimento da Equipe','TE-DE1','Promove e facilita atividades de educação permanente, simulações e capacitações na base do SAMU.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Liderança','MD-L5','Promove o trabalho em equipe, a comunicação efetiva e o ambiente de segurança psicológica para toda a equipe',1,'Clima de equipe / segurança psicológica',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC1','Realiza a avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena.',1,NULL,false,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos',1,'Avaliação SAMPLA/ABCDE',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos',1,'Avaliação SAMPLA/ABCDE',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Enfermeiro','Técnico / Clínico','ETC1','Realiza avaliação clínica completa (SAMPLA, ABCDE, Glasgow, FAST) e formula diagnósticos de enfermagem precisos.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Médico','Técnico-Clínico','MD-T1','Realiza avaliação clínica completa e rápida, formulando diagnóstico sindromático correto no pré-hospitalar',1,'Diagnóstico pré-hospitalar',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Técnico / Clínico','MTC1','Realiza avaliação clínica completa e rápida, formulando diagnóstico sindromático correto no pré-hospitalar.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T1','Realiza avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena',1,'Avaliação primária ABCDE',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T1','Realiza avaliação primária (ABCDE) de forma rápida, sistemática e correta após chegada na cena',1,'Avaliação primária ABCDE',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Condutor','Técnico-Operacional','C-T1','Realiza checklist completo da viatura no início do plantão (combustível, pneus, equipamentos, kit de emergência)',1,'Checklist preenchido',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T6','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS',1,'Imobilização PHTLS',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T6','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS',1,'Imobilização PHTLS',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC5','Realiza imobilização adequada de vítimas de trauma (colar cervical, prancha, talas) conforme protocolo PHTLS.',1,NULL,false,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Condutor','Técnico Operacional','ABC1','Realiza o checklist completo da viatura no início do plantão (combustível, pneus, equipamentos, kit de emergência).',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico / Clínico','BBC3','Realiza punção venosa periférica e administra medicamentos conforme prescrição do enfermeiro/médico.',1,NULL,false,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','TE-T4','Realiza punção venosa periférica, coleta e administra medicamentos conforme prescrição do Enfermeiro/médico',1,'Punção venosa / medicação',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','TE-T4','Realiza punção venosa periférica, coleta e administra medicamentos conforme prescrição do Enfermeiro/médico',1,'Punção venosa / medicação',false,'2026-06-11 15:06:08.472675','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Condutor','Habilidades Não Técnicas','a2','Realizo a conferência rigorosa da viatura (checklist) no início de cada plantão.',1,'',true,'2026-06-11 17:56:13.906028','autoavaliacao'),
+	 ('Técnico de Enfermagem','Comportamental','COM4','Recebe orientações e feedbacks de forma profissional e com abertura para crescimento.',1,NULL,false,'2026-06-16 13:09:10.993845','Lider > Liderado'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T6','Reconhece limitações e aciona o médico regulador/intervencionista nos momentos adequados',1,'Escalada de cuidados',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T6','Reconhece limitações e aciona o médico regulador/intervencionista nos momentos adequados',1,'Escalada de cuidados',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico / Clínico','ETC5','Reconhece limitações técnicas e aciona o médico regulador/intervencionista nos momentos adequados.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Enfermeiro','Relacionamento','ENF-REL2','Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Condutor','Relacionamento','REL2','Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Relacionamento','MED-REL2','Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Relacionamento','TE-REL2','Reconhece publicamente os bons resultados e esforços individuais e coletivos da equipe.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Comportamental','ECO1','Registra o Processo de Enfermagem de forma completa, legível e juridicamente válida.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Enfermeiro','Processo e Qualidade','EN-P1','Registra o Processo de Enfermagem no SAMU de forma completa, legível e juridicamente válida',1,'Completude do Registro PE/SAMU (IVC ≥0,80)',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Processo e Qualidade','EN-P1','Registra o Processo de Enfermagem no SAMU de forma completa, legível e juridicamente válida',1,'Completude do Registro PE/SAMU (IVC ≥0,80)',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Processo e Qualidade','TE-P2','Repõe materiais e medicamentos utilizados após cada atendimento, mantendo o estoque da viatura padronizado',1,'Reposição de materiais',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Processo e Qualidade','TE-P2','Repõe materiais e medicamentos utilizados após cada atendimento, mantendo o estoque da viatura padronizado',1,'Reposição de materiais',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Enfermeiro','Trabalho em Equipe','a4','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.',1,'',true,'2026-06-11 18:10:30.85717','autoavaliacao'),
+	 ('Condutor','Trabalho em Equipe','a1','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.',1,'',true,'2026-06-11 17:55:34.775804','autoavaliacao'),
+	 ('Médico','Trabalho em Equipe','3','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.',1,'',true,'2026-06-11 17:48:02.009131','autoavaliacao'),
+	 ('Técnico de Enfermagem','Trabalho em Equipe','a3','Sou receptivo(a) a feedbacks construtivos da equipe após uma ocorrência.',1,'',true,'2026-06-11 17:58:51.235499','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T7','Supervisiona o Enfermeiro e o condutor, orientando procedimentos e prevenindo erros',1,'Supervisão técnica da equipe',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T7','Supervisiona o técnico de enfermagem e o condutor, orientando procedimentos e prevenindo erros',1,'Supervisão técnica da equipe',false,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Enfermeiro','Técnico / Clínico','ETC6','Supervisiona o técnico de enfermagem e o condutor, orientando procedimentos e prevenindo erros.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('BP-TEAM','Trabalho em Equipe','BT-TT3','Todos os membros compartilham o mesmo modelo mental do quadro clínico e plano de ação',1,'',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Técnico-Clínico','EN-T5','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR',1,'Decisão clínica em urgências',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Técnico-Clínico','EN-T5','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR',1,'Decisão clínica em urgências',false,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Enfermeiro','Técnico / Clínico','ETC4','Toma decisões clínicas rápidas e assertivas em cenários de IAM, AVC, trauma grave, sepse e PCR.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Condutor','Gestão e Liderança','GL2','Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Enfermeiro','Gestão e Liderança','ENF-GL2','Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Gestão e Liderança','MED-GL2','Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Técnico de Enfermagem','Gestão e Liderança','TE-GL2','Toma decisões operacionais de forma ágil e embasada, consultando a equipe quando necessário.',1,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
+	 ('Médico','Liderança','MD-L3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta',1,'Tomada de decisão NTS',true,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Médico','Liderança','MD-L3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta',1,'Tomada de decisão NTS',false,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Liderança','MLD3','Toma decisões rápidas e assertivas sob pressão extrema, com base em evidências e priorização correta.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Condutor','Comportamental','BBC2','Trata pacientes, familiares e equipe com respeito, sigilo e ética, preservando a dignidade humana.',1,NULL,false,'2026-06-16 13:01:16.376169','Lider > Liderado'),
+	 ('Condutor','Comportamental','C-B6','Trata pacientes, familiares e equipe com respeito, sigilo e ética, respeitando a dignidade humana',1,'Ética e humanização',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Técnico de Enfermagem','Liderança','EN-L2','Usa comunicação em loop fechado (call-out, check-back) para garantir compreensão das ordens na cena',1,'Comunicação em loop (NTS)',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Enfermeiro','Liderança','EN-L2','Usa comunicação em loop fechado (call-out, check-back) para garantir compreensão das ordens na cena',1,'Comunicação em loop (NTS)',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Enfermeiro','Comportamental','TE-B3','Usa corretamente todos os EPIs e adota medidas de segurança para si, paciente e equipe em toda cena',1,'Segurança / EPIs',true,'2026-06-11 15:06:08.472675','autoavaliacao'),
+	 ('Técnico de Enfermagem','Comportamental','TE-B3','Usa corretamente todos os EPIs e adota medidas de segurança para si, paciente e equipe em toda cena',1,'Segurança / EPIs',true,'2026-06-10 10:02:38.389329','autoavaliacao'),
+	 ('Médico','Liderança','MLD5','Utiliza comunicação em loop com a equipe, confirmando ordens e mantendo registro verbal das condutas.',1,NULL,true,'2026-06-16 14:33:45.376645','Lider > Liderado'),
+	 ('Condutor','Comportamental','C-B3','Utiliza corretamente todos os EPIs obrigatórios (luvas, máscara, avental) em todos os atendimentos',1,'Uso de EPIs',true,'2026-06-10 10:02:38.389329','autoavaliacao');
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+	 ('Médico','Trabalho em Equipe','2','Utilizo comunicação em loop fechado (call-out e check-back) de forma consistente nos atendimentos.',1,'',true,'2026-06-11 17:47:31.017876','autoavaliacao'),
+	 ('Condutor','Técnico-Operacional','C-T2','Verifica e registra o estado dos equipamentos médicos (DEA, oxímetro, monitor cardíaco, maca)',1,'Conformidade equipamentos',false,'2026-06-10 10:02:38.389329','autoavaliacao');
