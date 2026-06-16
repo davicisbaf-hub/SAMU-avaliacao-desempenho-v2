@@ -11,7 +11,8 @@ import FichaAvaliacaoCondutor from "./Fichas/FichaAvaliacaoCondutor.tsx";
 import FichaAvaliacaoTecEnf from "./Fichas/FichaAvaliacaoTecEnf.tsx";
 import FichaAvaliacaoEnf from "./Fichas/FichaAvaliacaoEnf.tsx";
 import FichaAvaliacaoMedico from "./Fichas/FichaAvaliacaoMedico.tsx";
-import FichaAvaliacaoLideranca from "./Fichas/FichaAvaliacaoLideranca.tsx";
+import FichaAvaliacaoLiderancaLiderado from "./Fichas/FichaAvaliacaoLideranca-liderado.tsx";
+import FichaAvaliacaoLideradoLideranca from "./Fichas/FichaAvaliacaoLiderado-lideranca.tsx";
 import FichaAvaliacaoBpTeam from "./Fichas/FichaAvaliacaoBpTeam.tsx";
 
 
@@ -93,10 +94,18 @@ ReactDOM.createRoot(root!).render(
         />
 
         <Route
-          path="/avaliacao/lideranca-coordenacao"
+          path="/avaliacao/lideranca-liderado"
           element={
             <PrivateRoute>
-              <FichaAvaliacaoLideranca />
+              <FichaAvaliacaoLiderancaLiderado />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/avaliacao/liderado-lideranca"
+          element={
+            <PrivateRoute>
+              <FichaAvaliacaoLideradoLideranca />
             </PrivateRoute>
           }
         />

@@ -59,7 +59,16 @@ VALUES
 ),
 (
     '👤',
-    'Liderança / Coordenação',
+    'Liderança > Liderado',
+    '12 critérios de avaliação',
+    12,
+    ARRAY['Técnico', 'Comportamental', 'Processo'],
+    '/avaliacao/lideranca-coordenacao',
+    5
+),
+(
+    '👤',
+    'Liderado > Liderança',
     '12 critérios de avaliação',
     12,
     ARRAY['Técnico', 'Comportamental', 'Processo'],

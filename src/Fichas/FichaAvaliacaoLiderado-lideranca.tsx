@@ -48,7 +48,7 @@ type Base = {
 };
 
 
-export default function FichaAvaliacaoLideranca() {
+export default function FichaAvaliacaoLideradoLideranca() {
 	const [bases, setBases] = useState<Base[]>([]);
 	const { user } = useUserSession();
 
