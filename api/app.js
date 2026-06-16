@@ -167,10 +167,10 @@ app.get("/api/criterios-avaliacao-autoavaliacao/:tipo", async (req, res) => {
         indicador,
         avaliacao
       FROM criterios_avaliacao
-      WHERE tipo = $1
-      AND avaliacao = 'autoavaliacao'
-      AND ativo = true
-      ORDER BY categoria, codigo;
+      WHERE avaliacao = 'autoavaliacao'
+        AND tipo = $1
+        AND ativo = true
+      ORDER BY categoria, codigo
       `,
       [tipo]
     );
