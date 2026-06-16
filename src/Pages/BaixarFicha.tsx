@@ -7,6 +7,36 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 import { useEffect, useState } from "react";
+import FichaAvaliacaoTemplate from '../components/FichaAvaliacaoTemplate';
+
+type Criterios = {
+	categoria: string;
+	codigo: string;
+	criterio: string;
+	peso: number;
+	id: number;
+	indicador: string;
+	titulo: string;
+};
+
+type EscalaLikert = {
+	nota: number;
+	titulo: string;
+	descricao: string;
+	cor: string;
+};
+
+type Peso = {
+	valor: number;
+	descricao: string;
+	cor: string;
+};
+
+type Base = {
+	id: number;
+	nome: string;
+	cor: string;
+};
 
 type Avaliacao = {
     id: number;
@@ -20,8 +50,12 @@ type Avaliacao = {
     funcao: string;
 
     tipo_avaliacao: string;
+	base?: string;
 
     resultado: Record<string, { nota: number; peso: number; }>;
+	observacoes_gerais?: string;
+	pontos_melhorar?: string;
+	plano_acao?: string;
     criado_em: string;
 };
 
@@ -34,12 +68,38 @@ export default function BaixarFicha() {
     const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
     const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState<Avaliacao | null>(null);
 
+	const [criterios, setCriterios] = useState<Criterios[]>([]);
+	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
+	const [pesos, setPesos] = useState<Peso[]>([]);
+	const [bases, setBases] = useState<Base[]>([]);
+
     useEffect(() => {
         fetch("http://localhost:3001/api/avaliacoes")
             .then((res) => res.json())
             .then(setAvaliacoes)
             .catch(console.error);
     }, []);
+
+	useEffect(() => {
+		Promise.all([
+			fetch("http://localhost:3001/api/escala-likert").then(r => r.json()),
+			fetch("http://localhost:3001/api/pesos-avaliacao").then(r => r.json()),
+			fetch("http://localhost:3001/api/bases").then(r => r.json()),
+		]).then(([likert, pesos, bases]) => {
+			setEscalaLikert(likert);
+			setPesos(pesos);
+			setBases(bases);
+		}).catch(console.error);
+	}, []);
+
+	useEffect(() => {
+		if (!avaliacaoSelecionada) return;
+
+		fetch(`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${avaliacaoSelecionada.tipo_avaliacao}`)
+			.then(res => res.json())
+			.then(setCriterios)
+			.catch(console.error);
+	}, [avaliacaoSelecionada]);
 
     const usuarios = [...new Set(avaliacoes.map(a => a.avaliado_nome))];
     const funcoes = [...new Set(avaliacoes.map(a => a.funcao))];
@@ -168,6 +228,10 @@ export default function BaixarFicha() {
             `avaliacao-${avaliacao.avaliado_nome}.pdf`
         );
     }
+
+	const handleViewClick = (avaliacao: Avaliacao) => {
+		setAvaliacaoSelecionada(avaliacao);
+	};
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -310,7 +374,7 @@ export default function BaixarFicha() {
                                                         <div className="flex justify-center gap-2">
                                                             <button
                                                                 onClick={() =>
-                                                                    setAvaliacaoSelecionada(avaliacao)
+                                                                    handleViewClick(avaliacao)
                                                                 }
                                                                 className="text-black px-3 py-2 rounded-lg"
                                                                 title="Visualizar"
@@ -341,41 +405,41 @@ export default function BaixarFicha() {
                 </div>
             </div>
             {avaliacaoSelecionada && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl w-[90%] max-w-4xl max-h-[90vh] overflow-auto p-6">
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl w-full max-w-6xl max-h-[90vh] overflow-auto p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">
-                                Detalhes da Avaliação
+                                Ficha de Avaliação - {avaliacaoSelecionada.avaliado_nome}
                             </h2>
 
                             <button
                                 onClick={() => setAvaliacaoSelecionada(null)}
+                                className="text-2xl font-bold cursor-pointer hover:text-gray-600"
                             >
                                 ✕
                             </button>
                         </div>
 
-                        <table className="w-full border">
-                            <thead>
-                                <tr>
-                                    <th>Critério</th>
-                                    <th>Peso</th>
-                                    <th>Nota</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {Object.entries(
-                                    avaliacaoSelecionada.resultado
-                                ).map(([criterio, valor]) => (
-                                    <tr key={criterio}>
-                                        <td>{criterio}</td>
-                                        <td>{valor.peso}</td>
-                                        <td>{valor.nota}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+						{criterios.length > 0 ? (
+							<FichaAvaliacaoTemplate
+								tipoAvaliacao={avaliacaoSelecionada.tipo_avaliacao}
+								criterios={criterios}
+								notas={avaliacaoSelecionada.resultado}
+								escalaLikert={escalaLikert}
+								pesos={pesos}
+								bases={bases}
+								observacoes={avaliacaoSelecionada.observacoes_gerais || ""}
+								pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
+								planoAcao={avaliacaoSelecionada.plano_acao || ""}
+								userName={avaliacaoSelecionada.avaliado_nome}
+								userBase={avaliacaoSelecionada.base || ""}
+								readOnly={true}
+							/>
+						) : (
+							<div className="flex items-center justify-center py-8">
+								<p className="text-gray-500">Carregando dados da avaliação...</p>
+							</div>
+						)}
                     </div>
                 </div>
             )}

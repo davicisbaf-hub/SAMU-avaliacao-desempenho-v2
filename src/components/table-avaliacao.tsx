@@ -27,6 +27,7 @@ type Props = {
 
   obrigatorio: boolean;
   tentouEnviar: boolean;
+  readOnly?: boolean;
 };
 
 
@@ -41,7 +42,8 @@ export default function TableAvaliacao({
   escalaLikert,
   pesos,
   obrigatorio,
-  tentouEnviar
+  tentouEnviar,
+  readOnly = false
 }: Props) {
 
   const classificacao = escalaLikert.find(
@@ -97,8 +99,11 @@ export default function TableAvaliacao({
               <button
                 key={nota}
                 type="button"
-                onClick={() => onSelecionarNota(criterio, nota)}
+                onClick={() => !readOnly && onSelecionarNota(criterio, nota)}
+                disabled={readOnly}
                 className={`w-9 h-9 rounded-lg text-sm font-bold border-2 transition-all duration-150 ${
+                  readOnly ? "cursor-default" : ""
+                } ${
                   notaSelecionada !== nota
                     ? "bg-[#fcfcfc] border-[#d2d8de] [text-#555f69] hover:border-[#cd0048]/50"
                     : ""
