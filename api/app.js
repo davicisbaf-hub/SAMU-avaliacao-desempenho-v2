@@ -662,6 +662,66 @@ app.put("/api/usuarios/:id/inativar", async (req, res) => {
   }
 });
 
+// KPI endpoint - Agregação de avaliações por categoria
+app.get("/api/kpis/avaliacoes-por-categoria", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        ca.categoria,
+        a.tipo_avaliacao,
+        COUNT(DISTINCT a.id) as total_avaliacoes,
+        COUNT(DISTINCT a.avaliado_id) as profissionais_avaliados,
+        ROUND(AVG(
+          CAST(
+            COALESCE(a.resultado->ca.criterio->>'nota', '0') AS INT
+          )
+        )::NUMERIC, 2) as media_notas,
+        MAX(CAST(COALESCE(a.resultado->ca.criterio->>'nota', '0') AS INT)) as nota_maxima,
+        MIN(CAST(COALESCE(a.resultado->ca.criterio->>'nota', '5') AS INT)) as nota_minima
+      FROM avaliacoes a
+      JOIN criterios_avaliacao ca ON a.tipo_avaliacao = ca.tipo AND ca.ativo = true
+      WHERE a.resultado->ca.criterio->>'nota' IS NOT NULL
+      GROUP BY ca.categoria, a.tipo_avaliacao, ca.tipo
+      ORDER BY a.tipo_avaliacao, ca.categoria
+    `);
+
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      erro: error.message,
+    });
+  }
+});
+
+// KPI endpoint - Avaliações por profissional
+app.get("/api/kpis/avaliacoes-por-profissional", async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        avaliado.nome,
+        avaliado.funcao,
+        COUNT(*) as total_avaliacoes,
+        a.tipo_avaliacao,
+        ROUND(AVG(
+          (SELECT AVG(CAST(value->>'nota' AS INT))
+           FROM jsonb_each(a.resultado))
+        )::NUMERIC, 2) as media_geral
+      FROM avaliacoes a
+      JOIN usuarios avaliado ON avaliado.id = a.avaliado_id
+      GROUP BY avaliado.id, avaliado.nome, avaliado.funcao, a.tipo_avaliacao
+      ORDER BY a.tipo_avaliacao, avaliado.funcao
+    `);
+
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      erro: error.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
 });
