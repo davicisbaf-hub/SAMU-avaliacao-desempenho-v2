@@ -5,8 +5,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Eye, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useReactToPrint } from "react-to-print";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import FichaAvaliacaoTemplate from '../components/FichaAvaliacaoTemplate';
 
 type Criterios = {
@@ -72,6 +73,16 @@ export default function BaixarFicha() {
 	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
 	const [pesos, setPesos] = useState<Peso[]>([]);
 	const [bases, setBases] = useState<Base[]>([]);
+
+	// Para gerar PDF com React-to-Print
+	const fichaRefParaPdf = useRef<HTMLDivElement>(null);
+	const [avaliacaoParaPdf, setAvaliacaoParaPdf] = useState<Avaliacao | null>(null);
+	const [criteriosParaPdf, setCriteriosParaPdf] = useState<Criterios[]>([]);
+
+	const imprimirParaPdf = useReactToPrint({
+		contentRef: fichaRefParaPdf,
+		documentTitle: `Ficha-Avaliacao-${avaliacaoParaPdf?.avaliado_nome}`,
+	});
 
     useEffect(() => {
         fetch("http://localhost:3001/api/avaliacoes")
@@ -232,6 +243,23 @@ export default function BaixarFicha() {
 	const handleViewClick = (avaliacao: Avaliacao) => {
 		setAvaliacaoSelecionada(avaliacao);
 	};
+
+	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
+		// Carrega os critérios para gerar o PDF
+		try {
+			const critResponse = await fetch(`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
+			const crit = await critResponse.json();
+			setCriteriosParaPdf(crit);
+			setAvaliacaoParaPdf(avaliacao);
+			
+			// Aguarda o setState e depois imprime
+			setTimeout(() => {
+				imprimirParaPdf();
+			}, 100);
+		} catch (error) {
+			console.error('Erro ao gerar PDF:', error);
+		}
+	};
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -384,7 +412,7 @@ export default function BaixarFicha() {
 
                                                             <button
                                                                 onClick={() =>
-                                                                    gerarPdf(avaliacao)
+                                                                    handleDownloadPdf(avaliacao)
                                                                 }
                                                                 className="text-black px-3 py-2 rounded-lg"
                                                                 title="Baixar PDF"
@@ -467,6 +495,41 @@ export default function BaixarFicha() {
                     </div>
                 </div>
             )}
+
+			{/* Ficha Oculta para Gerar PDF */}
+			{avaliacaoParaPdf && criteriosParaPdf.length > 0 && (
+				<div style={{ display: 'none' }}>
+					<div ref={fichaRefParaPdf}>
+						{(() => {
+							const notasMap: Record<string, number> = {};
+							
+							criteriosParaPdf.forEach(criterio => {
+								const resultadoItem = avaliacaoParaPdf.resultado[criterio.criterio];
+								if (resultadoItem && resultadoItem.nota !== undefined) {
+									notasMap[criterio.criterio] = resultadoItem.nota;
+								}
+							});
+							
+							return (
+								<FichaAvaliacaoTemplate
+									tipoAvaliacao={avaliacaoParaPdf.tipo_avaliacao}
+									criterios={criteriosParaPdf}
+									notas={notasMap}
+									escalaLikert={escalaLikert}
+									pesos={pesos}
+									bases={bases}
+									observacoes={avaliacaoParaPdf.observacoes_gerais || ""}
+									pontosMelhorar={avaliacaoParaPdf.pontos_melhorar || ""}
+									planoAcao={avaliacaoParaPdf.plano_acao || ""}
+									userName={avaliacaoParaPdf.avaliado_nome}
+									userBase={avaliacaoParaPdf.base || ""}
+									readOnly={true}
+								/>
+							);
+						})()}
+					</div>
+				</div>
+			)}
         </div>
     )
 }
