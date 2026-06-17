@@ -108,7 +108,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 
 		try {
 			const response = await fetch(
-				"http://192.168.1.10:8026/api/avaliacoes",
+				"http://localhost:3001/api/avaliacoes",
 				{
 					method: "POST",
 					headers: {
@@ -145,7 +145,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+			const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -155,11 +155,11 @@ export default function FichaAvaliacaoLideradoLiderado() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/escala-likert")
+		fetch("http://localhost:3001/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+		fetch("http://localhost:3001/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -187,7 +187,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -204,7 +204,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/usuarios")
+		fetch("http://localhost:3001/api/usuarios")
 			.then(r => r.json())
 			.then(setUsuarios);
 	}, []);

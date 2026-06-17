@@ -26,7 +26,7 @@ export default function Nav() {
             (ficha) =>
                 ficha.nome === user.funcao ||
                 ficha.nome === "Liderado > Liderança" ||
-                ficha.nome === "Autoavaliação / Simulação bp-TEAM"
+                ficha.nome === "Autoavaliação Simulação bp-TEAM"
         )
         : user?.perfil === "Administrador"
         ? fichas.filter(
@@ -35,7 +35,7 @@ export default function Nav() {
         : fichas;
 
     useEffect(() => {
-    fetch("http://192.168.1.10:8026/api/fichas")
+    fetch("http://localhost:3001/api/fichas")
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);

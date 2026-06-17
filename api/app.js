@@ -15,28 +15,28 @@ app.use(cors({
    "http://127.0.0.1:5173",
    "http://192.168.1.10:5173",
    "http://192.168.1.10:3011",
-   "http://192.168.1.10:8026",
+   "http://localhost:3001",
    "http://192.168.1.10:8766"
  ]
 }));
 
 // app.use(cors());
 
-const pool = new pg.Pool({
-  host: process.env.DB_HOST || "db",
-  port: 5432,
-  user: "samu",
-  password: "samu",
-  database: "samu"
-});
-
 // const pool = new pg.Pool({
-//   host: process.env.DB_HOST || "192.168.1.10",
-//   port: 5490,
+//   host: process.env.DB_HOST || "db",
+//   port: 5432,
 //   user: "samu",
 //   password: "samu",
 //   database: "samu"
 // });
+
+const pool = new pg.Pool({
+  host: process.env.DB_HOST || "192.168.1.10",
+  port: 5490,
+  user: "samu",
+  password: "samu",
+  database: "samu"
+});
 
 app.get("/api/fichas", async (req, res) => {
   try {
@@ -726,6 +726,22 @@ app.get("/api/kpis/avaliacoes-por-profissional", async (req, res) => {
       erro: error.message,
     });
   }
+});
+
+app.get("/api/usuarios/base/:base", async (req, res) => {
+  const { base } = req.params;
+
+  const { rows } = await pool.query(
+    `
+    SELECT id, nome, email, funcao, perfil
+    FROM usuarios
+    WHERE base = $1
+    ORDER BY nome
+    `,
+    [base]
+  );
+
+  res.json(rows);
 });
 
 app.listen(port, () => {
