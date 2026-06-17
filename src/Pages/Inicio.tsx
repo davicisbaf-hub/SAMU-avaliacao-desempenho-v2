@@ -143,17 +143,27 @@ export default function Inicio() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {fichas
                   .filter((ficha) => {
-                    if (user?.perfil === "Administrador" || "🔑 Administrador — Todas as bases") return true;
+                    // nunca exibe essa ficha
+                    if (ficha.nome === "Liderado > Liderança" || ficha.nome === "Liderança > Liderado") {
+                      return false;
+                    }
+
+                    const isAdmin =
+                      user?.perfil === "Administrador" ||
+                      user?.perfil === "🔑 Administrador — Todas as bases";
+
+                    if (isAdmin) return true;
 
                     return (
                       ficha.nome === user?.funcao ||
-                      ficha.nome === "Liderança / Coordenação"
+                      ficha.nome === "Liderança / Coordenação" ||
+                      ficha.nome === "Liderança > Liderado" 
                     );
                   })
                   .map((ficha) => (
                     <FichasCard
-                      link={ficha.link}
                       key={ficha.id}
+                      link={ficha.link}
                       icon={ficha.icon}
                       cargo={ficha.nome}
                       criterios={ficha.criterios}
