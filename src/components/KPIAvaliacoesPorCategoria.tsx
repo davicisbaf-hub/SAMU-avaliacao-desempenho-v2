@@ -15,7 +15,7 @@ interface KPIData {
 export default function KPIAvaliacoesPorCategoria() {
   const [kpis, setKpis] = useState<KPIData[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [tipoFiltro, setTipoFiltro] = useState("Condutor");
+  const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set(["Condutor"]));
 
   useEffect(() => {
     async function carregarKPIs() {
@@ -23,7 +23,18 @@ export default function KPIAvaliacoesPorCategoria() {
         setCarregando(true);
         const res = await fetch("http://localhost:3001/api/kpis/avaliacoes-por-categoria");
         const dados = await res.json();
-        setKpis(dados);
+        // Postgres numeric fields may be returned as strings. Coerce to numbers and handle nulls.
+        const parsed = (dados || []).map((k: any) => ({
+          categoria: k.categoria,
+          tipo_avaliacao: k.tipo_avaliacao,
+          total_avaliacoes: k.total_avaliacoes != null ? Number(k.total_avaliacoes) : 0,
+          profissionais_avaliados: k.profissionais_avaliados != null ? Number(k.profissionais_avaliados) : 0,
+          media_ponderada: k.media_ponderada != null && k.media_ponderada !== '' ? Number(k.media_ponderada) : null,
+          nota_maxima: k.nota_maxima != null ? Number(k.nota_maxima) : null,
+          nota_minima: k.nota_minima != null ? Number(k.nota_minima) : null,
+          soma_pesos: k.soma_pesos != null ? Number(k.soma_pesos) : 0,
+        }));
+        setKpis(parsed);
       } catch (err) {
         console.error(err);
       } finally {
@@ -34,11 +45,42 @@ export default function KPIAvaliacoesPorCategoria() {
   }, []);
 
   const tiposDisponiveis = Array.from(new Set(kpis.map(k => k.tipo_avaliacao)));
-  const kpisFiltrados = kpis.filter(k => k.tipo_avaliacao === tipoFiltro);
+  const kpisFiltrados = kpis.filter(k => tiposFiltrados.has(k.tipo_avaliacao));
 
-  const obterCor = (nota: number): 'red' | 'yellow' | 'green' => {
-    if (nota >= 4) return 'green';
-    if (nota >= 3) return 'yellow';
+  const handleToggleTipo = (tipo: string) => {
+    const novosTipos = new Set(tiposFiltrados);
+    if (novosTipos.has(tipo)) {
+      novosTipos.delete(tipo);
+    } else {
+      novosTipos.add(tipo);
+    }
+    setTiposFiltrados(novosTipos);
+  };
+
+  const handleSelecionarTodos = () => {
+    if (tiposFiltrados.size === tiposDisponiveis.length) {
+      // Se todos estão selecionados, desselecionar todos
+      setTiposFiltrados(new Set());
+    } else {
+      // Selecionar todos
+      setTiposFiltrados(new Set(tiposDisponiveis));
+    }
+  };
+
+  const [avaliacoesFull, setAvaliacoesFull] = useState<any[]>([]);
+
+  useEffect(() => {
+    // carregar avaliações brutas para calcular profissionais distintos por tipo
+    fetch('http://localhost:3001/api/avaliacoes')
+      .then(r => r.json())
+      .then(data => setAvaliacoesFull(data))
+      .catch(() => setAvaliacoesFull([]));
+  }, []);
+
+  const obterCor = (nota: number | null): 'red' | 'yellow' | 'green' => {
+    const n = typeof nota === 'number' && !isNaN(nota) ? nota : 0;
+    if (n >= 4) return 'green';
+    if (n >= 3) return 'yellow';
     return 'red';
   };
 
@@ -46,16 +88,40 @@ export default function KPIAvaliacoesPorCategoria() {
     return <div className="text-center py-12">Carregando KPIs...</div>;
   }
 
+  // calcular média ponderada geral de forma segura
+  const mediasValidas = kpisFiltrados.map(k => k.media_ponderada).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
+  const mediaGeral = mediasValidas.length > 0 ? (mediasValidas.reduce((s, x) => s + x, 0) / mediasValidas.length).toFixed(2) : '—';
+
+  // calcular profissionais distintos avaliados no filtro (por nome)
+  const profissionaisDistintos = Array.from(new Set(
+    avaliacoesFull
+      .filter(a => tiposFiltrados.has(a.tipo_avaliacao))
+      .map(a => a.avaliado_nome)
+  )).length;
+
   return (
     <div className="space-y-6">
       {/* Filtro por tipo */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap items-center">
+        <button
+          onClick={handleSelecionarTodos}
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
+              ? "bg-[#1f2937] text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+          }`}
+        >
+          {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "Desselecionar Todos" : "Selecionar Todos"}
+        </button>
+        
+        <div className="h-6 w-px bg-gray-300"></div>
+        
         {tiposDisponiveis.map(tipo => (
           <button
             key={tipo}
-            onClick={() => setTipoFiltro(tipo)}
+            onClick={() => handleToggleTipo(tipo)}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              tipoFiltro === tipo
+              tiposFiltrados.has(tipo)
                 ? "bg-[#cd0048] text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
@@ -95,7 +161,7 @@ export default function KPIAvaliacoesPorCategoria() {
           ))
         ) : (
           <div className="col-span-full text-center py-12 text-gray-500">
-            Nenhum dado disponível para {tipoFiltro}
+            Nenhum dado disponível
           </div>
         )}
       </div>
@@ -104,7 +170,7 @@ export default function KPIAvaliacoesPorCategoria() {
       {kpisFiltrados.length > 0 && (
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 mt-8 border border-gray-200">
           <h3 className="text-lg font-bold text-gray-900 mb-4">
-            Resumo - {tipoFiltro}
+            Resumo {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "- Todas as Funções" : `- ${Array.from(tiposFiltrados).join(", ")}`}
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
@@ -112,7 +178,7 @@ export default function KPIAvaliacoesPorCategoria() {
                 Total de Avaliações
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {kpisFiltrados.reduce((acc, k) => acc + k.total_avaliacoes, 0)}
+                {kpisFiltrados.reduce((acc, k) => acc + (k.total_avaliacoes || 0), 0)}
               </p>
             </div>
             <div>
@@ -120,7 +186,7 @@ export default function KPIAvaliacoesPorCategoria() {
                 Profissionais Avaliados
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                {kpisFiltrados.reduce((acc, k) => acc + k.profissionais_avaliados, 0)}
+                {profissionaisDistintos}
               </p>
             </div>
             <div>
@@ -128,10 +194,7 @@ export default function KPIAvaliacoesPorCategoria() {
                 Média Ponderada Geral
               </p>
               <p className="text-2xl font-bold text-blue-600">
-                {(
-                  kpisFiltrados.reduce((acc, k) => acc + k.media_ponderada, 0) /
-                  kpisFiltrados.length
-                ).toFixed(2)}
+                {mediaGeral}
               </p>
             </div>
             <div>
