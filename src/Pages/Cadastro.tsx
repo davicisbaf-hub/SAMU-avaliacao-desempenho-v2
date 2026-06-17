@@ -467,33 +467,37 @@ export default function CadastroPage() {
                             onChange={(e) => setSenha(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
-                        <label className="text-xs font-semibold">Função</label>
+                        <label className="text-xs font-semibold">Base</label>
                         <select
+                            className="w-full border rounded-lg px-3 py-2 text-sm"
                             value={base}
                             onChange={(e) => setBase(e.target.value)}
-                            className="w-full border rounded-lg px-3 py-2 text-sm"
+                            disabled={!isAdminGlobal}
                             required
                             >
-                            <option value={base}>{base}</option>
-
-                            {bases.map((base) => (
-                                <option key={base.id} value={base.nome}>
-                                {base.nome}
+                            {basesVisiveis.map((b) => (
+                                <option
+                                    key={b.id}
+                                    value={b.nome}
+                                    className="text-black"
+                                >
+                                    {b.nome}
                                 </option>
-                            ))}
+                                ))}
                         </select>
                         
                         <label className="text-xs font-semibold">Função</label>
                         <select
-                        value={funcao}
-                        onChange={(e) => setFuncao(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
+                            value={funcao}
+                            onChange={(e) => setFuncao(e.target.value)}
+                            className="w-full border rounded-lg px-3 py-2 text-sm"
+                            required
                         >
-                        {fichas.map((ficha) => (
-                            <option key={ficha.id} value={ficha.nome}>
-                            {ficha.nome}
-                            </option>
-                        ))}
+                            <option value="">Selecione</option>
+                            <option value="Condutor">Condutor</option>
+                            <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
+                            <option value="Enfermeiro">Enfermeiro</option>
+                            <option value="Médico">Médico</option>
                         </select>
 
                         <label className="text-xs font-semibold">Perfil</label>
