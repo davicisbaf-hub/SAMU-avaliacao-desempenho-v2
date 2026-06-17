@@ -85,12 +85,15 @@ export default function AvaliacaoPage() {
 
 		const resultado = criterios.reduce((acc, criterio) => {
 			acc[criterio.criterio] = {
+				criterio: criterio.criterio,
+				codigo: criterio.codigo,
 				nota: notas[criterio.criterio],
-				peso: 1
+				peso: criterio.peso ?? 1,
+				categoria: criterio.categoria,
 			};
 
 			return acc;
-		}, {} as Record<string, { nota: number; peso: number }>);
+		}, {} as Record<string, any>);
 
 		try {
 			const response = await fetch(

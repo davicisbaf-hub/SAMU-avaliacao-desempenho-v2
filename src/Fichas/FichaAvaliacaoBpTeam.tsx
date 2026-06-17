@@ -86,12 +86,15 @@ export default function FichaAvaliacaoBpTeam() {
 
 		const resultado = criterios.reduce((acc, criterio) => {
 			acc[criterio.criterio] = {
-				nota: notas[criterio.criterio],
-				peso: 1
-			};
+			criterio: criterio.criterio,
+			codigo: criterio.codigo,
+			nota: notas[criterio.criterio],
+			peso: criterio.peso ?? 1,
+			categoria: criterio.categoria,
+		};
 
 		return acc;
-		}, {} as Record<string, { nota: number; peso: number }>);
+		}, {} as Record<string, any>);
 
 		try {
 			await fetch(

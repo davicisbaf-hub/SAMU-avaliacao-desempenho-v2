@@ -14,6 +14,7 @@ import FichaAvaliacaoMedico from "./Fichas/FichaAvaliacaoMedico.tsx";
 import FichaAvaliacaoLiderancaLiderado from "./Fichas/FichaAvaliacaoLideranca-liderado.tsx";
 import FichaAvaliacaoLideradoLideranca from "./Fichas/FichaAvaliacaoLiderado-lideranca.tsx";
 import FichaAvaliacaoBpTeam from "./Fichas/FichaAvaliacaoBpTeam.tsx";
+import PlanoDesenvolvimento from "./Pages/PlanoDesenvolvimento.tsx";
 
 
 import CadastroPage from "./Pages/Cadastro.tsx";
@@ -163,6 +164,15 @@ ReactDOM.createRoot(root!).render(
             </PrivateRoute>
           }
         /> */}
+
+        <Route
+          path="/plano-desenvolvimento"
+          element={
+            <PrivateRoute>
+              <PlanoDesenvolvimento />
+            </PrivateRoute>
+          }
+        />
 
       </Routes>
     </BrowserRouter>
