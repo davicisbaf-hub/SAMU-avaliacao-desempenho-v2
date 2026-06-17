@@ -202,7 +202,7 @@ export default function ConfiguracaoPage() {
               </h2>
 
               <div className="flex gap-2">
-                <button
+                {/* <button
                   onClick={novoCriterio}
                   className="px-4 py-2 bg-green-600 text-white rounded-lg"
                 >
@@ -215,7 +215,7 @@ export default function ConfiguracaoPage() {
                   className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50"
                 >
                   Inativar ({selecionados.length})
-                </button>
+                </button> */}
               </div>
             </div>
             {/* LISTA */}
