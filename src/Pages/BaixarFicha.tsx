@@ -422,25 +422,37 @@ export default function BaixarFicha() {
 
 						{criterios.length > 0 ? (
 							<>
-								{/* Debug: Mostrar estrutura dos dados */}
-								<div style={{ display: 'none' }}>
-									{console.log('Resultado:', avaliacaoSelecionada.resultado)}
-									{console.log('Criterios:', criterios.map(c => c.criterio))}
-								</div>
-								<FichaAvaliacaoTemplate
-									tipoAvaliacao={avaliacaoSelecionada.tipo_avaliacao}
-									criterios={criterios}
-									notas={avaliacaoSelecionada.resultado}
-									escalaLikert={escalaLikert}
-									pesos={pesos}
-									bases={bases}
-									observacoes={avaliacaoSelecionada.observacoes_gerais || ""}
-									pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
-									planoAcao={avaliacaoSelecionada.plano_acao || ""}
-									userName={avaliacaoSelecionada.avaliado_nome}
-									userBase={avaliacaoSelecionada.base || ""}
-									readOnly={true}
-								/>
+								{/* Mapear notas pelos critérios */}
+								{(() => {
+									const notasMap: Record<string, number> = {};
+									
+									criterios.forEach(criterio => {
+										// Busca diretamente no resultado
+										const resultadoItem = avaliacaoSelecionada.resultado[criterio.criterio];
+										if (resultadoItem && resultadoItem.nota !== undefined) {
+											notasMap[criterio.criterio] = resultadoItem.nota;
+										}
+									});
+									
+									console.log('Notas Mapeadas:', notasMap);
+									
+									return (
+										<FichaAvaliacaoTemplate
+											tipoAvaliacao={avaliacaoSelecionada.tipo_avaliacao}
+											criterios={criterios}
+											notas={notasMap}
+											escalaLikert={escalaLikert}
+											pesos={pesos}
+											bases={bases}
+											observacoes={avaliacaoSelecionada.observacoes_gerais || ""}
+											pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
+											planoAcao={avaliacaoSelecionada.plano_acao || ""}
+											userName={avaliacaoSelecionada.avaliado_nome}
+											userBase={avaliacaoSelecionada.base || ""}
+											readOnly={true}
+										/>
+									);
+								})()}
 							</>
 						) : (
 							<div className="flex items-center justify-center py-8">
