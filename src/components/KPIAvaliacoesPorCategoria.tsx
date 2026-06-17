@@ -12,7 +12,17 @@ interface KPIData {
   soma_pesos: number;
 }
 
-export default function KPIAvaliacoesPorCategoria() {
+export interface StatusKPIContagem {
+  categoriasBom: number;
+  categoriasAtenção: number;
+  categoriasRisco: number;
+}
+
+interface Props {
+  onStatusChange?: (status: StatusKPIContagem) => void;
+}
+
+export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   const [kpis, setKpis] = useState<KPIData[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set(["Condutor"]));
@@ -84,10 +94,6 @@ export default function KPIAvaliacoesPorCategoria() {
     return 'red';
   };
 
-  if (carregando) {
-    return <div className="text-center py-12">Carregando KPIs...</div>;
-  }
-
   // calcular média ponderada geral de forma segura
   const mediasValidas = kpisFiltrados.map(k => k.media_ponderada).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
   const mediaGeral = mediasValidas.length > 0 ? (mediasValidas.reduce((s, x) => s + x, 0) / mediasValidas.length).toFixed(2) : '—';
@@ -98,6 +104,26 @@ export default function KPIAvaliacoesPorCategoria() {
       .filter(a => tiposFiltrados.has(a.tipo_avaliacao))
       .map(a => a.avaliado_nome)
   )).length;
+
+  // calcular contagem de categorias por status
+  const categoriasBom = kpisFiltrados.filter(k => k.media_ponderada >= 4).length;
+  const categoriasAtenção = kpisFiltrados.filter(k => k.media_ponderada >= 3 && k.media_ponderada < 4).length;
+  const categoriasRisco = kpisFiltrados.filter(k => k.media_ponderada < 3).length;
+
+  // notificar componente pai das mudanças
+  useEffect(() => {
+    if (onStatusChange) {
+      onStatusChange({
+        categoriasBom,
+        categoriasAtenção,
+        categoriasRisco,
+      });
+    }
+  }, [categoriasBom, categoriasAtenção, categoriasRisco, onStatusChange]);
+
+  if (carregando) {
+    return <div className="text-center py-12">Carregando KPIs...</div>;
+  }
 
   return (
     <div className="space-y-6">
