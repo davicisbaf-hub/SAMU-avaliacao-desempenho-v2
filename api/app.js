@@ -277,6 +277,9 @@ app.get("/api/avaliacoes", async (req, res) => {
 
         a.tipo_avaliacao,
         a.resultado,
+        a.observacoes_gerais,
+        a.pontos_melhorar,
+        a.plano_acao,
         a.criado_em
 
       FROM avaliacoes a
