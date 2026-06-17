@@ -436,6 +436,7 @@ export default function BaixarFicha() {
 									
 									console.log('Notas Mapeadas:', notasMap);
 									console.log('Avaliação Completa:', avaliacaoSelecionada);
+									console.log('TODAS AS CHAVES:', Object.keys(avaliacaoSelecionada));
 									console.log('Observações:', avaliacaoSelecionada.observacoes_gerais);
 									console.log('Pontos Melhorar:', avaliacaoSelecionada.pontos_melhorar);
 									console.log('Plano Ação:', avaliacaoSelecionada.plano_acao);
