@@ -461,7 +461,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 																	key={criterio.codigo}
 																	codigo={criterio.codigo}
 																	criterio={criterio.criterio}
-																	peso={1}
+																	peso={2}
 																	indicador={criterio.indicador}
 																	escalaLikert={escalaLikert}
 																	notaSelecionada={notas[criterio.criterio]}
