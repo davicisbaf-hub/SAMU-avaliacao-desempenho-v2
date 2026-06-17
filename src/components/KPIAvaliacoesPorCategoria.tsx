@@ -6,9 +6,10 @@ interface KPIData {
   tipo_avaliacao: string;
   total_avaliacoes: number;
   profissionais_avaliados: number;
-  media_notas: number;
+  media_ponderada: number;
   nota_maxima: number;
   nota_minima: number;
+  soma_pesos: number;
 }
 
 export default function KPIAvaliacoesPorCategoria() {
@@ -75,11 +76,11 @@ export default function KPIAvaliacoesPorCategoria() {
               
               <div className="grid grid-cols-2 gap-2">
                 <KPICard
-                  titulo="Média de Notas"
-                  valor={kpi.media_notas}
+                  titulo="Média Ponderada"
+                  valor={kpi.media_ponderada}
                   subtitulo={`Min: ${kpi.nota_minima} | Max: ${kpi.nota_maxima}`}
                   icon="📊"
-                  cor={obterCor(kpi.media_notas)}
+                  cor={obterCor(kpi.media_ponderada)}
                 />
                 
                 <KPICard
@@ -124,11 +125,11 @@ export default function KPIAvaliacoesPorCategoria() {
             </div>
             <div>
               <p className="text-xs text-gray-600 uppercase font-semibold mb-1">
-                Média Geral
+                Média Ponderada Geral
               </p>
               <p className="text-2xl font-bold text-blue-600">
                 {(
-                  kpisFiltrados.reduce((acc, k) => acc + k.media_notas, 0) /
+                  kpisFiltrados.reduce((acc, k) => acc + k.media_ponderada, 0) /
                   kpisFiltrados.length
                 ).toFixed(2)}
               </p>
