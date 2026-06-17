@@ -674,13 +674,16 @@ app.get("/api/kpis/avaliacoes-por-categoria", async (req, res) => {
         a.tipo_avaliacao,
         COUNT(DISTINCT a.id) as total_avaliacoes,
         COUNT(DISTINCT a.avaliado_id) as profissionais_avaliados,
-        ROUND(AVG(
-          CAST(
-            COALESCE(a.resultado->ca.criterio->>'nota', '0') AS INT
-          )
-        )::NUMERIC, 2) as media_notas,
-        MAX(CAST(COALESCE(a.resultado->ca.criterio->>'nota', '0') AS INT)) as nota_maxima,
-        MIN(CAST(COALESCE(a.resultado->ca.criterio->>'nota', '5') AS INT)) as nota_minima
+        ROUND(
+          SUM(
+            CAST(a.resultado->ca.criterio->>'nota' AS INT) * 
+            CAST(a.resultado->ca.criterio->>'peso' AS INT)
+          ) / 
+          NULLIF(SUM(CAST(a.resultado->ca.criterio->>'peso' AS INT)), 0)
+        ::NUMERIC, 2) as media_ponderada,
+        MAX(CAST(a.resultado->ca.criterio->>'nota' AS INT)) as nota_maxima,
+        MIN(CAST(a.resultado->ca.criterio->>'nota' AS INT)) as nota_minima,
+        SUM(CAST(a.resultado->ca.criterio->>'peso' AS INT)) as soma_pesos
       FROM avaliacoes a
       JOIN criterios_avaliacao ca ON a.tipo_avaliacao = ca.tipo AND ca.ativo = true
       WHERE a.resultado->ca.criterio->>'nota' IS NOT NULL
