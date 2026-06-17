@@ -97,7 +97,7 @@ export default function AvaliacaoPage() {
 
 		try {
 			const response = await fetch(
-				"http://localhost:3001/api/avaliacoes",
+				"http://192.168.1.10:8026/api/avaliacoes",
 				{
 					method: "POST",
 					headers: {
@@ -127,7 +127,7 @@ export default function AvaliacaoPage() {
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
+			const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -137,11 +137,11 @@ export default function AvaliacaoPage() {
 
 
 	useEffect(() => {
-		fetch("http://localhost:3001/api/escala-likert")
+		fetch("http://192.168.1.10:8026/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("http://localhost:3001/api/pesos-avaliacao")
+		fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -169,7 +169,7 @@ export default function AvaliacaoPage() {
 
 	useEffect(() => {
 		carregar(
-			`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
+			`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);

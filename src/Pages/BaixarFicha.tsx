@@ -93,7 +93,7 @@ export default function BaixarFicha() {
 
 	async function carregarUsuarios() {
 		try {
-			const res = await fetch("http://localhost:3001/api/usuarios");
+			const res = await fetch("http://192.168.1.10:8026/api/usuarios");
 			const data = await res.json();
 			setUsuarios(data);
 		} catch (error) {
@@ -107,7 +107,7 @@ export default function BaixarFicha() {
 	});
 
 	useEffect(() => {
-		fetch("http://localhost:3001/api/avaliacoes")
+		fetch("http://192.168.1.10:8026/api/avaliacoes")
 			.then((res) => res.json())
 			.then(setAvaliacoes)
 			.catch(console.error);
@@ -115,9 +115,9 @@ export default function BaixarFicha() {
 
 	useEffect(() => {
 		Promise.all([
-			fetch("http://localhost:3001/api/escala-likert").then(r => r.json()),
-			fetch("http://localhost:3001/api/pesos-avaliacao").then(r => r.json()),
-			fetch("http://localhost:3001/api/bases").then(r => r.json()),
+			fetch("http://192.168.1.10:8026/api/escala-likert").then(r => r.json()),
+			fetch("http://192.168.1.10:8026/api/pesos-avaliacao").then(r => r.json()),
+			fetch("http://192.168.1.10:8026/api/bases").then(r => r.json()),
 		]).then(([likert, pesos, bases]) => {
 			setEscalaLikert(likert);
 			setPesos(pesos);
@@ -127,7 +127,7 @@ export default function BaixarFicha() {
 
 	useEffect(() => {
 		if (!avaliacaoSelecionada) return;
-		fetch(`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${avaliacaoSelecionada.tipo_avaliacao}`)
+		fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${avaliacaoSelecionada.tipo_avaliacao}`)
 			.then(res => res.json())
 			.then(setCriterios)
 			.catch(console.error);
@@ -162,7 +162,7 @@ export default function BaixarFicha() {
 
 	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
 		try {
-			const critResponse = await fetch(`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
+			const critResponse = await fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
 			const crit = await critResponse.json();
 			setCriteriosParaPdf(crit);
 			setAvaliacaoParaPdf(avaliacao);
