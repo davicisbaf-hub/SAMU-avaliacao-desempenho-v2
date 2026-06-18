@@ -205,7 +205,7 @@ export default function BaixarFicha() {
 									onChange={(e) => setFiltroUsuario(e.target.value)}
 									className="border rounded-lg px-3 py-2"
 								>
-									<option value="">Usuários</option>
+									<option value="">Avaliado</option>
 									{usuarios
 										.filter(u => isAdminGlobal || u.base === userBase)
 										.map((usuario) => (
