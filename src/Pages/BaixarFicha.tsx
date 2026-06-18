@@ -382,7 +382,11 @@ export default function BaixarFicha() {
 											pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
 											planoAcao={avaliacaoSelecionada.plano_acao || ""}
 											userName={avaliacaoSelecionada.avaliado_nome}
-											userBase={avaliacaoSelecionada.base || ""}
+											userBase={
+												usuarios.find(
+													u => u.nome === avaliacaoSelecionada.avaliado_nome
+												)?.base || ""
+											}
 											readOnly={true}
 										/>
 									);

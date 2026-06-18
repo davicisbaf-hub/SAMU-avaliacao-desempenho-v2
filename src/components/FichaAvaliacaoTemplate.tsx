@@ -91,8 +91,7 @@ export default function FichaAvaliacaoTemplate({
 		return acc;
 	}, {} as Record<string, Criterios[]>);
 
-		console.log("userBase:", userBase);
-	console.log("bases:", bases);
+	
 	return (
 		<div>
 			<div
