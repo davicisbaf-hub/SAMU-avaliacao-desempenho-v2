@@ -31,7 +31,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
     async function carregarKPIs() {
       try {
         setCarregando(true);
-        const res = await fetch("http://192.168.1.10:8026/api/kpis/avaliacoes-por-categoria");
+        const res = await fetch("http://localhost:3001/api/kpis/avaliacoes-por-categoria");
         const dados = await res.json();
         // Postgres numeric fields may be returned as strings. Coerce to numbers and handle nulls.
         const parsed = (dados || []).map((k: any) => ({
@@ -81,7 +81,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
 
   useEffect(() => {
     // carregar avaliações brutas para calcular profissionais distintos por tipo
-    fetch('http://192.168.1.10:8026/api/avaliacoes')
+    fetch('http://localhost:3001/api/avaliacoes')
       .then(r => r.json())
       .then(data => setAvaliacoesFull(data))
       .catch(() => setAvaliacoesFull([]));
