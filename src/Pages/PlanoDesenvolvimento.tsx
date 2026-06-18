@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
 import { useUserSession } from '../contexts/UserSession';
@@ -21,7 +21,6 @@ type Criterio = {
 };
 
 export default function PlanoDesenvolvimento() {
-  const { user } = useUserSession();
   const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -44,25 +43,23 @@ export default function PlanoDesenvolvimento() {
     carregar();
   }, []);
 
-  // quando avaliações carregarem, buscar critérios por cada função encontrada
+  // Busca critérios por função (caso precise usar no futuro, já que está no seu código original)
   useEffect(() => {
     const tipos = Array.from(new Set(avaliacoes.map(a => a.avaliado_funcao))).filter(Boolean);
     tipos.forEach((tipo) => {
-      if (criteriosPorTipo[tipo]) return; // já buscado
+      if (criteriosPorTipo[tipo]) return;
       fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${encodeURIComponent(tipo)}`)
         .then(r => r.json())
         .then((dados: Criterio[]) => {
           setCriteriosPorTipo(prev => ({ ...prev, [tipo]: dados }));
         })
-        .catch(() => {
-          // ignorar erros individuais
-        });
+        .catch(() => { });
     });
-  }, [avaliacoes]);
+  }, [avaliacoes, status]);
 
-  // Extrai itens do resultado com nota e metadados (usa categoria direto do payload)
+  // Extrai itens recursivamente do resultado
   const extrairItens = (obj: any, path = ''): { path: string; nota: number; categoria?: string; codigo?: string; criterioText?: string; peso?: number }[] => {
-    const res: { path: string; nota: number; categoria?: string; codigo?: string; criterioText?: string; peso?: number }[] = [];
+    const res: any[] = [];
     if (!obj || typeof obj !== 'object') return res;
     for (const key of Object.keys(obj)) {
       const val = obj[key];
@@ -78,7 +75,6 @@ export default function PlanoDesenvolvimento() {
             peso: typeof val.peso === 'number' ? val.peso : undefined,
           });
         }
-        // continuar recursão para itens aninhados
         res.push(...extrairItens(val, p));
       }
     }
@@ -86,165 +82,152 @@ export default function PlanoDesenvolvimento() {
   };
 
   const toggleCategory = (profKey: string, categoria: string) => {
-    setExpanded(prev => {
-      const updated = { ...prev };
-      if (!updated[profKey]) updated[profKey] = {};
-      updated[profKey][categoria] = !updated[profKey][categoria];
-      return updated;
-    });
+    setExpanded(prev => ({
+      ...prev,
+      [profKey]: {
+        ...prev[profKey],
+        [categoria]: !prev[profKey]?.[categoria],
+      },
+    }));
   };
 
-  const gerarPlanoPara = (avaliacoesDoProf: Avaliacao[]) => {
-    if (avaliacoesDoProf.length === 0) return null;
-
-    // coletar itens (já incluem categoria, codigo, criterioText, peso)
-    const itens = avaliacoesDoProf.flatMap((a) => extrairItens(a.resultado || {}));
-    if (itens.length === 0) {
-      return (
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-sm">Sem detalhes numéricos nas avaliações — plano genérico aplicado.</p>
-        </div>
-      );
-    }
-
-    // agrupar por categoria e por criterio (usa codigo quando disponível)
-    const grouped: Record<string, Record<string, { soma: number; count: number; peso?: number; codigo?: string; criterioText?: string }>> = {};
-
-    itens.forEach(it => {
-      const categoria = it.categoria && String(it.categoria).trim() !== '' ? it.categoria : (it.path && it.path.includes('.') ? it.path.split('.')[0] : 'Sem categoria');
-      const critKey = it.codigo || it.criterioText || it.path;
-      if (!grouped[categoria]) grouped[categoria] = {};
-      if (!grouped[categoria][critKey]) grouped[categoria][critKey] = { soma: 0, count: 0, peso: it.peso, codigo: it.codigo, criterioText: it.criterioText };
-      grouped[categoria][critKey].soma += it.nota;
-      grouped[categoria][critKey].count += 1;
+  // SOLUÇÃO: Agrupa as avaliações por profissional dinamicamente
+  const porProfissional = useMemo(() => {
+    const grupos: Record<string, Avaliacao[]> = {};
+    avaliacoes.forEach((aval) => {
+      const chave = aval.avaliado_nome;
+      if (!grupos[chave]) grupos[chave] = [];
+      grupos[chave].push(aval);
     });
-
-    // construir estrutura por categoria com médias
-    const categoriasComFracos: Record<string, { criterio: string; media: number; peso?: number; count: number; codigo?: string }[]> = {};
-
-    Object.entries(grouped).forEach(([cat, criteriosObj]) => {
-      const arr = Object.entries(criteriosObj).map(([critKey, info]) => ({
-        criterio: info.criterioText || critKey,
-        key: critKey,
-        media: parseFloat((info.soma / info.count).toFixed(2)),
-        peso: info.peso,
-        count: info.count,
-        codigo: info.codigo,
-      }));
-
-      categoriasComFracos[cat] = arr.filter(x => x.media <= 3);
-    });
-
-    const anyFraco = Object.values(categoriasComFracos).some(arr => arr.length > 0);
-    if (!anyFraco) {
-      return (
-        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-sm">Nenhum item com média ≤ 3 por categoria.</p>
-        </div>
-      );
-    }
-
-    // UI: mostrar categorias com botão olho para expandir detalhes
-    return (
-      <div className="bg-card rounded-xl p-4 border">
-        <h4 className="font-semibold mb-3">Itens abaixo do limiar (média ≤ 3) por categoria</h4>
-
-        <div className="space-y-3">
-          {Object.entries(categoriasComFracos).map(([cat, items]) => (
-            items.length === 0 ? null : (
-              <div key={cat} className="border rounded-lg p-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <strong className="text-sm">{cat}</strong>
-                    <span className="text-xs text-gray-500">{items.length} item(s)</span>
-                  </div>
-                  <button onClick={() => toggleCategory(`${avaliacoesDoProf[0].avaliado_nome}||${avaliacoesDoProf[0].avaliado_funcao}`, cat)} className="text-gray-500 hover:text-gray-700">
-                    {/* eye icon */}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                  </button>
-                </div>
-
-                {expanded[`${avaliacoesDoProf[0].avaliado_nome}||${avaliacoesDoProf[0].avaliado_funcao}`]?.[cat] && (
-                  <div className="mt-2 text-sm">
-                    <ul className="list-disc ml-5">
-                      {items.map(it => (
-                        <li key={it.key} className="mb-1">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="font-medium">{it.codigo ? `${it.codigo} — ${it.criterio}` : it.criterio}</div>
-                              <div className="text-xs text-gray-500">Média: {it.media} — respostas: {it.count}{it.peso ? ` — peso: ${it.peso}` : ''}</div>
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )
-          ))}
-        </div>
-
-        <div className="mt-3 text-xs text-gray-500">Detalhes gerados a partir das avaliações registradas no painel. Clique no ícone para ver perguntas por categoria.</div>
-      </div>
-    );
-  };
-
-  // Agrupa avaliações por profissional
-  const porProfissional = avaliacoes.reduce((acc: Record<string, Avaliacao[]>, a) => {
-    const key = `${a.avaliado_nome}||${a.avaliado_funcao}`;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(a);
-    return acc;
-  }, {} as Record<string, Avaliacao[]>);
+    return grupos;
+  }, [avaliacoes]);
 
   return (
-    <div>
-      <div className="flex h-screen w-screen bg-white text-black">
-        <Nav />
+    <div className="flex h-screen w-screen bg-white text-black">
+      <Nav />
 
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <Header />
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <Header />
 
-          {/* conteudo */}
-          <div className="custom-scrollbar p-[32px] overflow-y-auto">
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-2xl font-bold">Plano de Desenvolvimento Profissional (6 meses)</h1>
-                <p className="text-sm text-gray-600">Planos gerados automaticamente a partir das avaliações do painel. Revisão mensal recomendada.</p>
-              </div>
 
-              {carregando ? (
-                <div className="py-12 text-center">Carregando avaliações...</div>
-              ) : (
-                <div className="grid grid-cols-1 gap-4">
-                  {Object.keys(porProfissional).length === 0 ? (
-                    <div className="text-sm text-gray-500">Nenhuma avaliação encontrada para gerar planos.</div>
-                  ) : (
-                    Object.entries(porProfissional).map(([key, items]) => {
-                      const [nome, funcao] = key.split('||');
+        <div className='custom-scrollbar p-[32px] overflow-y-auto'>
+          <h2 className="text-2xl font-bold mb-6">Plano de Desenvolvimento</h2>
+
+          {carregando ? (
+            <div className="text-center py-10 font-medium">Carregando avaliações...</div>
+          ) : Object.keys(porProfissional).length === 0 ? (
+            <div className="text-center py-10 text-gray-500">Nenhuma avaliação encontrada.</div>
+          ) : (
+            Object.entries(porProfissional).map(([profKey, avaliacoesDoProf]) => {
+              const grouped: Record<string, Record<string, { soma: number; count: number; codigo?: string; }>> = {};
+
+              avaliacoesDoProf.forEach((avaliacao) => {
+                const itens = extrairItens(avaliacao.resultado);
+                itens.forEach((item) => {
+                  const categoria = item.categoria || "Sem categoria";
+                  const criterio = item.criterioText || item.path;
+
+                  if (!grouped[categoria]) grouped[categoria] = {};
+                  if (!grouped[categoria][criterio]) {
+                    grouped[categoria][criterio] = { soma: 0, count: 0, codigo: item.codigo };
+                  }
+
+                  grouped[categoria][criterio].soma += item.nota;
+                  grouped[categoria][criterio].count += 1;
+                });
+              });
+
+              const categoriasClassificadas: Record<string, any[]> = {};
+              Object.entries(grouped).forEach(([cat, criteriosObj]) => {
+                categoriasClassificadas[cat] = Object.entries(criteriosObj).map(([criterio, info]) => {
+                  const media = Number((info.soma / info.count).toFixed(2));
+                  let classificacao = "";
+                  let orientacao = "";
+
+                  // Regra baseada na sua tabela de médias/porcentagem
+                  if (media >= 4) {
+                    classificacao = "BOM";
+                    orientacao = "Manutenção e aperfeiçoamento. Reconhecimento e incentivo.";
+                  } else if (media >= 3) {
+                    classificacao = "REGULAR";
+                    orientacao = "PDI com ações de melhoria. Acompanhamento mensal. Treinamentos específicos.";
+                  } else {
+                    classificacao = "RUIM";
+                    orientacao = "Intervenção imediata. PDI urgente. Supervisão direta. Afastamento de funções críticas se necessário.";
+                  }
+
+                  return { criterio, media, classificacao, orientacao };
+                });
+              });
+
+              const anyProblema = Object.values(categoriasClassificadas).some(
+                (items) => items.some((item) => item.classificacao !== "BOM")
+              );
+
+              return (
+                <div key={profKey} className="bg-white rounded-xl border p-4 mb-4 shadow-sm">
+                  <h3 className="font-bold text-lg mb-4">
+                    {avaliacoesDoProf[0].avaliado_nome} - {avaliacoesDoProf[0].avaliado_funcao}
+                  </h3>
+
+                  <div className="space-y-3">
+                    {Object.entries(categoriasClassificadas).map(([cat, items]) => {
+                      const itensNecessitamAcao = items.filter(item => item.classificacao !== "BOM");
+                      if (itensNecessitamAcao.length === 0) return null;
+
                       return (
-                        <div key={key} className="bg-white rounded-xl shadow-sm p-4 border">
-                          <div className="flex items-start justify-between gap-4">
+                        <div key={cat} className="border rounded-lg p-3">
+                          <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-gray-500">{funcao}</p>
-                              <h3 className="text-lg font-semibold">{nome}</h3>
+                              <strong className="text-gray-800">{cat}</strong>
+                              <div className="text-xs text-gray-500">
+                                {itensNecessitamAcao.length} item(s) com oportunidade de melhoria
+                              </div>
                             </div>
-                            <div className="text-right text-sm text-gray-500">Avaliações: {items.length}</div>
+                            <button onClick={() => toggleCategory(profKey, cat)} className="text-xl p-1 hover:bg-gray-100 rounded">
+                              {expanded[profKey]?.[cat] ? '👁️‍🗨️' : '👁️'}
+                            </button>
                           </div>
 
-                          <div className="mt-3">
-                            {gerarPlanoPara(items)}
-                          </div>
+                          {expanded[profKey]?.[cat] && (
+                            <div className="mt-3 space-y-3 border-t pt-3">
+                              {itensNecessitamAcao.map((item) => (
+                                <div key={`${cat}-${item.codigo || item.criterio}`} className="border rounded-lg p-3 bg-gray-50">
+                                  <div className="font-medium text-gray-900">
+                                    {item.codigo ? `${item.codigo} - ${item.criterio}` : item.criterio}
+                                  </div>
+                                  <div className="text-sm mt-1 text-gray-700">
+                                    Média: <strong className="text-base">{item.media}</strong>
+                                  </div>
+                                  <div className={`font-semibold mt-1 text-sm ${item.classificacao === "RUIM" ? "text-red-600" : "text-amber-600"}`}>
+                                    {item.classificacao}
+                                  </div>
+                                  <div className="text-xs text-gray-600 mt-1 bg-white p-2 rounded border">
+                                    {item.orientacao}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       );
-                    })
+                    })}
+                  </div>
+
+                  {!anyProblema && (
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg mt-4">
+                      <p className="text-sm font-medium text-green-700">
+                        Profissional com desempenho satisfatório em todos os critérios.
+                      </p>
+                      <p className="text-xs text-green-600 mt-1">
+                        Manutenção e aperfeiçoamento. Reconhecimento e incentivo.
+                      </p>
+                    </div>
                   )}
                 </div>
-              )}
-
-            </div>
-          </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>

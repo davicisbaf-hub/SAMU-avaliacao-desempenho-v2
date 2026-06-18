@@ -268,7 +268,7 @@ export default function FichaAvaliacaoTemplate({
 					}
 				)}
 
-				<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+				<div className='grid grid-cols-1 md:grid-cols-3 gap-4 my-6'>
 					<div>
 						<label className='text-sm font-semibold text-[#0e1216] mb-2 block'>Observações Gerais</label>
 						<textarea
@@ -303,16 +303,15 @@ export default function FichaAvaliacaoTemplate({
 					</div>
 				</div>
 
-				{!readOnly && (
-					<div className='bg-card border border-border rounded-xl p-5'>
-						<h3 className='text-sm font-semibold text-[#0e1216] mb-4'>Assinaturas e Ciência</h3>
-						<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
-							<Assinatura Responsavel="Avaliador" />
-							<Assinatura Responsavel="Avaliado / Profissional" />
-							<Assinatura Responsavel="Coordenação / Chefia Imediata" />
-						</div>
+				<div className='bg-card border border-border rounded-xl p-5 '>
+					<h3 className='text-sm font-semibold text-[#0e1216] mb-4'>Assinaturas e Ciência</h3>
+					<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
+						<Assinatura Responsavel="Avaliador" />
+						<Assinatura Responsavel="Avaliado / Profissional" />
+						<Assinatura Responsavel="Coordenação / Chefia Imediata" />
 					</div>
-				)}
+				</div>
+				
 			</div>
 
 			<div className='flex gap-4'>
