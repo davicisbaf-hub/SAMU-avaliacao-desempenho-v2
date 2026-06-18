@@ -86,6 +86,7 @@ export default function BaixarFicha() {
 	const { user } = useUserSession();
 	const userBase = user?.base;
 	const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases";
+	
 
 	useEffect(() => {
 		carregarUsuarios();
@@ -369,6 +370,8 @@ export default function BaixarFicha() {
 											userName={avaliacaoSelecionada.avaliado_nome}
 											userBase={avaliacaoSelecionada.base || ""}
 											readOnly={true}
+											dataEnvio={avaliacaoSelecionada.criado_em}
+
 										/>
 									);
 								})()}
@@ -407,6 +410,8 @@ export default function BaixarFicha() {
 									userName={avaliacaoParaPdf.avaliado_nome}
 									userBase={avaliacaoParaPdf.base || ""}
 									readOnly={true}
+									dataEnvio={avaliacaoParaPdf.criado_em}
+
 								/>
 							);
 						})()}

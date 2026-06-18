@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router";
 import { useUserSession } from "../contexts/UserSession";
 import { useEffect, useState } from "react";
+import { Download } from "lucide-react";
 
 type Ficha = {
   nome: string;
@@ -96,7 +97,7 @@ export default function Nav() {
                                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent"
                             }`
                         }>
-                            Baixar Fichas (PDF)
+                            <Download /> Baixar Fichas (PDF)
                         </NavLink>
                     )}
                     <NavLink to="/instrucao" 
