@@ -48,7 +48,6 @@ type Props = {
 	tentouEnviar?: boolean;
 	readOnly?: boolean;
 	onPrint?: () => void;
-	dataEnvio?: string;
 };
 
 const iconByTipo: Record<string, string> = {
@@ -75,7 +74,6 @@ export default function FichaAvaliacaoTemplate({
 	tentouEnviar = false,
 	readOnly = false,
 	onPrint = () => {},
-	dataEnvio,
 }: Props) {
 	const fichaRef = useRef<HTMLDivElement>(null);
 
@@ -116,9 +114,7 @@ export default function FichaAvaliacaoTemplate({
 						</div>
 						<div className='text-right hidden sm:block'>
 							<p className='text-[#f8f8f8]/60 text-xs'>Data</p>
-							<p className='text-[#f8f8f8] font-mono text-sm'>
-								{dataEnvio ? new Date(dataEnvio).toLocaleDateString('pt-BR') : '—'}
-							</p>
+							<p className='text-[#f8f8f8] font-mono text-sm'>{new Date().toLocaleDateString()}</p>
 						</div>
 					</div>
 					<div className='bg-[#061c31]/50 px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4'>

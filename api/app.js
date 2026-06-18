@@ -183,34 +183,23 @@ app.get("/api/criterios-avaliacao-autoavaliacao/:tipo", async (req, res) => {
   }
 });
 
-app.get("/api/fichas-avaliacao/:tipo", async (req, res) => {
-  try {
-    const { tipo } = req.params;
+app.get("/api/criterios-avaliacao/:tipo/:avaliacao", async (req, res) => {
+  const { tipo, avaliacao } = req.params;
 
-    const { rows } = await pool.query(
-      `
-      SELECT
-        id,
-        tipo,
-        categoria,
-        codigo,
-        criterio,
-        peso,
-        indicador
-      FROM fichas_avaliacao
-      WHERE tipo = $1
-      ORDER BY categoria, codigo;
-      `,
-      [tipo]
-    );
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
-  }
+  const { rows } = await pool.query(
+    `
+    SELECT *
+    FROM criterios_avaliacao
+    WHERE tipo = $1
+      AND avaliacao = $2
+      AND ativo = true
+    ORDER BY categoria, codigo
+    `,
+    [tipo, avaliacao]
+  );
+
+  res.json(rows);
 });
-
 
 app.post("/api/avaliacoes", async (req, res) => {
   try {

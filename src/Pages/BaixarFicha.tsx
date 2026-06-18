@@ -52,6 +52,7 @@ type Avaliacao = {
 	pontos_melhorar?: string;
 	plano_acao?: string;
 	criado_em: string;
+	avaliacao: string;
 };
 
 type Usuario = {
@@ -80,13 +81,13 @@ export default function BaixarFicha() {
 	const fichaRefParaPdf = useRef<HTMLDivElement>(null);
 	const [avaliacaoParaPdf, setAvaliacaoParaPdf] = useState<Avaliacao | null>(null);
 	const [criteriosParaPdf, setCriteriosParaPdf] = useState<Criterios[]>([]);
+	
 
 	const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
 	const { user } = useUserSession();
 	const userBase = user?.base;
 	const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases";
-	
 
 	useEffect(() => {
 		carregarUsuarios();
@@ -128,11 +129,19 @@ export default function BaixarFicha() {
 
 	useEffect(() => {
 		if (!avaliacaoSelecionada) return;
-		fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${avaliacaoSelecionada.tipo_avaliacao}`)
+
+		const tipoFicha =
+			Object.values(avaliacaoSelecionada.resultado)[0]?.avaliacao;
+
+		fetch(
+			`http://192.168.1.10:8026/api/criterios-avaliacao/${avaliacaoSelecionada.funcao}/${tipoFicha}`
+		)
 			.then(res => res.json())
 			.then(setCriterios)
 			.catch(console.error);
+
 	}, [avaliacaoSelecionada]);
+	
 
 	// Nomes dos usuários que são da minha base
 	const nomesNaMinhaBase = usuarios
@@ -160,7 +169,7 @@ export default function BaixarFicha() {
 	const handleViewClick = (avaliacao: Avaliacao) => {
 		setAvaliacaoSelecionada(avaliacao);
 	};
-
+	
 	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
 		try {
 			const critResponse = await fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
@@ -370,8 +379,6 @@ export default function BaixarFicha() {
 											userName={avaliacaoSelecionada.avaliado_nome}
 											userBase={avaliacaoSelecionada.base || ""}
 											readOnly={true}
-											dataEnvio={avaliacaoSelecionada.criado_em}
-
 										/>
 									);
 								})()}
@@ -410,8 +417,6 @@ export default function BaixarFicha() {
 									userName={avaliacaoParaPdf.avaliado_nome}
 									userBase={avaliacaoParaPdf.base || ""}
 									readOnly={true}
-									dataEnvio={avaliacaoParaPdf.criado_em}
-
 								/>
 							);
 						})()}
