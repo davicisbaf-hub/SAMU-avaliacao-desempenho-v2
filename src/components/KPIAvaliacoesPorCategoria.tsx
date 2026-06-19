@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import KPICard from "./KPICard";
 
 import {
   ResponsiveContainer,
@@ -99,8 +98,19 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   }, []);
 
   // calcular média ponderada geral de forma segura
-  const mediasValidas = kpisFiltrados.map(k => k.media_ponderada).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
-  const mediaGeral = mediasValidas.length > 0 ? (mediasValidas.reduce((s, x) => s + x, 0) / mediasValidas.length).toFixed(2) : '—';
+  
+  const totalAvaliacoes = kpisFiltrados.reduce((acc, k) => acc + k.total_avaliacoes,0);
+
+  const mediaGeral =
+    totalAvaliacoes > 0
+      ? (
+          kpisFiltrados.reduce(
+            (acc, k) =>
+              acc + (k.media_ponderada * k.total_avaliacoes),
+            0
+          ) / totalAvaliacoes
+        ).toFixed(1)
+      : "—";
 
   // calcular profissionais distintos avaliados no filtro (por nome)
   const profissionaisDistintos = Array.from(new Set(
@@ -151,26 +161,56 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       ).length,
     };
   });
-  console.table(dadosPorTipo);
-  const renderLabel = (props: any) => {
-    const { x, y, width, height, value } = props;
+  
+  const categoriasAgrupadas = Object.values(
+    kpisFiltrados.reduce((acc: any, item) => {
+      if (!acc[item.categoria]) {
+        acc[item.categoria] = {
+          categoria: item.categoria,
 
-    if (!value || width < 20) return null;
+          somaMediaPonderada: 0,
+          somaAvaliacoes: 0,
 
-    return (
-      <text
-        x={x + width / 2}
-        y={y + height / 2}
-        fill="#fff"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontWeight="bold"
-        fontSize={12}
-      >
-        {value}
-      </text>
-    );
-  };
+          total_avaliacoes: 0,
+          profissionais_avaliados: 0,
+        };
+      }
+
+      acc[item.categoria].somaMediaPonderada +=
+        item.media_ponderada * item.total_avaliacoes;
+
+      acc[item.categoria].somaAvaliacoes +=
+        item.total_avaliacoes;
+
+      acc[item.categoria].total_avaliacoes +=
+        item.total_avaliacoes;
+
+      acc[item.categoria].profissionais_avaliados +=
+        item.profissionais_avaliados;
+
+      return acc;
+    }, {})
+  ).map((item: any) => ({
+    categoria: item.categoria,
+
+    media_ponderada:
+      item.somaAvaliacoes > 0
+        ? item.somaMediaPonderada / item.somaAvaliacoes
+        : 0,
+
+    total_avaliacoes: item.total_avaliacoes,
+
+    profissionais_avaliados: item.profissionais_avaliados,
+  }));
+
+  const dadosCards =
+  tiposFiltrados.size > 1
+    ? categoriasAgrupadas
+    : kpisFiltrados;
+
+  const totalCategorias = new Set(
+    kpisFiltrados.map(k => k.categoria)
+  ).size;
   return (
     <div className="space-y-6">
       {/* Filtro por tipo */}
@@ -204,9 +244,9 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       {/* Grid de KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
-          kpisFiltrados.map((kpi) => (
+          dadosCards.map((kpi: any) => (
             <div
-              key={`${kpi.tipo_avaliacao}-${kpi.categoria}`}
+              key={kpi.categoria}
               className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all"
             >
               <div className="flex items-center justify-between mb-4">
@@ -400,7 +440,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
                 Categorias
               </p>
               <p className="text-2xl font-bold text-purple-600">
-                {kpisFiltrados.length}
+                {totalCategorias}
               </p>
             </div>
           </div>
