@@ -368,7 +368,7 @@ export default function CadastroPage() {
                                                 {basesVisiveis.map((base) => (
                                                     <option
                                                         key={base.id}
-                                                        value={base.id}
+                                                        value={base.nome}
                                                         className="text-black"
                                                     >
                                                         {base.nome}
@@ -418,12 +418,12 @@ export default function CadastroPage() {
                                             </div>
 
                                             <div className="flex gap-2">
-                                                <button
+                                                <p
                                                     onClick={() => editarUsuario(user)}
                                                     className="text-sm px-2 py-1 border rounded"
                                                     >
                                                     Editar
-                                                </button>
+                                                </p>
                                                 <button
                                                     onClick={() => removerUsuario(user.id)}
                                                     className="text-sm px-2 py-1 border rounded text-red-500"

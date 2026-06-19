@@ -31,7 +31,9 @@ export default function Nav() {
         )
         : user?.perfil === "Administrador"
         ? fichas.filter(
-            (ficha) => ficha.nome !== "Liderado > Liderança"
+            (ficha) =>
+            ficha.nome === user.funcao ||
+            ficha.nome === "Autoavaliação / Simulação bp-TEAM"
         )
         : fichas;
 
@@ -40,7 +42,8 @@ export default function Nav() {
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);
-
+console.log(user);
+console.log(fichas);
     return (
         
         <aside className="bg-[#0a1a30] lg:flex w-64 flex-col text-white shrink-0 border-r border-sidebar-border">
