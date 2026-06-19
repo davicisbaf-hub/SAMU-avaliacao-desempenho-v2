@@ -59,9 +59,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("http://localhost:3001/api/fichasVw", setFichas);
-    carregar("http://localhost:3001/api/frequencias", setFrequencias);
-    carregar("http://localhost:3001/api/fluxos-avaliacao", setFluxos);
+    carregar("http://192.168.1.10:8026/api/fichasVw", setFichas);
+    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
+    carregar("http://192.168.1.10:8026/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (

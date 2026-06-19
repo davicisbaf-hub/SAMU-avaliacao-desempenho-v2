@@ -31,7 +31,7 @@ export default function PlanoDesenvolvimento() {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await fetch('http://localhost:3001/api/avaliacoes');
+        const res = await fetch('http://192.168.1.10:8026/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {
@@ -48,7 +48,7 @@ export default function PlanoDesenvolvimento() {
     const tipos = Array.from(new Set(avaliacoes.map(a => a.avaliado_funcao))).filter(Boolean);
     tipos.forEach((tipo) => {
       if (criteriosPorTipo[tipo]) return;
-      fetch(`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${encodeURIComponent(tipo)}`)
+      fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${encodeURIComponent(tipo)}`)
         .then(r => r.json())
         .then((dados: Criterio[]) => {
           setCriteriosPorTipo(prev => ({ ...prev, [tipo]: dados }));
