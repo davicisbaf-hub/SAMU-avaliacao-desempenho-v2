@@ -9,7 +9,7 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  LabelList,
+  LabelList 
 } from "recharts";
 
 interface KPIData {
@@ -98,13 +98,6 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       .catch(() => setAvaliacoesFull([]));
   }, []);
 
-  const obterCor = (nota: number | null): 'red' | 'yellow' | 'green' => {
-    const n = typeof nota === 'number' && !isNaN(nota) ? nota : 0;
-    if (n >= 4) return 'green';
-    if (n >= 3) return 'yellow';
-    return 'red';
-  };
-
   // calcular média ponderada geral de forma segura
   const mediasValidas = kpisFiltrados.map(k => k.media_ponderada).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
   const mediaGeral = mediasValidas.length > 0 ? (mediasValidas.reduce((s, x) => s + x, 0) / mediasValidas.length).toFixed(2) : '—';
@@ -118,7 +111,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
 
   // calcular contagem de categorias por status
   const categoriasBom = kpisFiltrados.filter(k => k.media_ponderada >= 4).length;
-  const categoriasAtenção = kpisFiltrados.filter(k => k.media_ponderada >= 3 && k.media_ponderada < 4).length;
+  const categoriasAtenção = kpisFiltrados.filter(k => k.media_ponderada >= 3 && k.media_ponderada < 3.9).length;
   const categoriasRisco = kpisFiltrados.filter(k => k.media_ponderada < 3).length;
 
   // notificar componente pai das mudanças
@@ -158,7 +151,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       ).length,
     };
   });
-
+  console.table(dadosPorTipo);
   const renderLabel = (props: any) => {
     const { x, y, width, height, value } = props;
 
@@ -184,26 +177,24 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       <div className="flex gap-2 flex-wrap items-center">
         <button
           onClick={handleSelecionarTodos}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${
-            tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
               ? "bg-[#1f2937] text-white"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
+            }`}
         >
           {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "Desselecionar Todos" : "Selecionar Todos"}
         </button>
-        
+
         <div className="h-6 w-px bg-gray-300"></div>
-        
+
         {tiposDisponiveis.map(tipo => (
           <button
             key={tipo}
             onClick={() => handleToggleTipo(tipo)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              tiposFiltrados.has(tipo)
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
                 ? "bg-[#cd0048] text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
+              }`}
           >
             {tipo}
           </button>
@@ -215,88 +206,76 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
         {kpisFiltrados.length > 0 ? (
           kpisFiltrados.map((kpi) => (
             <div
-                key={`${kpi.tipo_avaliacao}-${kpi.categoria}`}
-                className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900">
-                    {kpi.categoria}
-                  </h3>
+              key={`${kpi.tipo_avaliacao}-${kpi.categoria}`}
+              className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-900">
+                  {kpi.categoria}
+                </h3>
 
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full font-semibold ${
-                      kpi.media_ponderada >= 4
-                        ? "bg-green-100 text-green-700"
-                        : kpi.media_ponderada >= 3
+                <span
+                  className={`px-2 py-1 text-xs rounded-full font-semibold ${kpi.media_ponderada >= 4
+                      ? "bg-green-100 text-green-700"
+                      : kpi.media_ponderada >= 3
                         ? "bg-yellow-100 text-yellow-700"
                         : "bg-red-100 text-red-700"
                     }`}
-                  >
-                    {kpi.media_ponderada >= 4
-                      ? "BOM"
-                      : kpi.media_ponderada >= 3
+                >
+                  {kpi.media_ponderada >= 4
+                    ? "BOM"
+                    : kpi.media_ponderada >= 3
                       ? "ATENÇÃO"
                       : "RISCO"}
-                  </span>
-                </div>
+                </span>
+              </div>
 
-                <div className="flex items-end gap-3 mb-4">
-                  <span className="text-4xl font-bold text-gray-900">
-                    {kpi.media_ponderada?.toFixed(1)}
-                  </span>
+              <div className="flex items-end gap-3 mb-4">
+                <span className="text-4xl font-bold text-gray-900">
+                  {kpi.media_ponderada?.toFixed(1)}
+                </span>
 
-                  <span className="text-sm text-gray-500 mb-1">
-                    / 5.0
-                  </span>
-                </div>
+                <span className="text-sm text-gray-500 mb-1">
+                  / 5.0
+                </span>
+              </div>
 
-                <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-                  <div
-                    className={`h-3 rounded-full ${
-                      kpi.media_ponderada >= 4
-                        ? "bg-green-500"
-                        : kpi.media_ponderada >= 3
+              <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+                <div
+                  className={`h-3 rounded-full ${kpi.media_ponderada >= 4
+                      ? "bg-green-500"
+                      : kpi.media_ponderada >= 3
                         ? "bg-yellow-500"
                         : "bg-red-500"
                     }`}
-                    style={{
-                      width: `${(kpi.media_ponderada / 5) * 100}%`,
-                    }}
-                  />
+                  style={{
+                    width: `${(kpi.media_ponderada / 5) * 100}%`,
+                  }}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-center">
+                <div>
+                  <p className="text-xs text-gray-500">
+                    Avaliações
+                  </p>
+
+                  <p className="font-bold text-lg">
+                    {kpi.total_avaliacoes}
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div>
-                    <p className="text-xs text-gray-500">
-                      Avaliações
-                    </p>
+                <div>
+                  <p className="text-xs text-gray-500">
+                    Profissionais
+                  </p>
 
-                    <p className="font-bold text-lg">
-                      {kpi.total_avaliacoes}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-500">
-                      Profissionais
-                    </p>
-
-                    <p className="font-bold text-lg">
-                      {kpi.profissionais_avaliados}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-500">
-                      Faixa
-                    </p>
-
-                    <p className="font-bold text-sm">
-                      {kpi.nota_minima} - {kpi.nota_maxima}
-                    </p>
-                  </div>
+                  <p className="font-bold text-lg">
+                    {kpi.profissionais_avaliados}
+                  </p>
                 </div>
               </div>
+            </div>
           ))
         ) : (
           <div className="col-span-full text-center py-12 text-gray-500">
@@ -304,7 +283,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
           </div>
         )}
       </div>
-      
+        
       <div className="bg-white rounded-lg border p-6">
         <h3 className="text-lg font-bold mb-4">
           Comparativo por Função
@@ -344,22 +323,43 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
               dataKey="Bom"
               stackId="status"
               fill="#22c55e"
-              label={renderLabel}
-            />
+            >
+              <LabelList
+                dataKey="Bom"
+                position="center"
+                fill="#fff"
+                fontWeight="bold"
+                formatter={(v: number) => (v > 0 ? v : "")}
+              />
+            </Bar>
 
             <Bar
               dataKey="Atenção"
               stackId="status"
               fill="#f59e0b"
-              label={renderLabel}
-            />
+            >
+              <LabelList
+                dataKey="Atenção"
+                position="center"
+                fill="#fff"
+                fontWeight="bold"
+                formatter={(v: number) => (v > 0 ? v : "")}
+              />
+            </Bar>
 
             <Bar
               dataKey="Risco"
               stackId="status"
               fill="#ef4444"
-              label={renderLabel}
-            />
+            >
+              <LabelList
+                dataKey="Risco"
+                position="center"
+                fill="#fff"
+                fontWeight="bold"
+                formatter={(v: number) => (v > 0 ? v : "")}
+              />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
