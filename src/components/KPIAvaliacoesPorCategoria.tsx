@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useUserSession } from "../contexts/UserSession";
 
 import {
   ResponsiveContainer,
@@ -33,9 +34,12 @@ interface Props {
 }
 
 export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
+  const { user } = useUserSession();
   const [kpis, setKpis] = useState<KPIData[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set(["Condutor"]));
+  const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set([`${user?.funcao}`]));
+  const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases";
+
 
   useEffect(() => {
     async function carregarKPIs() {
@@ -214,33 +218,35 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   return (
     <div className="space-y-6">
       {/* Filtro por tipo */}
-      <div className="flex gap-2 flex-wrap items-center">
-        <button
-          onClick={handleSelecionarTodos}
-          className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
-              ? "bg-[#1f2937] text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-        >
-          {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "Desselecionar Todos" : "Selecionar Todos"}
-        </button>
-
-        <div className="h-6 w-px bg-gray-300"></div>
-
-        {tiposDisponiveis.map(tipo => (
+      
+      {isAdminGlobal && (
+        <div className="flex gap-2 flex-wrap items-center">
           <button
-            key={tipo}
-            onClick={() => handleToggleTipo(tipo)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
-                ? "bg-[#cd0048] text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            onClick={handleSelecionarTodos}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
+                ? "bg-[#1f2937] text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
           >
-            {tipo}
+            {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "Desselecionar Todos" : "Selecionar Todos"}
           </button>
-        ))}
-      </div>
 
+          <div className="h-6 w-px bg-gray-300"></div>
+
+          {tiposDisponiveis.map(tipo => (
+            <button
+              key={tipo}
+              onClick={() => handleToggleTipo(tipo)}
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
+                  ? "bg-[#cd0048] text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+            >
+              {tipo}
+            </button>
+          ))}
+        </div>
+      )}
       {/* Grid de KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
