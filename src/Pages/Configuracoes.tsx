@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import Nav from "../components/Nav";
 import { useEffect, useState } from "react";
+import { useUserSession } from "../contexts/UserSession";
 
 type Tipo = {
   tipo: string;
@@ -30,6 +31,7 @@ export default function ConfiguracaoPage() {
   const [criterio, setCriterio] = useState("");
   const [peso, setPeso] = useState(1);
   const [indicador, setIndicador] = useState("");
+  const { user } = useUserSession();
 
   function toggleSelecionado(id: number) {
     setSelecionados((prev) =>
@@ -188,11 +190,9 @@ export default function ConfiguracaoPage() {
               >
                 <option value="">Selecione</option>
 
-                {tipos.map((tipo) => (
-                  <option key={tipo.tipo} value={tipo.tipo}>
-                    {tipo.tipo}
+                  <option value={user?.funcao}>
+                    {user?.funcao}
                   </option>
-                ))}
               </select>
             </div>
             

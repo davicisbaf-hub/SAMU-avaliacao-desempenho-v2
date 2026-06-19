@@ -82,12 +82,12 @@ export default function BaixarFicha() {
 	const [avaliacaoParaPdf, setAvaliacaoParaPdf] = useState<Avaliacao | null>(null);
 	const [criteriosParaPdf, setCriteriosParaPdf] = useState<Criterios[]>([]);
 	
-
 	const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-
+	
 	const { user } = useUserSession();
 	const userBase = user?.base;
 	const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases";
+	const isAdmin = user?.perfil === "Administrador";
 
 	useEffect(() => {
 		carregarUsuarios();
@@ -147,33 +147,67 @@ export default function BaixarFicha() {
 
 		}, [avaliacaoSelecionada]);
 	
+	
 
 	// Nomes dos usuários que são da minha base
 	const nomesNaMinhaBase = usuarios
 		.filter(u => isAdminGlobal || u.base === userBase)
 		.map(u => u.nome);
 
-	const funcoes = [...new Set(avaliacoes.map(a => a.funcao))];
-	const tipos = [...new Set(avaliacoes.map(a => a.tipo_avaliacao))];
+	const avaliacoesPermitidas = avaliacoes.filter((avaliacao) => {
+		const passouBase =
+			isAdminGlobal ||
+			nomesNaMinhaBase.includes(avaliacao.avaliado_nome);
 
-	const avaliacoesFiltradas = avaliacoes.filter((avaliacao) => {
-		const dataAvaliacao = new Date(avaliacao.criado_em);
+		const passouFuncaoAdmin =
+			isAdminGlobal ||
+			user?.perfil !== "Administrador" ||
+			avaliacao.tipo_avaliacao === user?.funcao;
 
-		// Filtra pela base: cruza o nome do avaliado com usuários da minha base
-		const passouBase = isAdminGlobal || nomesNaMinhaBase.includes(avaliacao.avaliado_nome);
-
-		const passouUsuario = !filtroUsuario || avaliacao.avaliado_nome === filtroUsuario;
-		const passouFuncao = !filtroFuncao || avaliacao.funcao === filtroFuncao;
-		const passouTipo = !filtroTipo || avaliacao.tipo_avaliacao === filtroTipo;
-		const passouDataInicio = !dataInicio || dataAvaliacao >= dataInicio;
-		const passouDataFim = !dataFim || dataAvaliacao <= dataFim;
-
-		return passouBase && passouUsuario && passouFuncao && passouTipo && passouDataInicio && passouDataFim;
+		return passouBase && passouFuncaoAdmin;
 	});
 
 	const handleViewClick = (avaliacao: Avaliacao) => {
 		setAvaliacaoSelecionada(avaliacao);
 	};
+	
+	const funcoes = [...new Set(avaliacoesPermitidas.map(a => a.funcao))];
+
+	const tipos = [...new Set(avaliacoesPermitidas.map(a => a.tipo_avaliacao))];
+
+		
+	const avaliacoesFiltradas = avaliacoesPermitidas.filter((avaliacao) => {
+		const dataAvaliacao = new Date(avaliacao.criado_em);
+
+		const passouUsuario =
+			!filtroUsuario ||
+			avaliacao.avaliado_nome === filtroUsuario;
+
+		const passouFuncao =
+			!filtroFuncao ||
+			avaliacao.funcao === filtroFuncao;
+
+		const passouTipo =
+			!filtroTipo ||
+			avaliacao.tipo_avaliacao === filtroTipo;
+
+		const passouDataInicio =
+			!dataInicio ||
+			dataAvaliacao >= dataInicio;
+
+		const passouDataFim =
+			!dataFim ||
+			dataAvaliacao <= dataFim;
+
+		return (
+			passouUsuario &&
+			passouFuncao &&
+			passouTipo &&
+			passouDataInicio &&
+			passouDataFim
+		);
+		});
+
 	
 	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
 		try {
@@ -212,13 +246,22 @@ export default function BaixarFicha() {
 								>
 									<option value="">Avaliado</option>
 									{usuarios
-										.filter(u => isAdminGlobal || u.base === userBase)
-										.map((usuario) => (
-											<option key={usuario.nome} value={usuario.nome}>
-												{usuario.nome}
+										.filter(u => {
+											if (isAdminGlobal) return true;
+
+											return (
+											u.base === userBase &&
+											u.funcao === user?.funcao
+											);
+										})
+										.map(usuario => (
+											<option
+											key={usuario.nome}
+											value={usuario.nome}
+											>
+											{usuario.nome}
 											</option>
-										))
-									}
+									))}
 								</select>
 
 								<select
