@@ -31,7 +31,7 @@ export default function PlanoDesenvolvimento() {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await fetch('http://192.168.1.10:8026/api/avaliacoes');
+        const res = await fetch('http://localhost:3001/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {
@@ -48,7 +48,7 @@ export default function PlanoDesenvolvimento() {
     const tipos = Array.from(new Set(avaliacoes.map(a => a.avaliado_funcao))).filter(Boolean);
     tipos.forEach((tipo) => {
       if (criteriosPorTipo[tipo]) return;
-      fetch(`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${encodeURIComponent(tipo)}`)
+      fetch(`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${encodeURIComponent(tipo)}`)
         .then(r => r.json())
         .then((dados: Criterio[]) => {
           setCriteriosPorTipo(prev => ({ ...prev, [tipo]: dados }));
@@ -167,7 +167,7 @@ export default function PlanoDesenvolvimento() {
               return (
                 <div key={profKey} className="bg-white rounded-xl border p-4 mb-4 shadow-sm">
                   <h3 className="font-bold text-lg mb-4">
-                    {avaliacoesDoProf[0].avaliado_nome} - {avaliacoesDoProf[0].avaliado_funcao}
+                    {avaliacoesDoProf[0].avaliado_funcao} - {avaliacoesDoProf[0].avaliado_nome}
                   </h3>
 
                   <div className="space-y-3">
@@ -190,23 +190,50 @@ export default function PlanoDesenvolvimento() {
                           </div>
 
                           {expanded[profKey]?.[cat] && (
-                            <div className="mt-3 space-y-3 border-t pt-3">
-                              {itensNecessitamAcao.map((item) => (
-                                <div key={`${cat}-${item.codigo || item.criterio}`} className="border rounded-lg p-3 bg-gray-50">
-                                  <div className="font-medium text-gray-900">
-                                    {item.codigo ? `${item.codigo} - ${item.criterio}` : item.criterio}
-                                  </div>
-                                  <div className="text-sm mt-1 text-gray-700">
-                                    Média: <strong className="text-base">{item.media}</strong>
-                                  </div>
-                                  <div className={`font-semibold mt-1 text-sm ${item.classificacao === "RUIM" ? "text-red-600" : "text-amber-600"}`}>
-                                    {item.classificacao}
-                                  </div>
-                                  <div className="text-xs text-gray-600 mt-1 bg-white p-2 rounded border">
-                                    {item.orientacao}
-                                  </div>
-                                </div>
-                              ))}
+                            <div className="mt-3 border rounded-lg overflow-hidden">
+                              <table className="w-full text-sm">
+                                <thead className="bg-gray-100">
+                                  <tr className='text-center'>
+                                    <th className="p-3">Critério</th>
+                                    <th className="p-3 w-24">Média</th>
+                                    <th className="p-3 w-32">Classificação</th>
+                                    <th className="p-3">Orientação</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody className='text-left'>
+                                  {itensNecessitamAcao.map((item) => (
+                                    <tr
+                                      key={`${cat}-${item.codigo || item.criterio}`}
+                                      className="border-t"
+                                    >
+                                      <td className="p-3">
+                                        {item.codigo
+                                          ? `${item.codigo} - ${item.criterio}`
+                                          : item.criterio}
+                                      </td>
+
+                                      <td className="p-3 text-center font-semibold">
+                                        {item.media}
+                                      </td>
+
+                                      <td
+                                        className={`p-3 text-center font-semibold ${
+                                          item.classificacao === "RUIM"
+                                            ? "text-red-600"
+                                            : "text-amber-600"
+                                        }`}
+                                      >
+                                        {item.classificacao}
+                                      </td>
+
+                                      <td className="p-3 text-gray-700">
+                                        {item.orientacao}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
                             </div>
                           )}
                         </div>

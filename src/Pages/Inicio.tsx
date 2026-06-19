@@ -59,9 +59,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("http://192.168.1.10:8026/api/fichasVw", setFichas);
-    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
-    carregar("http://192.168.1.10:8026/api/fluxos-avaliacao", setFluxos);
+    carregar("http://localhost:3001/api/fichasVw", setFichas);
+    carregar("http://localhost:3001/api/frequencias", setFrequencias);
+    carregar("http://localhost:3001/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (
@@ -115,7 +115,7 @@ export default function Inicio() {
             {/* painel KPI */}
             <div className='mb-8'>
               <div className='flex items-center justify-between mb-3'>
-                <h2 className='font-semibold text-foreground'>Painel de KPIs — Situação Atual</h2>
+                <h2 className='font-semibold text-foreground'>Painel — Situação por Categoria</h2>
                 <a href='/painel-kpis' className='text-xs text-[#c1314a] hover:underline'>Ver todos →</a>
               </div>
 

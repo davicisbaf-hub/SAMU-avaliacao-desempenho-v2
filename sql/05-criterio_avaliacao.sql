@@ -11,7 +11,6 @@ CREATE TABLE public.criterios_avaliacao (
 	avaliacao varchar(100) NULL,
 	CONSTRAINT criterios_avaliacao_pkey PRIMARY KEY (id)
 );
-
 INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
 	 ('Médico','Habilidades Não Técnicas','c965d960-5ca2-4707-bca2-2bf0b000bd86','
 Mantenho a calma e o tom de voz firme para estabilizar a equipe, o paciente e os familiares em momentos de desespero ou conflito.',1,'',true,'2026-06-11 17:49:41.318069','autoavaliacao'),

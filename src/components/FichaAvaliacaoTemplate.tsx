@@ -48,6 +48,7 @@ type Props = {
 	tentouEnviar?: boolean;
 	readOnly?: boolean;
 	onPrint?: () => void;
+	criado_em: string;
 };
 
 const iconByTipo: Record<string, string> = {
@@ -74,6 +75,7 @@ export default function FichaAvaliacaoTemplate({
 	tentouEnviar = false,
 	readOnly = false,
 	onPrint = () => {},
+	criado_em,
 }: Props) {
 	const fichaRef = useRef<HTMLDivElement>(null);
 
@@ -115,7 +117,7 @@ export default function FichaAvaliacaoTemplate({
 						</div>
 						<div className='text-right hidden sm:block'>
 							<p className='text-[#f8f8f8]/60 text-xs'>Data</p>
-							<p className='text-[#f8f8f8] font-mono text-sm'>{new Date().toLocaleDateString()}</p>
+							<p className='text-[#f8f8f8] font-mono text-sm'>{new Date(criado_em).toLocaleDateString("pt-BR")}</p>
 						</div>
 					</div>
 					<div className='bg-[#061c31]/50 px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4'>
@@ -250,7 +252,7 @@ export default function FichaAvaliacaoTemplate({
 														key={criterio.codigo}
 														codigo={criterio.codigo}
 														criterio={criterio.criterio}
-														peso={1}
+														peso={criterio.peso}
 														indicador={criterio.indicador}
 														escalaLikert={escalaLikert}
 														notaSelecionada={notas[criterio.criterio]}
