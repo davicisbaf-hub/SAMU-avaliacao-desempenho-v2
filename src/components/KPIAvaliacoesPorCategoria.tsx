@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import KPICard from "./KPICard";
 
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  LabelList,
+} from "recharts";
+
 interface KPIData {
   categoria: string;
   tipo_avaliacao: string;
@@ -125,6 +136,48 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
     return <div className="text-center py-12">Carregando KPIs...</div>;
   }
 
+  const dadosPorTipo = Array.from(tiposFiltrados).map((tipo) => {
+    const categorias = kpis.filter(
+      (k) => k.tipo_avaliacao === tipo
+    );
+
+    return {
+      tipo,
+      Bom: categorias.filter(
+        (c) => c.media_ponderada >= 4
+      ).length,
+
+      Atenção: categorias.filter(
+        (c) =>
+          c.media_ponderada >= 3 &&
+          c.media_ponderada < 4
+      ).length,
+
+      Risco: categorias.filter(
+        (c) => c.media_ponderada < 3
+      ).length,
+    };
+  });
+
+  const renderLabel = (props: any) => {
+    const { x, y, width, height, value } = props;
+
+    if (!value || width < 20) return null;
+
+    return (
+      <text
+        x={x + width / 2}
+        y={y + height / 2}
+        fill="#fff"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontWeight="bold"
+        fontSize={12}
+      >
+        {value}
+      </text>
+    );
+  };
   return (
     <div className="space-y-6">
       {/* Filtro por tipo */}
@@ -190,6 +243,65 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
             Nenhum dado disponível
           </div>
         )}
+      </div>
+      
+      <div className="bg-white rounded-lg border p-6">
+        <h3 className="text-lg font-bold mb-4">
+          Comparativo por Função
+        </h3>
+
+        <ResponsiveContainer
+          width="100%"
+          height={Math.max(250, dadosPorTipo.length * 90)}
+        >
+          <BarChart
+            data={dadosPorTipo}
+            layout="vertical"
+            margin={{
+              top: 10,
+              right: 30,
+              left: 40,
+              bottom: 10,
+            }}
+            barSize={35}
+          >
+            <XAxis
+              type="number"
+              allowDecimals={false}
+            />
+
+            <YAxis
+              type="category"
+              dataKey="tipo"
+              width={120}
+            />
+
+            <Tooltip />
+
+            <Legend />
+
+            <Bar
+              dataKey="Bom"
+              stackId="status"
+              fill="#22c55e"
+              label={renderLabel}
+            />
+
+            <Bar
+              dataKey="Atenção"
+              stackId="status"
+              fill="#f59e0b"
+              label={renderLabel}
+            />
+
+            <Bar
+              dataKey="Risco"
+              stackId="status"
+              fill="#ef4444"
+              label={renderLabel}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
       {/* Estatísticas Gerais */}
