@@ -211,32 +211,92 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       </div>
 
       {/* Grid de KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
           kpisFiltrados.map((kpi) => (
-            <div key={`${kpi.tipo_avaliacao}-${kpi.categoria}`} className="space-y-2">
-              <h3 className="text-sm font-semibold text-gray-700 px-1">
-                {kpi.categoria}
-              </h3>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <KPICard
-                  titulo="Média Ponderada"
-                  valor={kpi.media_ponderada}
-                  subtitulo={`Min: ${kpi.nota_minima} | Max: ${kpi.nota_maxima}`}
-                  icon="📊"
-                  cor={obterCor(kpi.media_ponderada)}
-                />
-                
-                <KPICard
-                  titulo="Avaliações"
-                  valor={kpi.total_avaliacoes}
-                  subtitulo={`${kpi.profissionais_avaliados} profissionais`}
-                  icon="👥"
-                  cor="blue"
-                />
+            <div
+                key={`${kpi.tipo_avaliacao}-${kpi.categoria}`}
+                className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-900">
+                    {kpi.categoria}
+                  </h3>
+
+                  <span
+                    className={`px-2 py-1 text-xs rounded-full font-semibold ${
+                      kpi.media_ponderada >= 4
+                        ? "bg-green-100 text-green-700"
+                        : kpi.media_ponderada >= 3
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {kpi.media_ponderada >= 4
+                      ? "BOM"
+                      : kpi.media_ponderada >= 3
+                      ? "ATENÇÃO"
+                      : "RISCO"}
+                  </span>
+                </div>
+
+                <div className="flex items-end gap-3 mb-4">
+                  <span className="text-4xl font-bold text-gray-900">
+                    {kpi.media_ponderada?.toFixed(1)}
+                  </span>
+
+                  <span className="text-sm text-gray-500 mb-1">
+                    / 5.0
+                  </span>
+                </div>
+
+                <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+                  <div
+                    className={`h-3 rounded-full ${
+                      kpi.media_ponderada >= 4
+                        ? "bg-green-500"
+                        : kpi.media_ponderada >= 3
+                        ? "bg-yellow-500"
+                        : "bg-red-500"
+                    }`}
+                    style={{
+                      width: `${(kpi.media_ponderada / 5) * 100}%`,
+                    }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  <div>
+                    <p className="text-xs text-gray-500">
+                      Avaliações
+                    </p>
+
+                    <p className="font-bold text-lg">
+                      {kpi.total_avaliacoes}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-gray-500">
+                      Profissionais
+                    </p>
+
+                    <p className="font-bold text-lg">
+                      {kpi.profissionais_avaliados}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-gray-500">
+                      Faixa
+                    </p>
+
+                    <p className="font-bold text-sm">
+                      {kpi.nota_minima} - {kpi.nota_maxima}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
           ))
         ) : (
           <div className="col-span-full text-center py-12 text-gray-500">
