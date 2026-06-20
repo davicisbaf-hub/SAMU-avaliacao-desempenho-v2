@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import FichasCard from "../components/fichas-card";
 import Header from '../components/Header'
 import Nav from '../components/Nav'
@@ -47,6 +47,8 @@ export default function Inicio() {
     categoriasAtenção: 0,
     categoriasRisco: 0,
   });
+  const isAdmin = user?.perfil === "🔑 Administrador — Todas as bases";
+  
 
   const carregar = async (url: string, setter: Function) => {
     try {
@@ -116,7 +118,9 @@ export default function Inicio() {
             <div className='mb-8'>
               <div className='flex items-center justify-between mb-3'>
                 <h2 className='font-semibold text-foreground'>Painel — Situação por Categoria</h2>
-                <a href='/painel-kpis' className='text-xs text-[#c1314a] hover:underline'>Ver todos →</a>
+                {isAdmin || user?.perfil == 'Administrador' && (
+                  <a href='/painel-kpis' className='text-xs text-[#c1314a] hover:underline'>Ver todos →</a>
+                )}
               </div>
 
               <StatusCardsKPI 
@@ -135,10 +139,12 @@ export default function Inicio() {
             <div className='mb-8'>
               <div className='flex items-center justify-between mb-3 flex-wrap gap-2'>
                 <h2 className='font-semibold text-foreground'>Fichas de Avaliação por Função</h2>
-                <a href='/BaixarFicha' className='flex items-center gap-2 px-4 py-2 rounded-xl bg-[#cd0048] text-[#fcfcfc] text-sm font-semibold hover:opacity-90 transition-opacity'>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
-                  Baixar Todas as Fichas (PDF)
-                </a>
+                {isAdmin || user?.perfil == 'Administrador' && (
+                  <a href='/BaixarFicha' className='flex items-center gap-2 px-4 py-2 rounded-xl bg-[#cd0048] text-[#fcfcfc] text-sm font-semibold hover:opacity-90 transition-opacity'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+                    Baixar Todas as Fichas (PDF)
+                  </a>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -149,16 +155,14 @@ export default function Inicio() {
                       return false;
                     }
 
-                    const isAdmin =
-                      user?.perfil === "Administrador" ||
-                      user?.perfil === "🔑 Administrador — Todas as bases";
+                    
 
                     if (isAdmin) return true;
 
                     return (
                       ficha.nome === user?.funcao ||
-                      ficha.nome === "Liderança / Coordenação" ||
-                      ficha.nome === "Liderança > Liderado" 
+                      ficha.nome === 'BP-TEAM'
+                       
                     );
                   })
                   .map((ficha) => (
