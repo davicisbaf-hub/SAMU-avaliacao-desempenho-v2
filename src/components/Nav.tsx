@@ -33,17 +33,17 @@ export default function Nav() {
         ? fichas.filter(
             (ficha) =>
             ficha.nome === user.funcao ||
-            ficha.nome === "Autoavaliação / Simulação bp-TEAM"
+            ficha.nome === "Autoavaliação / Simulação bp-TEAM" ||
+            ficha.nome === "Liderança > Liderado" 
         )
         : fichas;
 
     useEffect(() => {
-    fetch("http://192.168.1.10:8026/api/fichas")
+    fetch("http://localhost:3001/api/fichas")
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);
-console.log(user);
-console.log(fichas);
+
     return (
         
         <aside className="bg-[#0a1a30] lg:flex w-64 flex-col text-white shrink-0 border-r border-sidebar-border">

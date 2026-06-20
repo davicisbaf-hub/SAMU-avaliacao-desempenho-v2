@@ -29,22 +29,22 @@ const iconByTipo: Record<string, string> = {
 };
 
 type EscalaLikert = {
-  nota: number;
-  titulo: string;
-  descricao: string;
-  cor: string;
+	nota: number;
+	titulo: string;
+	descricao: string;
+	cor: string;
 };
 
 type Peso = {
-  valor: number;
-  descricao: string;
-  cor: string;
+	valor: number;
+	descricao: string;
+	cor: string;
 };
 
 type Base = {
-    id: number;
-    nome: string;
-    cor: string;
+	id: number;
+	nome: string;
+	cor: string;
 };
 
 
@@ -55,7 +55,7 @@ export default function FichaAvaliacaoBpTeam() {
 	const [tipoAvaliacao, setTipoAvaliacao] = useState(`BP-TEAM`);
 	const [criterios, setCriterios] = useState<Criterios[]>([]);
 	const [notas, setNotas] = useState<Record<string, number>>({});
-	
+
 	const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
 	const [pesos, setPesos] = useState<Peso[]>([]);
 
@@ -87,61 +87,64 @@ export default function FichaAvaliacaoBpTeam() {
 
 		const resultado = criterios.reduce((acc, criterio) => {
 			acc[criterio.criterio] = {
-			criterio: criterio.criterio,
-			codigo: criterio.codigo,
-			nota: notas[criterio.criterio],
-			peso: criterio.peso ?? 1,
-			categoria: criterio.categoria,
-			avaliacao: criterio.avaliacao,
-		};
+				criterio: criterio.criterio,
+				codigo: criterio.codigo,
+				nota: notas[criterio.criterio],
+				peso: criterio.peso ?? 1,
+				categoria: criterio.categoria,
+				avaliacao: criterio.avaliacao,
+			};
 
-		return acc;
+			return acc;
 		}, {} as Record<string, any>);
 
-		try {
-			await fetch(
-			"http://192.168.1.10:8026/api/avaliacoes",
-			{
-				method: "POST",
-				headers: {
+		const res = await fetch("http://localhost:3001/api/avaliacoes", {
+
+			method: "POST",
+			headers: {
 				"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					avaliadorId: user?.id,
-					avaliadoId: user?.id,
-					tipoAvaliacao,
-					resultado,
+			},
+			body: JSON.stringify({
+				avaliadorId: user?.id,
+				avaliadoId: user?.id,
+				tipoAvaliacao,
+				resultado,
+				observacoesGerais: observacoes,
+				pontosMelhorar,
+				planoAcao,
+			}),
+		});
 
-					observacoesGerais: observacoes,
-					pontosMelhorar,
-					planoAcao,
-				}),
-			}
-			);
-		} catch (error) {
-			console.error(error);
+		if (res.status === 409) {
+			const data = await res.json();
+			alert(data.erro);
+			return;
 		}
-	};
+
+		if (res.ok) {
+			alert("Avaliação enviada com sucesso!");
+		}
+	}
 
 	useEffect(() => {
-        async function carregarBases() {
-            const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
-            const data = await res.json();
+		async function carregarBases() {
+			const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
+			const data = await res.json();
 
-            setBases(data);
-        }
-        carregarBases();
-    }, []);
+			setBases(data);
+		}
+		carregarBases();
+	}, []);
 
 
 	useEffect(() => {
-	fetch("http://192.168.1.10:8026/api/escala-likert")
-		.then((r) => r.json())
-		.then(setEscalaLikert);
+		fetch("http://localhost:3001/api/escala-likert")
+			.then((r) => r.json())
+			.then(setEscalaLikert);
 
-	fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
-		.then((r) => r.json())
-		.then(setPesos);
+		fetch("http://localhost:3001/api/pesos-avaliacao")
+			.then((r) => r.json())
+			.then(setPesos);
 	}, []);
 
 	const selecionarNota = (codigo: string, nota: number) => {
@@ -167,7 +170,7 @@ export default function FichaAvaliacaoBpTeam() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -215,21 +218,20 @@ export default function FichaAvaliacaoBpTeam() {
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
 								<button
 									onClick={() => setTipoAvaliacao("BP-TEAM")}
-									className={`text-left p-4 rounded-xl border-2 transition-all ${
-										tipoAvaliacao === "BP-TEAM"
+									className={`text-left p-4 rounded-xl border-2 transition-all ${tipoAvaliacao === "BP-TEAM"
 											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
 											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
-									}`}
+										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
 									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
 								</button>
 							</div>
-							
+
 							<div
 								ref={fichaRef}
 								className="print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
-								>
+							>
 								{/* header de avaliacao */}
 								<div className='bg-[#0a1a30] text-white rounded-lg mb-8'>
 									<div className='flex items-center gap-4 p-5'>
@@ -258,11 +260,11 @@ export default function FichaAvaliacaoBpTeam() {
 													.filter(base => base.nome === user?.base)
 													.map(base => (
 														<option
-														key={base.id}
-														value={base.id}
-														className="text-black"
+															key={base.id}
+															value={base.id}
+															className="text-black"
 														>
-														{base.nome}
+															{base.nome}
 														</option>
 													))
 												}
@@ -297,7 +299,7 @@ export default function FichaAvaliacaoBpTeam() {
 														backgroundColor: item.cor,
 													}}
 												>
-												{item.nota}
+													{item.nota}
 												</span>
 												<span className="text-xs text-foreground">
 													<span
@@ -311,7 +313,7 @@ export default function FichaAvaliacaoBpTeam() {
 													</span>
 												</span>
 											</div>
-											))}
+										))}
 									</div>
 
 									<div className="flex flex-wrap gap-4 mt-4 text-xs [text-#555f69] border-t border-border pt-3">
@@ -325,7 +327,7 @@ export default function FichaAvaliacaoBpTeam() {
 													style={{
 														backgroundColor: peso.cor,
 													}}
-													>
+												>
 													{peso.valor}
 												</span>
 

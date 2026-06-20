@@ -15,28 +15,28 @@ app.use(cors({
    "http://127.0.0.1:5173",
    "http://192.168.1.10:5173",
    "http://192.168.1.10:3011",
-   "http://192.168.1.10:8026",
+   "http://localhost:3001",
    "http://192.168.1.10:8766"
  ]
 }));
 
 app.use(cors());
 
+// const pool = new pg.Pool({
+//  host: process.env.DB_HOST || "db",
+//  port: 5432,
+//  user: "samu",
+//  password: "samu",
+//  database: "samu"
+//});
+
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "db",
-  port: 5432,
+  host: process.env.DB_HOST || "localhost",
+  port: 5490,
   user: "samu",
   password: "samu",
   database: "samu"
 });
-
-// const pool = new pg.Pool({
-//   host: process.env.DB_HOST || "192.168.1.10",
-//   port: 5490,
-//   user: "samu",
-//   password: "samu",
-//   database: "samu"
-// });
 
 app.get("/api/fichas", async (req, res) => {
   try {
@@ -212,6 +212,27 @@ app.post("/api/avaliacoes", async (req, res) => {
       pontosMelhorar,
       planoAcao
     } = req.body;
+
+    // Verifica se já respondeu hoje
+    const avaliacaoHoje = await pool.query(
+        
+        `
+        SELECT id
+        FROM avaliacoes
+        WHERE avaliado_id = $1
+        AND tipo_avaliacao = $2
+        AND DATE(criado_em AT TIME ZONE 'America/Sao_Paulo')
+        = DATE(NOW() AT TIME ZONE 'America/Sao_Paulo')
+        LIMIT 1
+        `,
+        [avaliadoId, tipoAvaliacao]
+      );
+      
+    if (avaliacaoHoje.rows.length > 0) {
+      return res.status(409).json({
+        erro: "Você já preencheu esta ficha hoje. Tente novamente amanhã."
+      });
+    }
 
     const { rows } = await pool.query(
       `

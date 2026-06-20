@@ -60,7 +60,7 @@ export default function CadastroPage() {
         if (!usuarioEditando) return;
 
         await fetch(
-            `http://192.168.1.10:8026/api/usuarios/${usuarioEditando.id}`,
+            `http://localhost:3001/api/usuarios/${usuarioEditando.id}`,
             {
             method: "PUT",
             headers: {
@@ -89,7 +89,7 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            const res = await fetch("http://192.168.1.10:8026/api/usuarios");
+            const res = await fetch("http://localhost:3001/api/usuarios");
             const data = await res.json();
 
             setUsuarios(Array.isArray(data) ? data : []);
@@ -101,7 +101,7 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+            const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -110,13 +110,12 @@ export default function CadastroPage() {
         carregarBases();
     }, []);
 
-    console.log("User completo:", user);
 
     const cadastrarUsuario = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             const response = await fetch(
-                "http://192.168.1.10:8026/api/usuarios",
+                "http://localhost:3001/api/usuarios",
                 {
                     method: "POST",
                     headers: {
@@ -166,7 +165,7 @@ export default function CadastroPage() {
       };
     
       useEffect(() => {
-        carregar("http://192.168.1.10:8026/api/fichas", setFichas);
+        carregar("http://localhost:3001/api/fichas", setFichas);
       }, []);
 
       async function removerUsuario(id: number) {
@@ -175,7 +174,7 @@ export default function CadastroPage() {
         }
 
         await fetch(
-            `http://192.168.1.10:8026/api/usuarios/${id}/inativar`,
+            `http://localhost:3001/api/usuarios/${id}/inativar`,
             {
             method: "PUT",
             }

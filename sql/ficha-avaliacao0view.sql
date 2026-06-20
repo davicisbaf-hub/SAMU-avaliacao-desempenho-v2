@@ -20,14 +20,13 @@ FROM (
         ('💉', 'Técnico de Enfermagem', '/avaliacao/tecnico-enfermagem', 2),
         ('🩺', 'Enfermeiro', '/avaliacao/enfermeiro', 3),
         ('⚕️', 'Médico', '/avaliacao/medico-intervencionista', 4),
-        ('👤', 'Liderança > Liderado', '/avaliacao/lideranca-liderado', 5),
-        ('👤', 'Liderado > Liderança', '/avaliacao/liderado-lideranca', 6),
         ('🛡️', 'BP-TEAM', '/avaliacao/bp-team', 7)
 ) AS m(icon, nome, link, ordem)
 
 LEFT JOIN criterios_avaliacao c
     ON c.tipo = m.nome
-   AND c.ativo = TRUE
+    AND c.ativo = true
+	and c.avaliacao = 'autoavaliacao'
 
 GROUP BY
     m.icon,

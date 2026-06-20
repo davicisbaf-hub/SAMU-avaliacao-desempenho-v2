@@ -99,34 +99,36 @@ export default function FichaAvaliacaoMedico() {
 			return acc;
 		}, {} as Record<string, any>);
 
-		try {
-			await fetch(
-				"http://192.168.1.10:8026/api/avaliacoes",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						avaliadorId: user?.id,
-						avaliadoId: user?.id,
-						tipoAvaliacao,
-						resultado,
+		const res = await fetch("http://localhost:3001/api/avaliacoes", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				avaliadorId: user?.id,
+				avaliadoId: user?.id,
+				tipoAvaliacao,
+				resultado,
+				observacoesGerais: observacoes,
+				pontosMelhorar,
+				planoAcao,
+			}),
+		});
 
-						observacoesGerais: observacoes,
-						pontosMelhorar,
-						planoAcao,
-					}),
-				}
-			);
-		} catch (error) {
-			console.error(error);
+		if (res.status === 409) {
+			const data = await res.json();
+			alert(data.erro);
+			return;
+		}
+
+		if (res.ok) {
+			alert("Avaliação enviada com sucesso!");
 		}
 	};
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+			const res = await fetch("http://localhost:3001/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -136,11 +138,11 @@ export default function FichaAvaliacaoMedico() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/escala-likert")
+		fetch("http://localhost:3001/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+		fetch("http://localhost:3001/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -168,7 +170,7 @@ export default function FichaAvaliacaoMedico() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
+			`http://localhost:3001/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -216,8 +218,8 @@ export default function FichaAvaliacaoMedico() {
 								<button
 									onClick={() => setTipoAvaliacao("BP-TEAM")}
 									className={`text-left p-4 rounded-xl border-2 transition-all ${tipoAvaliacao === "BP-TEAM"
-											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
-											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
+										? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
+										: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
 										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Simulação bp-TEAM</p>
@@ -226,8 +228,8 @@ export default function FichaAvaliacaoMedico() {
 								<button
 									onClick={() => setTipoAvaliacao("Médico")}
 									className={`text-left p-4 rounded-xl border-2 transition-all ${tipoAvaliacao === "Médico"
-											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
-											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
+										? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
+										: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
 										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Médico</p>
@@ -267,11 +269,11 @@ export default function FichaAvaliacaoMedico() {
 													.filter(base => base.nome === user?.base)
 													.map(base => (
 														<option
-														key={base.id}
-														value={base.id}
-														className="text-black"
+															key={base.id}
+															value={base.id}
+															className="text-black"
 														>
-														{base.nome}
+															{base.nome}
 														</option>
 													))
 												}

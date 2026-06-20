@@ -1,8 +1,24 @@
 import { useUserSession } from "../contexts/UserSession";
+import { useState, useEffect } from "react";
 
+type Base = {
+  id: number;
+  nome: string;
+  cor: string;
+}
 export default function Header() {
-
+    const [bases, setBases] = useState<Base[]>([]);
     const { user } = useUserSession();
+
+    useEffect(() => {
+    fetch("http://localhost:3001/api/bases")
+        .then(res => res.json())
+        .then(setBases);
+    }, []);
+
+    const baseUsuario = bases.find(
+        base => base.nome === user?.base
+    );
 
     return (
         <header className='shrink-0 h-14 border-b border-border bg-[#fcfcfc]/95 flex items-center gap-4 px-4'>
@@ -13,6 +29,14 @@ export default function Header() {
             </div>
 
             <div className='ml-auto flex items-center gap-2'>
+                <span
+                    className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border" style={{ backgroundColor: `${baseUsuario?.cor}20`, color: baseUsuario?.cor }}>
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: `${baseUsuario?.cor}`}}></span>
+                    {user?.base}
+                </span>
+                <span className='hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/10 text-black text-xs font-medium'>
+                    {user?.nome}
+                </span>
                 <span className='hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#cd0048]/10 text-[#cd0048] text-xs font-medium'>
                     {user?.perfil}
                 </span>

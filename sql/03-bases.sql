@@ -5,16 +5,16 @@ CREATE TABLE bases (
 );
 
 
-INSERT INTO bases (nome, cor) VALUES
-('Nova Iguaçu', '#f97316'),
-('Duque de Caxias', '#3b82f6'),
-('São João de Meriti', '#22c55e'),
-('Belford Roxo', '#a855f7'),
-('Queimados', '#ef4444'),
-('Nilópolis', '#eab308'),
-('Mesquita', '#14b8a6'),
-('Seropédica', '#6366f1'),
-('Japeri', '#ec4899'),
-('Paracambi', '#10b981'),
-('Magé', '#f43f5e'),
-('Itaguaí', '#0ea5e9');
+INSERT INTO public.bases (nome,cor) VALUES
+	 ('Seropédica','#6366f1'),
+	 ('Magé','#f43f5e'),
+	 ('Itaguaí','#0ea5e9'),
+	 ('Duque de Caxias','#febf2c'),
+	 ('Belford Roxo','#5dc3ff'),
+	 ('Mesquita','#7a49b4'),
+	 ('Japeri','#028602'),
+	 ('Nilópolis','#0e84bf'),
+	 ('Nova Iguaçu','#ff5f00'),
+	 ('Paracambi','#d3c358'),
+	 ('São João de Meriti','#ffcf47'),
+	 ('Queimados','#697e5d');
