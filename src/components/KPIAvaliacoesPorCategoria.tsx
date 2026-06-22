@@ -9,7 +9,7 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  LabelList 
+  LabelList
 } from "recharts";
 
 interface KPIData {
@@ -45,9 +45,11 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
     async function carregarKPIs() {
       try {
         setCarregando(true);
-        const res = await fetch("/api/kpis/avaliacoes-por-categoria");
+        const url = isAdminGlobal
+          ? "/api/kpis/avaliacoes-por-categoria"
+          : `/api/kpis/avaliacoes-por-categoria?base=${encodeURIComponent(user?.base ?? "")}`;
+        const res = await fetch(url);
         const dados = await res.json();
-        // Postgres numeric fields may be returned as strings. Coerce to numbers and handle nulls.
         const parsed = (dados || []).map((k: any) => ({
           categoria: k.categoria,
           tipo_avaliacao: k.tipo_avaliacao,
@@ -66,6 +68,16 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       }
     }
     carregarKPIs();
+  }, []);
+
+  useEffect(() => {
+    const url = isAdminGlobal
+      ? "/api/avaliacoes"
+      : `/api/avaliacoes?base=${encodeURIComponent(user?.base ?? "")}`;
+    fetch(url)
+      .then(r => r.json())
+      .then(data => setAvaliacoesFull(data))
+      .catch(() => setAvaliacoesFull([]));
   }, []);
 
   const tiposDisponiveis = Array.from(new Set(kpis.map(k => k.tipo_avaliacao)));
@@ -93,27 +105,20 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
 
   const [avaliacoesFull, setAvaliacoesFull] = useState<any[]>([]);
 
-  useEffect(() => {
-    // carregar avaliações brutas para calcular profissionais distintos por tipo
-    fetch('/api/avaliacoes')
-      .then(r => r.json())
-      .then(data => setAvaliacoesFull(data))
-      .catch(() => setAvaliacoesFull([]));
-  }, []);
 
   // calcular média ponderada geral de forma segura
-  
-  const totalAvaliacoes = kpisFiltrados.reduce((acc, k) => acc + k.total_avaliacoes,0);
+
+  const totalAvaliacoes = kpisFiltrados.reduce((acc, k) => acc + k.total_avaliacoes, 0);
 
   const mediaGeral =
     totalAvaliacoes > 0
       ? (
-          kpisFiltrados.reduce(
-            (acc, k) =>
-              acc + (k.media_ponderada * k.total_avaliacoes),
-            0
-          ) / totalAvaliacoes
-        ).toFixed(1)
+        kpisFiltrados.reduce(
+          (acc, k) =>
+            acc + (k.media_ponderada * k.total_avaliacoes),
+          0
+        ) / totalAvaliacoes
+      ).toFixed(1)
       : "—";
 
   // calcular profissionais distintos avaliados no filtro (por nome)
@@ -165,7 +170,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       ).length,
     };
   });
-  
+
   const categoriasAgrupadas = Object.values(
     kpisFiltrados.reduce((acc: any, item) => {
       if (!acc[item.categoria]) {
@@ -208,9 +213,9 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   }));
 
   const dadosCards =
-  tiposFiltrados.size > 1
-    ? categoriasAgrupadas
-    : kpisFiltrados;
+    tiposFiltrados.size > 1
+      ? categoriasAgrupadas
+      : kpisFiltrados;
 
   const totalCategorias = new Set(
     kpisFiltrados.map(k => k.categoria)
@@ -218,14 +223,14 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   return (
     <div className="space-y-6">
       {/* Filtro por tipo */}
-      
+
       {isAdminGlobal && (
         <div className="flex gap-2 flex-wrap items-center">
           <button
             onClick={handleSelecionarTodos}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
-                ? "bg-[#1f2937] text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              ? "bg-[#1f2937] text-white"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
           >
             {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "Desselecionar Todos" : "Selecionar Todos"}
@@ -238,8 +243,8 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
               key={tipo}
               onClick={() => handleToggleTipo(tipo)}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
-                  ? "bg-[#cd0048] text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-[#cd0048] text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
             >
               {tipo}
@@ -262,10 +267,10 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
 
                 <span
                   className={`px-2 py-1 text-xs rounded-full font-semibold ${kpi.media_ponderada >= 4
-                      ? "bg-green-100 text-green-700"
-                      : kpi.media_ponderada >= 3
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-red-100 text-red-700"
+                    ? "bg-green-100 text-green-700"
+                    : kpi.media_ponderada >= 3
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-red-100 text-red-700"
                     }`}
                 >
                   {kpi.media_ponderada >= 4
@@ -289,10 +294,10 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
               <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
                 <div
                   className={`h-3 rounded-full ${kpi.media_ponderada >= 4
-                      ? "bg-green-500"
-                      : kpi.media_ponderada >= 3
-                        ? "bg-yellow-500"
-                        : "bg-red-500"
+                    ? "bg-green-500"
+                    : kpi.media_ponderada >= 3
+                      ? "bg-yellow-500"
+                      : "bg-red-500"
                     }`}
                   style={{
                     width: `${(kpi.media_ponderada / 5) * 100}%`,
@@ -329,7 +334,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
           </div>
         )}
       </div>
-        
+
       <div className="bg-white rounded-lg border p-6">
         <h3 className="text-lg font-bold mb-4">
           Comparativo por Função

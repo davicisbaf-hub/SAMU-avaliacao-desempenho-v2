@@ -273,43 +273,38 @@ app.post("/avaliacoes", async (req, res) => {
 
 app.get("/avaliacoes", async (req, res) => {
   try {
+    const { base } = req.query;
+    const params = [];
+    const whereClause = base
+      ? `WHERE avaliado.base = $1`
+      : "";
+    if (base) params.push(base);
+
     const { rows } = await pool.query(`
       SELECT
         a.id,
-
         avaliador.nome AS avaliador_nome,
         avaliador.funcao AS avaliador_funcao,
-        
         avaliado.nome AS avaliado_nome,
         avaliado.funcao AS avaliado_funcao,
-
         avaliado.funcao,
-
         a.tipo_avaliacao,
         a.resultado,
         a.observacoes_gerais,
         a.pontos_melhorar,
         a.plano_acao,
         a.criado_em
-
       FROM avaliacoes a
-
-      JOIN usuarios avaliador
-          ON avaliador.id = a.avaliador_id
-
-      JOIN usuarios avaliado
-          ON avaliado.id = a.avaliado_id
-
-      ORDER BY a.criado_em DESC;
-    `);
+      JOIN usuarios avaliador ON avaliador.id = a.avaliador_id
+      JOIN usuarios avaliado ON avaliado.id = a.avaliado_id
+      ${whereClause}
+      ORDER BY a.criado_em DESC
+    `, params);
 
     res.json(rows);
   } catch (error) {
     console.error(error);
-
-    res.status(500).json({
-      erro: error.message,
-    });
+    res.status(500).json({ erro: error.message });
   }
 });
 
@@ -678,6 +673,13 @@ app.put("/usuarios/:id/inativar", async (req, res) => {
 // KPI endpoint - Agregação de avaliações por categoria
 app.get("/kpis/avaliacoes-por-categoria", async (req, res) => {
   try {
+    const { base } = req.query;
+    const params = [];
+    const whereClause = base
+      ? `AND avaliado.base = $1`
+      : "";
+    if (base) params.push(base);
+
     const { rows } = await pool.query(`
       SELECT
         ca.categoria,
@@ -686,9 +688,9 @@ app.get("/kpis/avaliacoes-por-categoria", async (req, res) => {
         COUNT(DISTINCT a.avaliado_id) as profissionais_avaliados,
         ROUND(
           SUM(
-            CAST(a.resultado->ca.criterio->>'nota' AS INT) * 
+            CAST(a.resultado->ca.criterio->>'nota' AS INT) *
             CAST(a.resultado->ca.criterio->>'peso' AS INT)
-          ) / 
+          ) /
           NULLIF(SUM(CAST(a.resultado->ca.criterio->>'peso' AS INT)), 0)
         ::NUMERIC, 2) as media_ponderada,
         MAX(CAST(a.resultado->ca.criterio->>'nota' AS INT)) as nota_maxima,
@@ -696,17 +698,17 @@ app.get("/kpis/avaliacoes-por-categoria", async (req, res) => {
         SUM(CAST(a.resultado->ca.criterio->>'peso' AS INT)) as soma_pesos
       FROM avaliacoes a
       JOIN criterios_avaliacao ca ON a.tipo_avaliacao = ca.tipo AND ca.ativo = true
+      JOIN usuarios avaliado ON avaliado.id = a.avaliado_id
       WHERE a.resultado->ca.criterio->>'nota' IS NOT NULL
+      ${whereClause}
       GROUP BY ca.categoria, a.tipo_avaliacao, ca.tipo
       ORDER BY a.tipo_avaliacao, ca.categoria
-    `);
+    `, params);
 
     res.json(rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({
-      erro: error.message,
-    });
+    res.status(500).json({ erro: error.message });
   }
 });
 

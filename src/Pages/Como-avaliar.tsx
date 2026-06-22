@@ -61,27 +61,27 @@ export default function InstrucoesPage() {
               <h2 className='font-semibold text-base'>Base Teórica e Legal</h2>
 
               <div className='grid grid-cols-1 md:grid-cols-2 gap-3 text-xs'>
-                <div className='bg-sidebar/40 rounded-lg p-3'>
+                <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>bp-TEAM (Team Emergency Assessment Measure)</p>
                   <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
                 </div>
-                <div className='bg-sidebar/40 rounded-lg p-3'>
+                <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>Habilidades Não Técnicas (NTS)</p>
                   <p className='text-[#f8f8f8]/70'>Avalia consciência situacional, tomada de decisão e liderança em situações de alta pressão, reduzindo erros e eventos adversos.</p>
                 </div>
-                <div className='bg-sidebar/40 rounded-lg p-3'>
+                <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>Portaria MS 2.048/2002</p>
                   <p className='text-[#f8f8f8]/70'>Parâmetros nacionais para avaliação do SAMU: agilidade (≤15min), padronização de protocolos e suficiência de chamadas atendidas.</p>
                 </div>
-                <div className='bg-sidebar/40 rounded-lg p-3'>
+                <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>Processo de Enfermagem no SAMU</p>
                   <p className='text-[#f8f8f8]/70'>Instrumento validado (IVC = 0,94) para registro do PE no APH móvel — Pizzolato et al., Rev. Enferm. UFSM 2023.</p>
                 </div>
-                <div className='bg-sidebar/40 rounded-lg p-3'>
+                <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>Portaria MS 2.048/2002 — Competências</p>
                   <p className='text-[#f8f8f8]/70'>Define competências mínimas obrigatórias para cada função da equipe de intervenção SAMU (condutor, TEC, enf, médico).</p>
                 </div>
-                <div className='bg-sidebar/40 rounded-lg p-3'>
+                <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>ACLS / PHTLS / BLS</p>
                   <p className='text-[#f8f8f8]/70'>Protocolos internacionais de suporte avançado e básico de vida utilizados como referência para avaliação das competências técnicas.</p>
                 </div>

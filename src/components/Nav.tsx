@@ -73,7 +73,7 @@ export default function Nav() {
                         `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                             isActive
                                 ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                : "70 hover:bg-sidebar-accent"
+                                : "70 hover:bg-[#cd0048]/20"
                         }`
                     }>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
@@ -85,7 +85,7 @@ export default function Nav() {
                             `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                 isActive
                                     ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                    : "70 hover:bg-sidebar-accent"
+                                    : "70 hover:bg-[#cd0048]/20"
                             }`
                         }>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
@@ -98,7 +98,7 @@ export default function Nav() {
                             `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                 isActive
                                     ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                    : "70 hover:bg-sidebar-accent"
+                                    : "70 hover:bg-[#cd0048]/20"
                             }`
                         }>
                             <Download /> Baixar Fichas (PDF)
@@ -109,7 +109,7 @@ export default function Nav() {
                         `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                             isActive
                                 ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                : "70 hover:bg-sidebar-accent"
+                                : "70 hover:bg-[#cd0048]/20"
                         }`
                     }>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg>
@@ -129,7 +129,7 @@ export default function Nav() {
                                     `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-150 ml-1 ${
                                         isActive
                                             ? "bg-[#cd0048]/20 text-[#cd0048]"
-                                            : "70 hover:bg-sidebar-accent"
+                                            : "70 hover:bg-[#cd0048]/20"
                                     }`
                                 }
                             >
@@ -151,7 +151,7 @@ export default function Nav() {
                             `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                 isActive
                                     ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                    : "70 hover:bg-sidebar-accent"
+                                    : "70 hover:bg-[#cd0048]/20"
                             }`
                         }>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
@@ -164,7 +164,7 @@ export default function Nav() {
                                     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                         isActive
                                             ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                            : "70 hover:bg-sidebar-accent"
+                                            : "70 hover:bg-[#cd0048]/20"
                                     }`
                                 }>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg>
@@ -178,7 +178,7 @@ export default function Nav() {
                                     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                         isActive
                                             ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                            : "70 hover:bg-sidebar-accent"
+                                            : "70 hover:bg-[#cd0048]/20"
                                     }`
                                 }>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -192,7 +192,7 @@ export default function Nav() {
                                     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                         isActive
                                             ? "bg-[#cd0048]/20 text-[#cd0048] border-l-4 border-[#cd0048]"
-                                            : "70 hover:bg-sidebar-accent"
+                                            : "70 hover:bg-[#cd0048]/20"
                                     }`
                                 }>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M12 4h9"></path><path d="M4 9h16"></path><path d="M4 15h16"></path></svg>
