@@ -15,28 +15,28 @@ app.use(cors({
    "http://127.0.0.1:5173",
    "http://192.168.1.10:5173",
    "http://192.168.1.10:3011",
-   "http://localhost:3001",
+   "http://192.168.1.10:8026",
    "http://192.168.1.10:8766"
  ]
 }));
 
 app.use(cors());
 
-// const pool = new pg.Pool({
-//  host: process.env.DB_HOST || "db",
-//  port: 5432,
-//  user: "samu",
-//  password: "samu",
-//  database: "samu"
-//});
-
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "192.168.1.10",
-  port: 5490,
-  user: "samu",
-  password: "samu",
-  database: "samu"
+ host: process.env.DB_HOST || "db",
+ port: 5432,
+ user: "samu",
+ password: "samu",
+ database: "samu"
 });
+
+// const pool = new pg.Pool({
+//   host: process.env.DB_HOST || "192.168.1.10",
+//   port: 5490,
+//   user: "samu",
+//   password: "samu",
+//   database: "samu"
+// });
 
 app.get("/api/fichas", async (req, res) => {
   try {
@@ -56,7 +56,7 @@ app.get("/api/fichas", async (req, res) => {
 app.get("/api/frequencias", async (req, res) => {
   try {
     const { rows } = await pool.query(`
-      SELECT frequencia, instrumento_acao, responsavel
+      SELECT *
       FROM frequencia_aplicacao
       WHERE ativo = true
       ORDER BY ordem

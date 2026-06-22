@@ -6,6 +6,7 @@ import { Download } from "lucide-react";
 type Ficha = {
   nome: string;
   link: string;
+  icon: string;
 };
 
 export default function Nav() {
@@ -39,7 +40,7 @@ export default function Nav() {
         : fichas;
 
     useEffect(() => {
-    fetch("http://localhost:3001/api/fichas")
+    fetch("http://192.168.1.10:8026/api/fichas")
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);
@@ -135,7 +136,7 @@ export default function Nav() {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="m9 18 6-6-6-6"></path>
                                 </svg>
-                                {ficha.nome}
+                                {ficha.icon} {ficha.nome}
                             </NavLink>
                         ))}
                         

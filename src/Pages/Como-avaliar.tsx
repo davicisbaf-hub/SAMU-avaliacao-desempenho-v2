@@ -1,8 +1,44 @@
 import Header from '../components/Header'
 import Nav from '../components/Nav'
+import { useEffect, useState } from "react";
 
+
+type EscalaLikert = {
+  nota: number;
+  titulo: string;
+  descricao: string;
+  cor: string;
+};
+
+type FrequenciaAplicacao = {
+  id: number;
+  icon: string;
+  frequencia: string;
+  instrumento_acao: string;
+  responsavel: string;
+};
 
 export default function InstrucoesPage() {
+
+  const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
+  const [frequencias, setFrequencias] = useState<FrequenciaAplicacao[]>([]);
+
+  const carregar = async (url: string, setter: Function) => {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      setter(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
+    carregar("http://192.168.1.10:8026/api/escala-likert", setEscalaLikert);
+  }, []);
+
+
   return (
     <div>
       <div className="flex h-screen w-screen bg-white text-black">
@@ -13,7 +49,7 @@ export default function InstrucoesPage() {
 
           {/* conteudo */}
           <div className='custom-scrollbar p-[32px] overflow-y-auto text-left'>
-            
+
             {/* titulo */}
             <div className='mb-6'>
               <h1 className='text-2xl font-bold text-foreground'>Como Aplicar o Instrumento</h1>
@@ -30,24 +66,24 @@ export default function InstrucoesPage() {
                   <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
                 </div>
                 <div className='bg-sidebar/40 rounded-lg p-3'>
-                  <p className='font-semibold text-[#f8f8f8] mb-1'>bp-TEAM (Team Emergency Assessment Measure)</p>
-                  <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
+                  <p className='font-semibold text-[#f8f8f8] mb-1'>Habilidades Não Técnicas (NTS)</p>
+                  <p className='text-[#f8f8f8]/70'>Avalia consciência situacional, tomada de decisão e liderança em situações de alta pressão, reduzindo erros e eventos adversos.</p>
                 </div>
                 <div className='bg-sidebar/40 rounded-lg p-3'>
-                  <p className='font-semibold text-[#f8f8f8] mb-1'>bp-TEAM (Team Emergency Assessment Measure)</p>
-                  <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
+                  <p className='font-semibold text-[#f8f8f8] mb-1'>Portaria MS 2.048/2002</p>
+                  <p className='text-[#f8f8f8]/70'>Parâmetros nacionais para avaliação do SAMU: agilidade (≤15min), padronização de protocolos e suficiência de chamadas atendidas.</p>
                 </div>
                 <div className='bg-sidebar/40 rounded-lg p-3'>
-                  <p className='font-semibold text-[#f8f8f8] mb-1'>bp-TEAM (Team Emergency Assessment Measure)</p>
-                  <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
+                  <p className='font-semibold text-[#f8f8f8] mb-1'>Processo de Enfermagem no SAMU</p>
+                  <p className='text-[#f8f8f8]/70'>Instrumento validado (IVC = 0,94) para registro do PE no APH móvel — Pizzolato et al., Rev. Enferm. UFSM 2023.</p>
                 </div>
                 <div className='bg-sidebar/40 rounded-lg p-3'>
-                  <p className='font-semibold text-[#f8f8f8] mb-1'>bp-TEAM (Team Emergency Assessment Measure)</p>
-                  <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
+                  <p className='font-semibold text-[#f8f8f8] mb-1'>Portaria MS 2.048/2002 — Competências</p>
+                  <p className='text-[#f8f8f8]/70'>Define competências mínimas obrigatórias para cada função da equipe de intervenção SAMU (condutor, TEC, enf, médico).</p>
                 </div>
                 <div className='bg-sidebar/40 rounded-lg p-3'>
-                  <p className='font-semibold text-[#f8f8f8] mb-1'>bp-TEAM (Team Emergency Assessment Measure)</p>
-                  <p className='text-[#f8f8f8]/70'>Ferramenta validada em português para avaliação de equipes de emergência. Três domínios: Liderança, Trabalho em Equipe e Gerenciamento de Tarefas.</p>
+                  <p className='font-semibold text-[#f8f8f8] mb-1'>ACLS / PHTLS / BLS</p>
+                  <p className='text-[#f8f8f8]/70'>Protocolos internacionais de suporte avançado e básico de vida utilizados como referência para avaliação das competências técnicas.</p>
                 </div>
               </div>
             </div>
@@ -70,8 +106,8 @@ export default function InstrucoesPage() {
                     <span className='text-white text-xs font-bold'>360</span>
                   </div>
                   <div>
-                    <p className='text-sm font-semibold text-foreground'>Chefia → Equipe</p>
-                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
+                    <p className='text-sm font-semibold text-foreground'>Autoavaliação</p>
+                    <p className='text-xs [text-#555f69] mt-0.5'>O profissional avalia a si mesmo</p>
                   </div>
                 </div>
                 <div className='flex items-start gap-3 bg-[#e5ecf1]/40 rounded-lg p-3'>
@@ -79,8 +115,8 @@ export default function InstrucoesPage() {
                     <span className='text-white text-xs font-bold'>360</span>
                   </div>
                   <div>
-                    <p className='text-sm font-semibold text-foreground'>Chefia → Equipe</p>
-                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
+                    <p className='text-sm font-semibold text-foreground'>Equipe → Liderança</p>
+                    <p className='text-xs [text-#555f69] mt-0.5'>A equipe avalia a liderança/coordenação</p>
                   </div>
                 </div>
                 <div className='flex items-start gap-3 bg-[#e5ecf1]/40 rounded-lg p-3'>
@@ -88,8 +124,8 @@ export default function InstrucoesPage() {
                     <span className='text-white text-xs font-bold'>360</span>
                   </div>
                   <div>
-                    <p className='text-sm font-semibold text-foreground'>Chefia → Equipe</p>
-                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação da chefia/liderança para o profissional</p>
+                    <p className='text-sm font-semibold text-foreground'>Simulação / bp-TEAM</p>
+                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação em cenário simulado (bp-TEAM/NTS)</p>
                   </div>
                 </div>
               </div>
@@ -97,46 +133,37 @@ export default function InstrucoesPage() {
 
             {/* escala de pontuação */}
             <div className='bg-card border border-border rounded-xl p-5 space-y-3 mb-6'>
-              <h2 className='font-semibold text-[#0e1216]'>Escala de Pontuação (Likert 1–5)</h2>
-              <div className='space-y-2'>
-                <div className='flex items-start gap-3'>
-                  <span className='w-8 h-8 rounded-lg text-sm font-bold text-white flex items-center justify-center shrink-0 bg-[#cd0048]'>1</span>
-                  <div>
-                    <p className='text-sm font-semibold text-foreground'>Insatisfatório</p>
-                    <p className='text-xs [text-#555f69]'>Não atende; requer intervenção imediata</p>
+              <p className="text-xs font-semibold [text-#555f69] uppercase tracking-wider mb-3">Escala de Pontuação Likert — 1 a 5</p>
+              <div className="flex flex-col gap-3 ">
+                {escalaLikert.map((item) => (
+                  <div
+                    key={item.nota}
+                    className="flex items-center gap-2"
+                  >
+                    <span
+                      className="w-6 h-6 rounded text-xs font-bold text-white flex items-center justify-center"
+                      style={{
+                        backgroundColor: item.cor,
+                      }}
+                    >
+                      {item.nota}
+                    </span>
+                    <span className="text-xs text-foreground">
+                      <span
+                        className="font-medium">
+                        {item.titulo}
+                      </span>
+
+                      <span className="[text-#555f69]">
+                        {" "}
+                        — {item.descricao}
+                      </span>
+                    </span>
                   </div>
-                </div>
-                <div className='flex items-start gap-3'>
-                  <span className='w-8 h-8 rounded-lg text-sm font-bold text-white flex items-center justify-center shrink-0 bg-[#cd0048]'>1</span>
-                  <div>
-                    <p className='text-sm font-semibold text-foreground'>Insatisfatório</p>
-                    <p className='text-xs [text-#555f69]'>Não atende; requer intervenção imediata</p>
-                  </div>
-                </div>
-                <div className='flex items-start gap-3'>
-                  <span className='w-8 h-8 rounded-lg text-sm font-bold text-white flex items-center justify-center shrink-0 bg-[#cd0048]'>1</span>
-                  <div>
-                    <p className='text-sm font-semibold text-foreground'>Insatisfatório</p>
-                    <p className='text-xs [text-#555f69]'>Não atende; requer intervenção imediata</p>
-                  </div>
-                </div>
-                <div className='flex items-start gap-3'>
-                  <span className='w-8 h-8 rounded-lg text-sm font-bold text-white flex items-center justify-center shrink-0 bg-[#cd0048]'>1</span>
-                  <div>
-                    <p className='text-sm font-semibold text-foreground'>Insatisfatório</p>
-                    <p className='text-xs [text-#555f69]'>Não atende; requer intervenção imediata</p>
-                  </div>
-                </div>
-                <div className='flex items-start gap-3'>
-                  <span className='w-8 h-8 rounded-lg text-sm font-bold text-white flex items-center justify-center shrink-0 bg-[#cd0048]'>1</span>
-                  <div>
-                    <p className='text-sm font-semibold text-foreground'>Insatisfatório</p>
-                    <p className='text-xs [text-#555f69]'>Não atende; requer intervenção imediata</p>
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>          
-            
+            </div>
+
             {/* Classificação Final da Avaliação */}
             <div className='bg-card border border-border rounded-xl p-5 space-y-3 mb-6'>
               <h2 className='font-semibold text-[#0e1216]'>Classificação Final da Avaliação</h2>
@@ -201,101 +228,26 @@ export default function InstrucoesPage() {
             <div className='bg-card border border-border rounded-xl p-5 space-y-3 mb-6'>
               <h2 className='font-semibold text-[#0e1216]'>Frequência e Responsabilidade de Aplicação</h2>
               <div className='space-y-3'>
-                <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
-                  <span className="text-xl shrink-0">☀️</span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-bold text-[#cd0048]">
-                        Diária
+                {frequencias.map((item) => (
+                  <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
+                    <span className="text-xl shrink-0">{item.icon}</span>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-sm font-bold text-[#cd0048]">
+                          {item.frequencia}
+                        </p>
+
+                        <span className="text-xs [text-#555f69]">
+                          — {item.responsavel}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-foreground mt-0.5">
+                        {item.instrumento_acao}
                       </p>
-
-                      <span className="text-xs [text-#555f69]">
-                        — Condutor + equipe
-                      </span>
                     </div>
-
-                    <p className="text-xs text-foreground mt-0.5">
-                      Checklist de viatura, materiais e EPIs no início de cada plantão.
-                      Registro em livro de ocorrências da base.
-                    </p>
                   </div>
-                </div>
-                <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
-                  <span className="text-xl shrink-0">☀️</span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-bold text-[#cd0048]">
-                        Diária
-                      </p>
-
-                      <span className="text-xs [text-#555f69]">
-                        — Condutor + equipe
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-foreground mt-0.5">
-                      Checklist de viatura, materiais e EPIs no início de cada plantão.
-                      Registro em livro de ocorrências da base.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
-                  <span className="text-xl shrink-0">☀️</span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-bold text-[#cd0048]">
-                        Diária
-                      </p>
-
-                      <span className="text-xs [text-#555f69]">
-                        — Condutor + equipe
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-foreground mt-0.5">
-                      Checklist de viatura, materiais e EPIs no início de cada plantão.
-                      Registro em livro de ocorrências da base.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
-                  <span className="text-xl shrink-0">☀️</span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-bold text-[#cd0048]">
-                        Diária
-                      </p>
-
-                      <span className="text-xs [text-#555f69]">
-                        — Condutor + equipe
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-foreground mt-0.5">
-                      Checklist de viatura, materiais e EPIs no início de cada plantão.
-                      Registro em livro de ocorrências da base.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
-                  <span className="text-xl shrink-0">☀️</span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-bold text-[#cd0048]">
-                        Diária
-                      </p>
-
-                      <span className="text-xs [text-#555f69]">
-                        — Condutor + equipe
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-foreground mt-0.5">
-                      Checklist de viatura, materiais e EPIs no início de cada plantão.
-                      Registro em livro de ocorrências da base.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
