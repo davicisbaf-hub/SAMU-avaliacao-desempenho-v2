@@ -61,9 +61,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("http://192.168.1.10:8026/api/fichasVw", setFichas);
-    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
-    carregar("http://192.168.1.10:8026/api/fluxos-avaliacao", setFluxos);
+    carregar("/api/fichasVw", setFichas);
+    carregar("/api/frequencias", setFrequencias);
+    carregar("/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (

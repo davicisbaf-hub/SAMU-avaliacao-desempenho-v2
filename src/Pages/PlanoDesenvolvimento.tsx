@@ -1,9 +1,12 @@
 import { useRef, useEffect, useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
-import { UserSessionProvider, useUserSession } from '../contexts/UserSession';
+import { useUserSession } from '../contexts/UserSession';
 import { Download } from "lucide-react";
 import { useReactToPrint } from 'react-to-print';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { ptBR } from 'date-fns/locale';
 
 type Avaliacao = {
   id: number;
@@ -66,9 +69,11 @@ export default function PlanoDesenvolvimento() {
   const [buscaTexto, setBuscaTexto] = useState('');
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
   const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
-  const { user } = useUserSession();
   
-  // REFS PARA IMPRESSÃO
+  // NOVOS FILTROS DE DATA
+  const [dataInicio, setDataInicio] = useState<Date | null>(null);
+  const [dataFim, setDataFim] = useState<Date | null>(null);
+  
   const fichaPrintRef = useRef<HTMLDivElement>(null);
   const comparativoPrintRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +81,7 @@ export default function PlanoDesenvolvimento() {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await fetch('http://192.168.1.10:8026/api/avaliacoes');
+        const res = await fetch('/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {
@@ -262,22 +267,40 @@ export default function PlanoDesenvolvimento() {
     return Array.from(set).sort();
   }, [porProfissional]);
 
+  // FILTRAR PROFISSIONAIS POR DATA
   const profissionaisFiltrados = useMemo(() => {
     return Object.entries(porProfissional).filter(([, prof]) => {
+      // Filtro por função
       if (filtroFuncao !== 'Todas' && prof.funcao !== filtroFuncao) return false;
+      
+      // Filtro por nome
       if (buscaTexto.trim()) {
         const termo = buscaTexto.trim().toLowerCase();
         if (!prof.nome.toLowerCase().includes(termo)) return false;
       }
+      
+      // Filtro por pendência (última ficha)
       if (filtroPendencia !== 'todos') {
         const ultimaFicha = prof.fichas[prof.fichas.length - 1];
         const temPendenciaAtual = ultimaFicha ? ultimaFicha.temProblema : false;
         if (filtroPendencia === 'com' && !temPendenciaAtual) return false;
         if (filtroPendencia === 'sem' && temPendenciaAtual) return false;
       }
+      
+      // Filtro por data - verifica se alguma ficha está no período
+      if (dataInicio || dataFim) {
+        const temFichaNoPeriodo = prof.fichas.some(ficha => {
+          const dataFicha = new Date(ficha.criado_em);
+          if (dataInicio && dataFicha < dataInicio) return false;
+          if (dataFim && dataFicha > dataFim) return false;
+          return true;
+        });
+        if (!temFichaNoPeriodo) return false;
+      }
+      
       return true;
     });
-  }, [porProfissional, filtroFuncao, buscaTexto, filtroPendencia]);
+  }, [porProfissional, filtroFuncao, buscaTexto, filtroPendencia, dataInicio, dataFim]);
 
   const profModal = modalFicha ? porProfissional[modalFicha.profKey] : null;
   const modoComparativo = modalFicha?.fichaId === 'comparativo';
@@ -299,7 +322,6 @@ export default function PlanoDesenvolvimento() {
 
   const fecharModal = () => setModalFicha(null);
 
-  // HOOKS DO REACT-TO-PRINT
   const imprimirFicha = useReactToPrint({
     contentRef: fichaPrintRef,
     documentTitle: `Ficha-${profModal?.nome}-${fichaModal?.id}`,
@@ -309,6 +331,12 @@ export default function PlanoDesenvolvimento() {
     contentRef: comparativoPrintRef,
     documentTitle: `Comparativo-${profModal?.nome}`,
   });
+
+  // VERIFICAR SE PROFISSIONAL TEM PENDÊNCIA (para exibir no comparativo)
+  const profissionalTemPendencia = (prof: any) => {
+    const ultimaFicha = prof.fichas[prof.fichas.length - 1];
+    return ultimaFicha ? ultimaFicha.temProblema : false;
+  };
 
   return (
     <div className="flex h-screen w-screen bg-white text-black">
@@ -327,10 +355,12 @@ export default function PlanoDesenvolvimento() {
                 {funcoesUnicas.map((f) => <option key={f} value={f}>{f}</option>)}
               </select>
             </div>
+            
             <div className="flex flex-col flex-1 min-w-[200px]">
               <label className="text-xs text-gray-500 mb-1">Buscar profissional</label>
               <input type="text" value={buscaTexto} onChange={(e) => setBuscaTexto(e.target.value)} placeholder="Digite o nome..." className="border rounded-md px-3 py-2 text-sm bg-white" />
             </div>
+            
             <div className="flex flex-col">
               <label className="text-xs text-gray-500 mb-1">Pendência (última ficha)</label>
               <select value={filtroPendencia} onChange={(e) => setFiltroPendencia(e.target.value as any)} className="border rounded-md px-3 py-2 text-sm bg-white">
@@ -339,6 +369,47 @@ export default function PlanoDesenvolvimento() {
                 <option value="sem">Sem pendências</option>
               </select>
             </div>
+
+            {/* FILTROS DE DATA */}
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">Data Início</label>
+              <DatePicker
+                selected={dataInicio}
+                onChange={(date) => setDataInicio(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Selecione..."
+                className="border rounded-md px-3 py-2 text-sm bg-white w-[140px]"
+                locale={ptBR}
+                isClearable
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">Data Fim</label>
+              <DatePicker
+                selected={dataFim}
+                onChange={(date) => setDataFim(date)}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Selecione..."
+                className="border rounded-md px-3 py-2 text-sm bg-white w-[140px]"
+                locale={ptBR}
+                isClearable
+              />
+            </div>
+
+            {(dataInicio || dataFim) && (
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setDataInicio(null);
+                    setDataFim(null);
+                  }}
+                  className="px-3 py-2 text-sm text-red-600 hover:text-red-800 font-medium"
+                >
+                  Limpar datas
+                </button>
+              </div>
+            )}
           </div>
 
           {carregando ? (
@@ -353,26 +424,40 @@ export default function PlanoDesenvolvimento() {
                 <div className="border rounded-lg overflow-hidden">
                   <table className="w-full text-sm">
                     <thead className="bg-gray-100">
-                      <tr className="text-left">
+                      <tr className="text-center">
                         <th className="p-3">Profissional</th>
                         <th className="p-3">Função</th>
-                        <th className="p-3 w-16 text-center">Ação</th>
+                        <th className="p-3">Status</th>
+                        <th className="p-3 w-16">Ação</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {profissionaisFiltrados.map(([profKey, prof]) => (
-                        <tr key={profKey} className="border-t">
-                          <td className="p-3 font-medium">{prof.nome}</td>
-                          <td className="p-3 text-gray-600">{prof.funcao}</td>
-                          <td className="p-3 text-center">
-                            <button
-                              onClick={() => {
-                                setFiltroTipoComparativo('todos');
-                                setModalFicha({ profKey, fichaId: 'comparativo' });
-                              }} className="text-xl p-1 hover:bg-gray-100 rounded" title="Ver comparativo">👁️</button>
-                          </td>
-                        </tr>
-                      ))}
+                      {profissionaisFiltrados.map(([profKey, prof]) => {
+                        const temPendencia = profissionalTemPendencia(prof);
+                        return (
+                          <tr key={profKey} className="border-t">
+                            <td className="p-3 font-medium">{prof.nome}</td>
+                            <td className="p-3 text-gray-600">{prof.funcao}</td>
+                            <td className="p-3 text-center">
+                              <span className={`px-2 py-1 rounded text-xs font-semibold ${temPendencia ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+                                {temPendencia ? 'Com pendências' : 'Sem pendências'}
+                              </span>
+                            </td>
+                            <td className="p-3 text-center">
+                              <button
+                                onClick={() => {
+                                  setFiltroTipoComparativo('todos');
+                                  setModalFicha({ profKey, fichaId: 'comparativo' });
+                                }} 
+                                className="text-xl p-1 hover:bg-gray-100 rounded" 
+                                title="Ver comparativo"
+                              >
+                                👁️
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -381,7 +466,7 @@ export default function PlanoDesenvolvimento() {
               {/* FICHAS POR PROFISSIONAL → TIPO → FICHAS */}
               {profissionaisFiltrados.map(([profKey, prof]) => (
                 <div key={profKey} className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
-                  <h3 className="font-bold text-lg mb-4">{prof.funcao} — {prof.nome}</h3>
+                  <h3 className="font-bold text-lg text-left mb-4">{prof.funcao} — {prof.nome}</h3>
 
                   <div className="space-y-2">
                     {Object.entries(prof.porTipo).map(([tipo, fichasTipo]) => {
@@ -580,17 +665,30 @@ export default function PlanoDesenvolvimento() {
               {modoComparativo && (() => {
                 const tiposDisponiveis = Object.keys(profModal.porTipo);
 
-                const fichasParaComparativo = filtroTipoComparativo === 'todos'
+                // Aplicar filtro de tipo e também filtro de data nas fichas
+                let fichasParaComparativo = filtroTipoComparativo === 'todos'
                   ? profModal.fichas
                   : (profModal.porTipo[filtroTipoComparativo] ?? []);
+
+                // Aplicar filtro de data nas fichas do comparativo
+                if (dataInicio || dataFim) {
+                  fichasParaComparativo = fichasParaComparativo.filter(ficha => {
+                    const dataFicha = new Date(ficha.criado_em);
+                    if (dataInicio && dataFicha < dataInicio) return false;
+                    if (dataFim && dataFicha > dataFim) return false;
+                    return true;
+                  });
+                }
 
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
 
                 return (
                   <div>
+                    {/* Filtro por tipo de ficha */}
                     {tiposDisponiveis.length > 1 && (
                       <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="text-xs text-gray-500 mr-2 self-center">Filtrar por tipo:</span>
                         <button
                           onClick={() => setFiltroTipoComparativo('todos')}
                           className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${filtroTipoComparativo === 'todos'
@@ -615,46 +713,72 @@ export default function PlanoDesenvolvimento() {
                       </div>
                     )}
 
-                    {linhas.length === 0 ? (
-                      <p className="text-sm text-gray-500">Nenhuma categoria registrada ainda.</p>
+                    {/* Informações de filtro aplicado */}
+                    {fichasParaComparativo.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500">Nenhuma ficha encontrada com os filtros aplicados.</p>
+                        {(dataInicio || dataFim) && (
+                          <button
+                            onClick={() => {
+                              setDataInicio(null);
+                              setDataFim(null);
+                            }}
+                            className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+                          >
+                            Limpar filtros de data
+                          </button>
+                        )}
+                      </div>
                     ) : (
-                      <div className="border rounded-lg overflow-auto">
-                        <table className="w-full text-sm">
-                          <thead className="bg-gray-50">
-                            <tr className="text-center">
-                              <th className="p-2 text">Categoria</th>
-                              {fichasParaComparativo.map((f, idx) => (
-                                <th key={f.id} className="p-2">
-                                  {filtroTipoComparativo === 'todos' && (
-                                    <div className="text-xs font-normal text-blue-500 mb-0.5">{tipoLabel(f.tipoAvaliacao)}</div>
-                                  )}
-                                  Ficha {idx + 1} - {f.tipoFicha}
-                                  <div className="text-xs font-normal text-gray-500">{formatarData(f.criado_em)}</div>
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {linhas.map(([nomeCat, valores]) => (
-                              <tr key={nomeCat} className="border-t">
-                                <td className="p-2 whitespace-nowrap">{nomeCat}</td>
-                                {valores.map((valor, idx) => (
-                                  <td key={idx} className="p-2 text-center">
-                                    {valor ? (
-                                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${badgeClasse(valor.classificacaoEvolucao)}`}>
-                                        {valor.mediaEvolucao} • {valor.classificacaoEvolucao}
-                                        {setaTendencia(valor.mediaEvolucao, valores[idx - 1]?.mediaEvolucao ?? null)}
-                                      </span>
-                                    ) : (
-                                      <span className="text-gray-300">—</span>
+                      <>
+                        <div className="text-sm text-gray-500 mb-2">
+                          Mostrando {fichasParaComparativo.length} ficha(s)
+                          {filtroTipoComparativo !== 'todos' && ` do tipo ${tipoLabel(filtroTipoComparativo)}`}
+                          {(dataInicio || dataFim) && ' no período selecionado'}
+                        </div>
+                        
+                        <div className="border rounded-lg overflow-auto">
+                          <table className="w-full text-sm">
+                            <thead className="bg-gray-50">
+                              <tr className="text-center">
+                                <th className="p-2 text-left">Categoria</th>
+                                {fichasParaComparativo.map((f, idx) => (
+                                  <th key={f.id} className="p-2 min-w-[100px]">
+                                    {filtroTipoComparativo === 'todos' && (
+                                      <div className="text-xs font-normal text-blue-500 mb-0.5">{tipoLabel(f.tipoAvaliacao)}</div>
                                     )}
-                                  </td>
+                                    <div className="font-semibold">Ficha {idx + 1}</div>
+                                    <div className="text-xs font-normal text-gray-500">{f.tipoFicha}</div>
+                                    <div className="text-xs font-normal text-gray-500">{formatarData(f.criado_em)}</div>
+                                    {f.temProblema && (
+                                      <div className="text-xs font-semibold text-amber-600">⚠️ Pendência</div>
+                                    )}
+                                  </th>
                                 ))}
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {linhas.map(([nomeCat, valores]) => (
+                                <tr key={nomeCat} className="border-t">
+                                  <td className="p-2 whitespace-nowrap font-medium">{nomeCat}</td>
+                                  {valores.map((valor, idx) => (
+                                    <td key={idx} className="p-2 text-center">
+                                      {valor ? (
+                                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${badgeClasse(valor.classificacaoEvolucao)}`}>
+                                          {valor.mediaEvolucao} • {valor.classificacaoEvolucao}
+                                          {setaTendencia(valor.mediaEvolucao, valores[idx - 1]?.mediaEvolucao ?? null)}
+                                        </span>
+                                      ) : (
+                                        <span className="text-gray-300">—</span>
+                                      )}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
                     )}
                   </div>
                 );
@@ -679,6 +803,7 @@ export default function PlanoDesenvolvimento() {
                 <p><strong>Tipo de Avaliação:</strong> {tipoLabel(fichaModal.tipoAvaliacao)}</p>
                 <p><strong>Ficha:</strong> {fichaModal.tipoFicha}</p>
                 <p><strong>Data:</strong> {formatarData(fichaModal.criado_em)}</p>
+                <p><strong>Status:</strong> {fichaModal.temProblema ? '⚠️ Com pendências' : '✅ Sem pendências'}</p>
               </div>
 
               <hr style={{ marginBottom: '20px' }} />
@@ -716,7 +841,6 @@ export default function PlanoDesenvolvimento() {
 
               <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc', fontSize: '12px', color: '#666' }}>
                 <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}</p>
-                <p>Por: {user?.nome}</p>
               </div>
             </div>
           )}
@@ -735,69 +859,87 @@ export default function PlanoDesenvolvimento() {
               <div style={{ marginBottom: '20px' }}>
                 <p><strong>Profissional:</strong> {profModal.nome}</p>
                 <p><strong>Função:</strong> {profModal.funcao}</p>
+                <p><strong>Status atual:</strong> {profissionalTemPendencia(profModal) ? '⚠️ Com pendências' : '✅ Sem pendências'}</p>
                 <p><strong>Total de fichas:</strong> {profModal.fichas.length}</p>
               </div>
 
               <hr style={{ marginBottom: '20px' }} />
 
               {(() => {
-                const fichasParaComparativo = filtroTipoComparativo === 'todos'
+                let fichasParaComparativo = filtroTipoComparativo === 'todos'
                   ? profModal.fichas
                   : (profModal.porTipo[filtroTipoComparativo] ?? []);
+
+                if (dataInicio || dataFim) {
+                  fichasParaComparativo = fichasParaComparativo.filter(ficha => {
+                    const dataFicha = new Date(ficha.criado_em);
+                    if (dataInicio && dataFicha < dataInicio) return false;
+                    if (dataFim && dataFicha > dataFim) return false;
+                    return true;
+                  });
+                }
 
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
 
                 return (
                   <div>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                      <thead>
-                        <tr style={{ backgroundColor: '#f0f0f0' }}>
-                          <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', minWidth: '150px' }}>Categoria</th>
-                          {fichasParaComparativo.map((f, idx) => (
-                            <th key={f.id} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
-                              Ficha {idx + 1} - {f.tipoFicha}
-                              <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>
-                                {formatarData(f.criado_em)}
-                              </div>
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {linhas.map(([nomeCat, valores]) => (
-                          <tr key={nomeCat} style={{ borderTop: '1px solid #ddd' }}>
-                            <td style={{ border: '1px solid #ddd', padding: '10px', fontWeight: 'bold' }}>{nomeCat}</td>
-                            {valores.map((valor, idx) => (
-                              <td key={idx} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
-                                {valor ? (
-                                  <div>
-                                    <div style={{ fontWeight: 'bold' }}>{valor.mediaEvolucao}</div>
-                                    <div style={{ fontSize: '12px' }}>{valor.classificacaoEvolucao}</div>
+                    {fichasParaComparativo.length === 0 ? (
+                      <p style={{ textAlign: 'center', color: '#666' }}>Nenhuma ficha encontrada com os filtros aplicados.</p>
+                    ) : (
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                        <thead>
+                          <tr style={{ backgroundColor: '#f0f0f0' }}>
+                            <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', minWidth: '150px' }}>Categoria</th>
+                            {fichasParaComparativo.map((f, idx) => (
+                              <th key={f.id} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                Ficha {idx + 1} - {f.tipoFicha}
+                                <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>
+                                  {formatarData(f.criado_em)}
+                                </div>
+                                {f.temProblema && (
+                                  <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#d97706', marginTop: '2px' }}>
+                                    ⚠️ Com pendência
                                   </div>
-                                ) : (
-                                  <span style={{ color: '#999' }}>—</span>
                                 )}
-                              </td>
+                              </th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-
-                    <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>
-                      <p><strong>Legenda:</strong></p>
-                      <p>• BOM: Manutenção e aperfeiçoamento</p>
-                      <p>• REGULAR: PDI com ações de melhoria</p>
-                      <p>• RUIM: Intervenção imediata</p>
-                    </div>
+                        </thead>
+                        <tbody>
+                          {linhas.map(([nomeCat, valores]) => (
+                            <tr key={nomeCat} style={{ borderTop: '1px solid #ddd' }}>
+                              <td style={{ border: '1px solid #ddd', padding: '10px', fontWeight: 'bold' }}>{nomeCat}</td>
+                              {valores.map((valor, idx) => (
+                                <td key={idx} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                  {valor ? (
+                                    <div>
+                                      <div style={{ fontWeight: 'bold' }}>{valor.mediaEvolucao}</div>
+                                      <div style={{ fontSize: '12px' }}>{valor.classificacaoEvolucao}</div>
+                                    </div>
+                                  ) : (
+                                    <span style={{ color: '#999' }}>—</span>
+                                  )}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 );
               })()}
 
+              <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>
+                <p><strong>Legenda:</strong></p>
+                <p>• BOM: Manutenção e aperfeiçoamento</p>
+                <p>• REGULAR: PDI com ações de melhoria</p>
+                <p>• RUIM: Intervenção imediata</p>
+              </div>
+
               <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc', fontSize: '12px', color: '#666' }}>
                 <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}</p>
-                <p>Por: {user?.nome}</p>
               </div>
             </div>
           )}

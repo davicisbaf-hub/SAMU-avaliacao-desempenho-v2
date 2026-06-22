@@ -20,7 +20,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://192.168.1.10:8026/login",
+        "/login",
         {
           method: "POST",
           headers: {
@@ -99,73 +99,6 @@ function App() {
               Profissional: apenas autoavaliação.
             </p>
           </div>
-
-          {/* Selecionar tipo deperfil */}
-          {/* /
-            <div className="grid grid-cols-2 gap-2 p-4 border-b border-border">
-              <button
-                type="button"
-                onClick={() => setPerfil("admin")}
-                className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
-                  perfil === "admin"
-                    ? "border-[#cd0048] bg-[#cd0048]/5 text-[#cd0048]"
-                    : "border-gray-200 text-gray-500"
-                }`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                </svg>
-
-                <span>Admin / Coordenação</span>
-
-                <span className="text-[10px] font-normal opacity-70">
-                  Acesso completo
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPerfil("profissional")}
-                className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 text-xs font-semibold transition-all ${
-                  perfil === "profissional"
-                    ? "border-[#cd0048] bg-[#cd0048]/5 text-[#cd0048]"
-                    : "border-gray-200 text-gray-500"
-                }`}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 20a6 6 0 0 0-12 0" />
-                  <circle cx="12" cy="10" r="4" />
-                  <circle cx="12" cy="12" r="10" />
-                </svg>
-
-                <span>Profissional</span>
-
-                <span className="text-[10px] font-normal opacity-70">
-                  Autoavaliação / bp-TEAM
-                </span>
-              </button>
-            </div>
-          */}
 
           <form onSubmit={handleLogin} className="p-6 space-y-4" >
 

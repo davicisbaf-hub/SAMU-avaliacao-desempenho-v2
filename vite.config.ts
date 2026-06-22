@@ -11,6 +11,14 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'avaliacao360.cisbaf.org.br'
-    ]
+    ],
+    
+    proxy: {
+      "/api": {
+        target: "http://192.168.1.10:8026",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   }
 })

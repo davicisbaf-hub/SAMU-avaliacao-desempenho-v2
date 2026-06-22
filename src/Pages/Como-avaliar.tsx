@@ -34,8 +34,8 @@ export default function InstrucoesPage() {
   };
 
   useEffect(() => {
-    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
-    carregar("http://192.168.1.10:8026/api/escala-likert", setEscalaLikert);
+    carregar("/api/frequencias", setFrequencias);
+    carregar("/api/escala-likert", setEscalaLikert);
   }, []);
 
 

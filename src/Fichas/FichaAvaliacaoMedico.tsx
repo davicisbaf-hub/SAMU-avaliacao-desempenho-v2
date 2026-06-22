@@ -99,7 +99,7 @@ export default function FichaAvaliacaoMedico() {
 			return acc;
 		}, {} as Record<string, any>);
 
-		const res = await fetch("http://192.168.1.10:8026/api/avaliacoes", {
+		const res = await fetch("/api/avaliacoes", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -128,7 +128,7 @@ export default function FichaAvaliacaoMedico() {
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+			const res = await fetch("/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -138,11 +138,11 @@ export default function FichaAvaliacaoMedico() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/escala-likert")
+		fetch("/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+		fetch("/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -170,7 +170,7 @@ export default function FichaAvaliacaoMedico() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
+			`/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
