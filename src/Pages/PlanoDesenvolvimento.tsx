@@ -380,7 +380,7 @@ export default function PlanoDesenvolvimento() {
                       </thead>
                       <tbody>
                         {prof.fichas.map((ficha, idx) => (
-                          <tr key={ficha.id} className="border-t">
+                          <tr key={ficha.id} className="border-t ">
                             <td className="p-3 font-medium">Ficha {idx + 1}</td>
                             <td className="p-3">{formatarData(ficha.criado_em)}</td>
                             <td className="p-3">
@@ -529,7 +529,7 @@ export default function PlanoDesenvolvimento() {
                       <h4 className="font-semibold text-sm mb-3">
                         {modoComparativo ? 'Evolução por categoria (todas as fichas)' : 'Comparativo de evolução (todas as fichas)'}
                       </h4>
-                      <div className="border rounded-lg overflow-hidden">
+                      <div className="border rounded-lg overflow-auto">
                         <table className="w-full text-sm">
                           <thead className="bg-gray-50">
                             <tr className="text-center">

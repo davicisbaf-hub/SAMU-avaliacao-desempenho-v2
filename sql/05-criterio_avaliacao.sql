@@ -2,7 +2,7 @@ CREATE TABLE public.criterios_avaliacao (
 	id serial4 NOT NULL,
 	tipo varchar(50) NOT NULL,
 	categoria varchar(100) NOT NULL,
-	codigo varchar(20) NOT NULL,
+	codigo varchar(50) NOT NULL,
 	criterio text NOT NULL,
 	peso int4 NOT NULL,
 	indicador varchar(100) NULL,
