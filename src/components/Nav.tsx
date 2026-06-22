@@ -27,13 +27,13 @@ export default function Nav() {
             (ficha) =>
                 ficha.nome === user.funcao ||
                 ficha.nome === "Liderado > Liderança" ||
-                ficha.nome === "Autoavaliação Simulação bp-TEAM"
+                ficha.nome === "Simulação bp-TEAM"
         )
         : user?.perfil === "Administrador"
         ? fichas.filter(
             (ficha) =>
             ficha.nome === user.funcao ||
-            ficha.nome === "Autoavaliação / Simulação bp-TEAM" ||
+            ficha.nome === "Simulação bp-TEAM" ||
             ficha.nome === "Liderança > Liderado" 
         )
         : fichas;
