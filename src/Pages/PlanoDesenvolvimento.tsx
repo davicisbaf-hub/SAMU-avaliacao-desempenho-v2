@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
-import { useUserSession } from '../contexts/UserSession';
+import { UserSessionProvider, useUserSession } from '../contexts/UserSession';
 import { Download } from "lucide-react";
 import { useReactToPrint } from 'react-to-print';
 
@@ -66,6 +66,7 @@ export default function PlanoDesenvolvimento() {
   const [buscaTexto, setBuscaTexto] = useState('');
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
   const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
+  const { user } = useUserSession();
   
   // REFS PARA IMPRESSÃO
   const fichaPrintRef = useRef<HTMLDivElement>(null);
@@ -715,6 +716,7 @@ export default function PlanoDesenvolvimento() {
 
               <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc', fontSize: '12px', color: '#666' }}>
                 <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}</p>
+                <p>Por: {user?.nome}</p>
               </div>
             </div>
           )}
@@ -795,6 +797,7 @@ export default function PlanoDesenvolvimento() {
 
               <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc', fontSize: '12px', color: '#666' }}>
                 <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}</p>
+                <p>Por: {user?.nome}</p>
               </div>
             </div>
           )}
