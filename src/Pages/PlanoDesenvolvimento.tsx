@@ -2,11 +2,13 @@ import { useRef, useEffect, useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
 import { useUserSession } from '../contexts/UserSession';
-import { Download } from "lucide-react";
+import { Download, FileDown } from "lucide-react";
 import { useReactToPrint } from 'react-to-print';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ptBR } from 'date-fns/locale';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 type Avaliacao = {
   id: number;
@@ -70,18 +72,19 @@ export default function PlanoDesenvolvimento() {
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
   const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
   
-  // NOVOS FILTROS DE DATA
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [dataFim, setDataFim] = useState<Date | null>(null);
   
   const fichaPrintRef = useRef<HTMLDivElement>(null);
   const comparativoPrintRef = useRef<HTMLDivElement>(null);
+  const fichaPdfRef = useRef<HTMLDivElement>(null);
+  const comparativoPdfRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await fetch('/api/avaliacoes');
+        const res = await fetch('http://192.168.1.10:8026/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {
@@ -267,19 +270,15 @@ export default function PlanoDesenvolvimento() {
     return Array.from(set).sort();
   }, [porProfissional]);
 
-  // FILTRAR PROFISSIONAIS POR DATA
   const profissionaisFiltrados = useMemo(() => {
     return Object.entries(porProfissional).filter(([, prof]) => {
-      // Filtro por função
       if (filtroFuncao !== 'Todas' && prof.funcao !== filtroFuncao) return false;
       
-      // Filtro por nome
       if (buscaTexto.trim()) {
         const termo = buscaTexto.trim().toLowerCase();
         if (!prof.nome.toLowerCase().includes(termo)) return false;
       }
       
-      // Filtro por pendência (última ficha)
       if (filtroPendencia !== 'todos') {
         const ultimaFicha = prof.fichas[prof.fichas.length - 1];
         const temPendenciaAtual = ultimaFicha ? ultimaFicha.temProblema : false;
@@ -287,7 +286,6 @@ export default function PlanoDesenvolvimento() {
         if (filtroPendencia === 'sem' && temPendenciaAtual) return false;
       }
       
-      // Filtro por data - verifica se alguma ficha está no período
       if (dataInicio || dataFim) {
         const temFichaNoPeriodo = prof.fichas.some(ficha => {
           const dataFicha = new Date(ficha.criado_em);
@@ -332,10 +330,64 @@ export default function PlanoDesenvolvimento() {
     documentTitle: `Comparativo-${profModal?.nome}`,
   });
 
-  // VERIFICAR SE PROFISSIONAL TEM PENDÊNCIA (para exibir no comparativo)
   const profissionalTemPendencia = (prof: any) => {
     const ultimaFicha = prof.fichas[prof.fichas.length - 1];
     return ultimaFicha ? ultimaFicha.temProblema : false;
+  };
+
+  // FUNÇÃO PARA BAIXAR PDF DIRETO (SEM TELA DE IMPRESSÃO)
+  const baixarPDF = async (elemento: HTMLElement | null, nomeArquivo: string) => {
+    if (!elemento) return;
+    
+    try {
+      const canvas = await html2canvas(elemento, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      let heightLeft = pdfHeight;
+      let position = 0;
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      
+      // Adiciona a primeira página
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+      heightLeft -= pageHeight;
+      
+      // Adiciona páginas extras se necessário
+      while (heightLeft > 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      pdf.save(`${nomeArquivo}.pdf`);
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      alert('Erro ao gerar o PDF. Tente novamente.');
+    }
+  };
+
+  // Funções para baixar os PDFs
+  const baixarFichaPDF = () => {
+    if (fichaPdfRef.current) {
+      const nome = `Ficha-${profModal?.nome}-${fichaModal?.id}`;
+      baixarPDF(fichaPdfRef.current, nome);
+    }
+  };
+
+  const baixarComparativoPDF = () => {
+    if (comparativoPdfRef.current) {
+      const nome = `Comparativo-${profModal?.nome}`;
+      baixarPDF(comparativoPdfRef.current, nome);
+    }
   };
 
   return (
@@ -370,7 +422,6 @@ export default function PlanoDesenvolvimento() {
               </select>
             </div>
 
-            {/* FILTROS DE DATA */}
             <div className="flex flex-col">
               <label className="text-xs text-gray-500 mb-1">Data Início</label>
               <DatePicker
@@ -476,7 +527,6 @@ export default function PlanoDesenvolvimento() {
 
                       return (
                         <div key={tipo} className="border rounded-lg overflow-hidden">
-                          {/* Linha do tipo — clicável */}
                           <button
                             className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
                             onClick={() => toggleTipo(profKey, tipo)}
@@ -491,7 +541,6 @@ export default function PlanoDesenvolvimento() {
                             <span className="text-gray-400 text-sm">{aberto ? '▲' : '▼'}</span>
                           </button>
 
-                          {/* Fichas expandidas */}
                           {aberto && (
                             <table className="w-full text-sm">
                               <thead className="bg-white border-t">
@@ -535,15 +584,31 @@ export default function PlanoDesenvolvimento() {
                                               fichaId: ficha.id,
                                               tipoAvaliacao: tipo,
                                             });
-
                                             setTimeout(() => {
                                               imprimirFicha();
                                             }, 200);
                                           }}
                                           className="text-xl p-1 hover:bg-gray-100 rounded"
+                                          title="Imprimir"
+                                        >
+                                          🖨️
+                                        </button>
+
+                                        <button
+                                          onClick={() => {
+                                            setModalFicha({
+                                              profKey,
+                                              fichaId: ficha.id,
+                                              tipoAvaliacao: tipo,
+                                            });
+                                            setTimeout(() => {
+                                              baixarFichaPDF();
+                                            }, 300);
+                                          }}
+                                          className="text-xl p-1 hover:bg-gray-100 rounded"
                                           title="Baixar PDF"
                                         >
-                                          <Download size={18} />
+                                          <FileDown size={18} />
                                         </button>
                                       </div>
                                     </td>
@@ -587,11 +652,31 @@ export default function PlanoDesenvolvimento() {
               </div>
               <div className="flex items-center gap-2">
                 {modoComparativo && (
+                  <>
+                    <button
+                      onClick={() => imprimirComparativo()}
+                      className="px-3 py-2 hover:bg-gray-100 rounded"
+                      title="Imprimir"
+                    >
+                      🖨️
+                    </button>
+                    <button
+                      onClick={() => baixarComparativoPDF()}
+                      className="px-3 py-2 hover:bg-gray-100 rounded"
+                      title="Baixar PDF"
+                    >
+                      <FileDown size={20} />
+                    </button>
+                  </>
+                )}
+
+                {!modoComparativo && fichaModal && (
                   <button
-                    onClick={() => imprimirComparativo()}
+                    onClick={() => baixarFichaPDF()}
                     className="px-3 py-2 hover:bg-gray-100 rounded"
+                    title="Baixar PDF"
                   >
-                    <Download />
+                    <FileDown size={20} />
                   </button>
                 )}
 
@@ -665,12 +750,10 @@ export default function PlanoDesenvolvimento() {
               {modoComparativo && (() => {
                 const tiposDisponiveis = Object.keys(profModal.porTipo);
 
-                // Aplicar filtro de tipo e também filtro de data nas fichas
                 let fichasParaComparativo = filtroTipoComparativo === 'todos'
                   ? profModal.fichas
                   : (profModal.porTipo[filtroTipoComparativo] ?? []);
 
-                // Aplicar filtro de data nas fichas do comparativo
                 if (dataInicio || dataFim) {
                   fichasParaComparativo = fichasParaComparativo.filter(ficha => {
                     const dataFicha = new Date(ficha.criado_em);
@@ -685,7 +768,6 @@ export default function PlanoDesenvolvimento() {
 
                 return (
                   <div>
-                    {/* Filtro por tipo de ficha */}
                     {tiposDisponiveis.length > 1 && (
                       <div className="flex flex-wrap gap-2 mb-4">
                         <span className="text-xs text-gray-500 mr-2 self-center">Filtrar por tipo:</span>
@@ -713,7 +795,6 @@ export default function PlanoDesenvolvimento() {
                       </div>
                     )}
 
-                    {/* Informações de filtro aplicado */}
                     {fichasParaComparativo.length === 0 ? (
                       <div className="text-center py-8">
                         <p className="text-gray-500">Nenhuma ficha encontrada com os filtros aplicados.</p>
@@ -847,11 +928,70 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* CONTEÚDO PARA IMPRESSÃO DO COMPARATIVO (OCULTO) */}
-      <div style={{ display: 'none' }}>
-        <div ref={comparativoPrintRef}>
+      {/* CONTEÚDO PARA PDF DA FICHA (VISÍVEL APENAS PARA CAPTURA) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '800px', background: 'white', padding: '30px' }}>
+        <div ref={fichaPdfRef}>
+          {fichaModal && profModal && (
+            <div style={{ fontFamily: 'Arial, sans-serif' }}>
+              <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
+                Ficha de Avaliação
+              </h1>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <p><strong>Profissional:</strong> {profModal.nome}</p>
+                <p><strong>Função:</strong> {profModal.funcao}</p>
+                <p><strong>Tipo de Avaliação:</strong> {tipoLabel(fichaModal.tipoAvaliacao)}</p>
+                <p><strong>Ficha:</strong> {fichaModal.tipoFicha}</p>
+                <p><strong>Data:</strong> {formatarData(fichaModal.criado_em)}</p>
+                <p><strong>Status:</strong> {fichaModal.temProblema ? '⚠️ Com pendências' : '✅ Sem pendências'}</p>
+              </div>
+
+              <hr style={{ marginBottom: '20px' }} />
+
+              {fichaModal.categorias.map((cat) => (
+                <div key={cat.nome} style={{ marginBottom: '25px' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>{cat.nome}</h3>
+                  
+                  <div style={{ marginBottom: '10px' }}>
+                    <p><strong>Nota:</strong> {cat.mediaPonderada}</p>
+                    <p><strong>Classificação:</strong> {cat.classificacaoAtual}</p>
+                    <p><strong>Orientação:</strong> {cat.orientacao}</p>
+                  </div>
+
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f0f0f0' }}>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Critério</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '80px' }}>Nota</th>
+                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '80px' }}>Peso</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cat.itens.map((item) => (
+                        <tr key={item.criterio}>
+                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.criterio}</td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item.nota}</td>
+                          <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item.peso}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+
+              <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc', fontSize: '12px', color: '#666' }}>
+                <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CONTEÚDO PARA PDF DO COMPARATIVO (VISÍVEL APENAS PARA CAPTURA) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '1000px', background: 'white', padding: '30px' }}>
+        <div ref={comparativoPdfRef}>
           {profModal && modoComparativo && (
-            <div style={{ padding: '30px', fontFamily: 'Arial, sans-serif', maxWidth: '1000px', margin: '0 auto' }}>
+            <div style={{ fontFamily: 'Arial, sans-serif' }}>
               <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
                 Comparativo de Evolução
               </h1>
