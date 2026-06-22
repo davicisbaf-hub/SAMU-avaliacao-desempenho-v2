@@ -81,7 +81,7 @@ export default function Inicio() {
             <div className='p-6 md:p-8 bg-[#0a1a30] text-white rounded-lg mb-8'>
               
               <div className='flex items-start gap-4'>
-                <div className='w-16 h-16 rounded-2xl bg-[#cd0048] flex items-center justify-center shrink-0'>
+                <div className='w-16 h-16 rounded-2xl bg-[#cd0048] flex items-center justify-center shrink-0 samuSpan'>
                   <span className='text-white font-black text-xl'>192</span>
                 </div>
 
@@ -98,10 +98,10 @@ export default function Inicio() {
                   <p className='text-[#f8f8f8]/70 text-sm'>Equipes de Intervenção SAMU 192 — CRUR-BF / CISBAF — Baixada Fluminense, RJ</p>
                   <p className='text-[#f8f8f8]/50 text-xs mt-1'>Baseado em bp-TEAM, NTS, Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023)</p>
                   
-                  <div className='grid grid-cols-2 md:grid-cols-4 gap-3 mt-6'>
+                  <div className='grid-fluxo-inicio'>
                     
                     {fluxos.map((fluxo) => (
-                      <div key={fluxo.id} className='bg-sidebar/50 rounded-xl p-3'>
+                      <div key={fluxo.id} className='rounded-xl p-3'>
                         <p className='text-[#f8f8f8] text-xs font-semibold'>{fluxo.titulo}</p>
                         <p className='text-[#f8f8f8]/60 text-xs mt-0.5'>{fluxo.descricao}</p>
                       </div>
