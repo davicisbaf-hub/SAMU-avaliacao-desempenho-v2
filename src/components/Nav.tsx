@@ -40,7 +40,7 @@ export default function Nav() {
         : fichas;
 
     useEffect(() => {
-    fetch("http://192.168.1.10:8026/api/fichas")
+    fetch("https://avaliacao360.cisbaf.org.br/api/fichas")
         .then((res) => res.json())
         .then((data) => setFichas(data));
     }, []);

@@ -110,7 +110,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 		try {
 			const response = await fetch(
-				"http://192.168.1.10:8026/api/avaliacoes",
+				"https://avaliacao360.cisbaf.org.br/api/avaliacoes",
 				{
 					method: "POST",
 					headers: {
@@ -146,7 +146,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+			const res = await fetch("https://avaliacao360.cisbaf.org.br/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -156,11 +156,11 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/escala-likert")
+		fetch("https://avaliacao360.cisbaf.org.br/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+		fetch("https://avaliacao360.cisbaf.org.br/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -188,7 +188,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
+			`https://avaliacao360.cisbaf.org.br/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
@@ -205,7 +205,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/usuarios")
+		fetch("https://avaliacao360.cisbaf.org.br/api/usuarios")
 			.then(r => r.json())
 			.then(setUsuarios);
 	}, []);

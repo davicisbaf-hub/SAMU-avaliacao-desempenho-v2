@@ -98,7 +98,7 @@ export default function FichaAvaliacaoTecEnf() {
 			return acc;
 		}, {} as Record<string, any>);
 
-		const res = await fetch("http://192.168.1.10:8026/api/avaliacoes", {
+		const res = await fetch("https://avaliacao360.cisbaf.org.br/api/avaliacoes", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -127,7 +127,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
+			const res = await fetch("https://avaliacao360.cisbaf.org.br/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -137,11 +137,11 @@ export default function FichaAvaliacaoTecEnf() {
 
 
 	useEffect(() => {
-		fetch("http://192.168.1.10:8026/api/escala-likert")
+		fetch("https://avaliacao360.cisbaf.org.br/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("http://192.168.1.10:8026/api/pesos-avaliacao")
+		fetch("https://avaliacao360.cisbaf.org.br/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -169,7 +169,7 @@ export default function FichaAvaliacaoTecEnf() {
 
 	useEffect(() => {
 		carregar(
-			`http://192.168.1.10:8026/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
+			`https://avaliacao360.cisbaf.org.br/api/criterios-avaliacao-autoavaliacao/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);

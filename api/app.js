@@ -15,7 +15,7 @@ app.use(cors({
    "http://127.0.0.1:5173",
    "http://192.168.1.10:5173",
    "http://192.168.1.10:3011",
-   "http://192.168.1.10:8026",
+   "https://avaliacao360.cisbaf.org.br",
    "http://192.168.1.10:8766",
    "https://avaliacao360.cisbaf.org.br"
  ]
