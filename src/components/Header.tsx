@@ -11,7 +11,7 @@ export default function Header() {
     const { user } = useUserSession();
 
     useEffect(() => {
-    fetch("https://avaliacao360.cisbaf.org.br/api/bases")
+    fetch("http://192.168.1.10:8026/api/bases")
         .then(res => res.json())
         .then(setBases);
     }, []);

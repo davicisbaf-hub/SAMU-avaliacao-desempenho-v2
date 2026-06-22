@@ -61,9 +61,9 @@ export default function Inicio() {
   };
 
   useEffect(() => {
-    carregar("https://avaliacao360.cisbaf.org.br/api/fichasVw", setFichas);
-    carregar("https://avaliacao360.cisbaf.org.br/api/frequencias", setFrequencias);
-    carregar("https://avaliacao360.cisbaf.org.br/api/fluxos-avaliacao", setFluxos);
+    carregar("http://192.168.1.10:8026/api/fichasVw", setFichas);
+    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
+    carregar("http://192.168.1.10:8026/api/fluxos-avaliacao", setFluxos);
   }, []);
 
   return (

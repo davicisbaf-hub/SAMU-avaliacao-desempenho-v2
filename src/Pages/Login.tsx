@@ -20,7 +20,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "https://avaliacao360.cisbaf.org.br/login",
+        "http://192.168.1.10:8026/login",
         {
           method: "POST",
           headers: {

@@ -69,8 +69,8 @@ export default function ConfiguracaoPage() {
     }
 
     const url = editandoId
-      ? `https://avaliacao360.cisbaf.org.br/api/criterios-avaliacao/${editandoId}`
-      : "https://avaliacao360.cisbaf.org.br/api/criterios-avaliacao";
+      ? `http://192.168.1.10:8026/api/criterios-avaliacao/${editandoId}`
+      : "http://192.168.1.10:8026/api/criterios-avaliacao";
 
     const method = editandoId ? "PUT" : "POST";
 
@@ -118,7 +118,7 @@ export default function ConfiguracaoPage() {
     await Promise.all(
       selecionados.map((id) =>
         fetch(
-          `https://avaliacao360.cisbaf.org.br/api/criterios-avaliacao/${id}/inativar`,
+          `http://192.168.1.10:8026/api/criterios-avaliacao/${id}/inativar`,
           {
             method: "PUT",
           }
@@ -141,7 +141,7 @@ export default function ConfiguracaoPage() {
   }, [tipoSelecionado]);
 
   async function carregarTipos() {
-    const res = await fetch("https://avaliacao360.cisbaf.org.br/api/tipos-avaliacao");
+    const res = await fetch("http://192.168.1.10:8026/api/tipos-avaliacao");
     const data = await res.json();
 
     setTipos(Array.isArray(data) ? data : []);
@@ -149,7 +149,7 @@ export default function ConfiguracaoPage() {
 
   async function carregarCriterios() {
     const res = await fetch(
-      `https://avaliacao360.cisbaf.org.br/api/criterios-avaliacao/${tipoSelecionado}`
+      `http://192.168.1.10:8026/api/criterios-avaliacao/${tipoSelecionado}`
     );
 
     const data = await res.json();

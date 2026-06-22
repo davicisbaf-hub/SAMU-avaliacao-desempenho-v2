@@ -60,7 +60,7 @@ export default function CadastroPage() {
         if (!usuarioEditando) return;
 
         await fetch(
-            `https://avaliacao360.cisbaf.org.br/api/usuarios/${usuarioEditando.id}`,
+            `http://192.168.1.10:8026/api/usuarios/${usuarioEditando.id}`,
             {
             method: "PUT",
             headers: {
@@ -89,7 +89,7 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            const res = await fetch("https://avaliacao360.cisbaf.org.br/api/usuarios");
+            const res = await fetch("http://192.168.1.10:8026/api/usuarios");
             const data = await res.json();
 
             setUsuarios(Array.isArray(data) ? data : []);
@@ -101,7 +101,7 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("https://avaliacao360.cisbaf.org.br/api/bases"); // sua rota backend
+            const res = await fetch("http://192.168.1.10:8026/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -115,7 +115,7 @@ export default function CadastroPage() {
         e.preventDefault();
         try {
             const response = await fetch(
-                "https://avaliacao360.cisbaf.org.br/api/usuarios",
+                "http://192.168.1.10:8026/api/usuarios",
                 {
                     method: "POST",
                     headers: {
@@ -165,7 +165,7 @@ export default function CadastroPage() {
       };
     
       useEffect(() => {
-        carregar("https://avaliacao360.cisbaf.org.br/api/fichas", setFichas);
+        carregar("http://192.168.1.10:8026/api/fichas", setFichas);
       }, []);
 
       async function removerUsuario(id: number) {
@@ -174,7 +174,7 @@ export default function CadastroPage() {
         }
 
         await fetch(
-            `https://avaliacao360.cisbaf.org.br/api/usuarios/${id}/inativar`,
+            `http://192.168.1.10:8026/api/usuarios/${id}/inativar`,
             {
             method: "PUT",
             }
