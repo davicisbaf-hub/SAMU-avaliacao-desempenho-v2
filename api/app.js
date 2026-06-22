@@ -38,7 +38,7 @@ const pool = new pg.Pool({
 //   database: "samu"
 // });
 
-app.get("/api/fichas", async (req, res) => {
+app.get("/fichas", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT *
@@ -53,7 +53,7 @@ app.get("/api/fichas", async (req, res) => {
   }
 });
 
-app.get("/api/frequencias", async (req, res) => {
+app.get("/frequencias", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT *
@@ -70,7 +70,7 @@ app.get("/api/frequencias", async (req, res) => {
   }
 });
 
-app.get("/api/fluxos-avaliacao", async (req, res) => {
+app.get("/fluxos-avaliacao", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT *
@@ -87,7 +87,7 @@ app.get("/api/fluxos-avaliacao", async (req, res) => {
   }
 });
 
-app.get("/api/criterios-avaliacao-lider/:tipo", async (req, res) => {
+app.get("/criterios-avaliacao-lider/:tipo", async (req, res) => {
   try {
     const { tipo } = req.params;
 
@@ -119,7 +119,7 @@ app.get("/api/criterios-avaliacao-lider/:tipo", async (req, res) => {
   }
 });
 
-app.get("/api/criterios-avaliacao-liderado/:tipo", async (req, res) => {
+app.get("/criterios-avaliacao-liderado/:tipo", async (req, res) => {
   try {
     const { tipo } = req.params;
 
@@ -151,7 +151,7 @@ app.get("/api/criterios-avaliacao-liderado/:tipo", async (req, res) => {
   }
 });
 
-app.get("/api/criterios-avaliacao-autoavaliacao/:tipo", async (req, res) => {
+app.get("/criterios-avaliacao-autoavaliacao/:tipo", async (req, res) => {
   try {
     const { tipo } = req.params;
 
@@ -183,7 +183,7 @@ app.get("/api/criterios-avaliacao-autoavaliacao/:tipo", async (req, res) => {
   }
 });
 
-app.get("/api/criterios-avaliacao/:tipo/:avaliacao", async (req, res) => {
+app.get("/criterios-avaliacao/:tipo/:avaliacao", async (req, res) => {
   const { tipo, avaliacao } = req.params;
 
   const { rows } = await pool.query(
@@ -201,7 +201,7 @@ app.get("/api/criterios-avaliacao/:tipo/:avaliacao", async (req, res) => {
   res.json(rows);
 });
 
-app.post("/api/avaliacoes", async (req, res) => {
+app.post("/avaliacoes", async (req, res) => {
   try {
     const {
       avaliadorId,
@@ -271,7 +271,7 @@ app.post("/api/avaliacoes", async (req, res) => {
   }
 });
 
-app.get("/api/avaliacoes", async (req, res) => {
+app.get("/avaliacoes", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT
@@ -341,7 +341,7 @@ app.post("/login", async (req, res) => {
   });
 });
 
-app.get("/api/escala-likert", async (req, res) => {
+app.get("/escala-likert", async (req, res) => {
   const { rows } = await pool.query(`
     SELECT *
     FROM escala_likert
@@ -351,7 +351,7 @@ app.get("/api/escala-likert", async (req, res) => {
   res.json(rows);
 });
 
-app.get("/api/pesos-avaliacao", async (req, res) => {
+app.get("/pesos-avaliacao", async (req, res) => {
   const { rows } = await pool.query(`
     SELECT *
     FROM pesos_avaliacao
@@ -361,7 +361,7 @@ app.get("/api/pesos-avaliacao", async (req, res) => {
   res.json(rows);
 });
 
-app.get("/api/pesos-avaliacao", async (req, res) => {
+app.get("/pesos-avaliacao", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT valor, descricao, cor
@@ -377,7 +377,7 @@ app.get("/api/pesos-avaliacao", async (req, res) => {
   }
 });
 
-app.get("/api/fichas", async (req, res) => {
+app.get("/fichas", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT nome
@@ -394,7 +394,7 @@ app.get("/api/fichas", async (req, res) => {
   }
 });
 
-app.get("/api/fichasVw", async (req, res) => {
+app.get("/fichasVw", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT *
@@ -411,7 +411,7 @@ app.get("/api/fichasVw", async (req, res) => {
   }
 });
 
-app.get("/api/ficha/:tipo", async (req, res) => {
+app.get("/ficha/:tipo", async (req, res) => {
   try {
     const { tipo } = req.params;
 
@@ -432,12 +432,12 @@ app.get("/api/ficha/:tipo", async (req, res) => {
   }
 });
 
-app.get("/api/bases", async (req, res) => {
+app.get("/bases", async (req, res) => {
   const bases = await pool.query("SELECT * FROM bases ORDER BY nome");
   res.json(bases.rows);
 });
 
-app.post("/api/criterios-avaliacao", async (req, res) => {
+app.post("/criterios-avaliacao", async (req, res) => {
   const {
     tipo,
     categoria,
@@ -475,7 +475,7 @@ app.post("/api/criterios-avaliacao", async (req, res) => {
   res.status(201).json(rows[0]);
 });
 
-app.put("/api/criterios-avaliacao/:id/inativar", async (req, res) => {
+app.put("/criterios-avaliacao/:id/inativar", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -497,7 +497,7 @@ app.put("/api/criterios-avaliacao/:id/inativar", async (req, res) => {
   }
 });
 
-app.put("/api/criterios-avaliacao/:id", async (req, res) => {
+app.put("/criterios-avaliacao/:id", async (req, res) => {
   const {
     categoria,
     codigo,
@@ -532,7 +532,7 @@ app.put("/api/criterios-avaliacao/:id", async (req, res) => {
 });
 
 
-app.get("/api/tipos-avaliacao", async (req, res) => {
+app.get("/tipos-avaliacao", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT DISTINCT tipo
@@ -546,7 +546,7 @@ app.get("/api/tipos-avaliacao", async (req, res) => {
   }
 });
 
-app.get("/api/usuarios", async (req, res) => {
+app.get("/usuarios", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT *
@@ -564,7 +564,7 @@ app.get("/api/usuarios", async (req, res) => {
 });
 
 // Cadastrar usuário
-app.post("/api/usuarios", async (req, res) => {
+app.post("/usuarios", async (req, res) => {
   try {
     const {
       nome,
@@ -608,7 +608,7 @@ app.post("/api/usuarios", async (req, res) => {
   }
 });
 
-app.put("/api/usuarios/:id", async (req, res) => {
+app.put("/usuarios/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -653,7 +653,7 @@ app.put("/api/usuarios/:id", async (req, res) => {
   }
 });
 
-app.put("/api/usuarios/:id/inativar", async (req, res) => {
+app.put("/usuarios/:id/inativar", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -676,7 +676,7 @@ app.put("/api/usuarios/:id/inativar", async (req, res) => {
 });
 
 // KPI endpoint - Agregação de avaliações por categoria
-app.get("/api/kpis/avaliacoes-por-categoria", async (req, res) => {
+app.get("/kpis/avaliacoes-por-categoria", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT
@@ -711,7 +711,7 @@ app.get("/api/kpis/avaliacoes-por-categoria", async (req, res) => {
 });
 
 // KPI endpoint - Avaliações por profissional
-app.get("/api/kpis/avaliacoes-por-profissional", async (req, res) => {
+app.get("/kpis/avaliacoes-por-profissional", async (req, res) => {
   try {
     const { rows } = await pool.query(`
       SELECT
@@ -738,7 +738,7 @@ app.get("/api/kpis/avaliacoes-por-profissional", async (req, res) => {
   }
 });
 
-app.get("/api/usuarios/base/:base", async (req, res) => {
+app.get("/usuarios/base/:base", async (req, res) => {
   const { base } = req.params;
 
   const { rows } = await pool.query(

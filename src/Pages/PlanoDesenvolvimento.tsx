@@ -84,7 +84,7 @@ export default function PlanoDesenvolvimento() {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await fetch('http://192.168.1.10:8026/api/avaliacoes');
+        const res = await fetch('/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {
