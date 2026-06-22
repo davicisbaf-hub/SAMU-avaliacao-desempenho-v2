@@ -13,7 +13,7 @@ type Criterios = {
 	codigo: string;
 	criterio: string;
 	peso: number;
-	id: number;
+	id: string;
 	indicador: string;
 	titulo: string;
 	avaliacao: string;
@@ -376,7 +376,7 @@ export default function FichaAvaliacaoBpTeam() {
 																<TableAvaliacao
 																	pesos={pesos}
 																	key={criterio.codigo}
-																	codigo={criterio.codigo}
+																	codigo={criterio.id}
 																	criterio={criterio.criterio}
 																	peso={1}
 																	indicador={criterio.indicador}

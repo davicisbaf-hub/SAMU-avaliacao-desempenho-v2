@@ -13,7 +13,7 @@ type Criterios = {
 	codigo: string;
 	criterio: string;
 	peso: number;
-	id: number;
+	id: string;
 	indicador: string;
 	titulo: string;
 	avaliacao: string;
@@ -132,8 +132,6 @@ export default function FichaAvaliacaoLideradoLideranca() {
 			if (!response.ok) {
 				throw new Error("Erro ao salvar avaliação");
 			}
-
-			const data = await response.json();
 
 
 			alert("Avaliação salva com sucesso!");
@@ -460,7 +458,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 																<TableAvaliacao
 																	pesos={pesos}
 																	key={criterio.codigo}
-																	codigo={criterio.codigo}
+																	codigo={criterio.id}
 																	criterio={criterio.criterio}
 																	peso={2}
 																	indicador={criterio.indicador}

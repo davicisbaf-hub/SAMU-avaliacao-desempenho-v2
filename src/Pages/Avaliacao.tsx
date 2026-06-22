@@ -13,7 +13,7 @@ type Criterios = {
 	codigo: string;
 	criterio: string;
 	peso: number;
-	id: number;
+	id: string;
 	indicador: string;
 	titulo: string;
 	avaliacao: string;
@@ -97,29 +97,31 @@ export default function AvaliacaoPage() {
 			return acc;
 		}, {} as Record<string, any>);
 
-		try {
-			const response = await fetch(
-				"http://192.168.1.10:8026/api/avaliacoes",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						avaliadorId: user?.id,
-						avaliadoId: user?.id,
-						tipoAvaliacao,
-						resultado,
+		const res = await fetch("http://192.168.1.10:8026/api/avaliacoes", {
 
-						observacoesGerais: observacoes,
-						pontosMelhorar,
-						planoAcao,
-					}),
-				}
-			);
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				avaliadorId: user?.id,
+				avaliadoId: user?.id,
+				tipoAvaliacao,
+				resultado,
+				observacoesGerais: observacoes,
+				pontosMelhorar,
+				planoAcao,
+			}),
+		});
 
-		} catch (error) {
-			console.error(error);
+		if (res.status === 409) {
+			const data = await res.json();
+			alert(data.erro);
+			return;
+		}
+
+		if (res.ok) {
+			alert("Avaliação enviada com sucesso!");
 		}
 	};
 
@@ -389,7 +391,7 @@ export default function AvaliacaoPage() {
 																<TableAvaliacao
 																	pesos={pesos}
 																	key={criterio.codigo}
-																	codigo={criterio.codigo}
+																	codigo={criterio.id}
 																	criterio={criterio.criterio}
 																	peso={1}
 																	indicador={criterio.indicador}
