@@ -34,8 +34,8 @@ export default function InstrucoesPage() {
   };
 
   useEffect(() => {
-    carregar("http://192.168.1.10:8026/api/frequencias", setFrequencias);
-    carregar("http://192.168.1.10:8026/api/escala-likert", setEscalaLikert);
+    carregar("https://avaliacao360.cisbaf.org.br/api/frequencias", setFrequencias);
+    carregar("https://avaliacao360.cisbaf.org.br/api/escala-likert", setEscalaLikert);
   }, []);
 
 
