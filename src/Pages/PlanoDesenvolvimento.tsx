@@ -63,6 +63,7 @@ export default function PlanoDesenvolvimento() {
   const [filtroFuncao, setFiltroFuncao] = useState('Todas');
   const [buscaTexto, setBuscaTexto] = useState('');
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
+  const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
 
   useEffect(() => {
     async function carregar() {
@@ -345,7 +346,7 @@ export default function PlanoDesenvolvimento() {
                           <td className="p-3 font-medium">{prof.nome}</td>
                           <td className="p-3 text-gray-600">{prof.funcao}</td>
                           <td className="p-3 text-center">
-                            <button onClick={() => setModalFicha({ profKey, fichaId: 'comparativo' })} className="text-xl p-1 hover:bg-gray-100 rounded" title="Ver comparativo">👁️</button>
+                            <button onClick={() => { setFiltroTipoComparativo('todos'); setModalFicha({ profKey, fichaId: 'comparativo' });}} className="text-xl p-1 hover:bg-gray-100 rounded" title="Ver comparativo">👁️</button>
                           </td>
                         </tr>
                       ))}
@@ -362,7 +363,7 @@ export default function PlanoDesenvolvimento() {
                   <div className="space-y-2">
                     {Object.entries(prof.porTipo).map(([tipo, fichasTipo]) => {
                       const aberto = tiposAbertos[profKey]?.has(tipo) ?? false;
-                      const temPendencia = fichasTipo.some((f) => f.temProblema);
+                      const temPendencia = fichasTipo[fichasTipo.length - 1]?.temProblema ?? false;
                       const totalFichas = fichasTipo.length;
 
                       return (
