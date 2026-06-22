@@ -147,21 +147,30 @@ export default function BaixarFicha() {
 	
 
 	// Nomes dos usuários que são da minha base
-	const nomesNaMinhaBase = usuarios
-		.filter(u => isAdminGlobal || u.base === userBase)
-		.map(u => u.nome);
+	// const nomesNaMinhaBase = usuarios
+	// 	.filter(u => isAdminGlobal || u.base === userBase)
+	// 	.map(u => u.nome);
 
 	const avaliacoesPermitidas = avaliacoes.filter((avaliacao) => {
-		const passouBase =
-			isAdminGlobal ||
-			nomesNaMinhaBase.includes(avaliacao.avaliado_nome);
+		const ehAutoavaliacao =
+			avaliacao.avaliador_nome === avaliacao.avaliado_nome;
 
-		const passouFuncaoAdmin =
-			isAdminGlobal ||
-			user?.perfil !== "Administrador" ||
-			avaliacao.tipo_avaliacao === user?.funcao;
+		if (isAdminGlobal) return true;
 
-		return passouBase && passouFuncaoAdmin;
+		// Administrador da base
+		if (isAdmin) {
+			const usuarioAvaliado = usuarios.find(
+			u => u.nome === avaliacao.avaliado_nome
+			);
+
+			return usuarioAvaliado?.base === userBase;
+		}
+
+		// Usuário comum
+		return (
+			ehAutoavaliacao &&
+			avaliacao.avaliado_nome === user?.nome
+		);
 	});
 
 	const handleViewClick = (avaliacao: Avaliacao) => {
@@ -341,10 +350,18 @@ export default function BaixarFicha() {
 														{avaliacao.avaliado_funcao} - {avaliacao.avaliado_nome}
 													</td>
 
-													<td className="px-4 py-3">
-														{avaliacao.avaliador_funcao} - {avaliacao.avaliador_nome}
-													</td>
-
+													{avaliacao.avaliador_nome === user?.nome  
+														|| avaliacao.avaliador_nome === avaliacao.avaliado_nome 
+														|| isAdminGlobal ? (
+														<td className="px-4 py-3">
+															{avaliacao.avaliador_funcao} - {avaliacao.avaliador_nome}
+														</td>
+														) : (
+														<td className="px-4 py-3 blur select-none pointer-events-none">
+															Anônimo
+														</td>
+													)}
+													
 													<td className="px-4 py-3">
 														<span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
 															{avaliacao.tipo_avaliacao}

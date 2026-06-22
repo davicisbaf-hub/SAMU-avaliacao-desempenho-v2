@@ -29,13 +29,16 @@ export default function Header() {
             </div>
 
             <div className='ml-auto flex items-center gap-2'>
-                <span
-                    className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border" style={{ backgroundColor: `${baseUsuario?.cor}20`, color: baseUsuario?.cor }}>
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: `${baseUsuario?.cor}`}}></span>
-                    {user?.base}
-                </span>
+                {user?.base && (
+                    <span
+                        className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border" style={{ backgroundColor: `${baseUsuario?.cor}20`, color: baseUsuario?.cor }}>
+                        <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: `${baseUsuario?.cor}`}}></span>
+                        {user?.base}
+                    </span>
+                )}
+                
                 <span className='hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/10 text-black text-xs font-medium'>
-                    {user?.nome}
+                    {user?.nome} - {user?.funcao}
                 </span>
                 <span className='hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#cd0048]/10 text-[#cd0048] text-xs font-medium'>
                     {user?.perfil}
