@@ -7,6 +7,7 @@ type Avaliacao = {
   id: number;
   avaliado_nome: string;
   avaliado_funcao: string;
+  tipo_avaliacao: string;
   resultado: any;
   criado_em: string;
 };
@@ -31,11 +32,11 @@ type CategoriaProcessada = {
 type FichaProcessada = {
   id: number;
   criado_em: string;
-  tipoAvaliacao: string;
+  tipoAvaliacao: string; // autoavaliacao, liderado_lider, etc
+  tipoFicha: string;     // Enfermeiro, BP-TEAM, Médico...
   categorias: CategoriaProcessada[];
   temProblema: boolean;
 };
-
 type ModalState = { profKey: string; fichaId: number | 'comparativo'; tipoAvaliacao?: string } | null;
 
 const TIPO_LABEL: Record<string, string> = {
@@ -72,6 +73,7 @@ export default function PlanoDesenvolvimento() {
         const res = await fetch('http://192.168.1.10:8026/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
+        
       } catch (err) {
         console.error(err);
       } finally {
@@ -196,7 +198,14 @@ export default function PlanoDesenvolvimento() {
         });
 
         const temProblema = categorias.some((c) => c.classificacaoAtual !== 'BOM');
-        fichas.push({ id: aval.id, criado_em: aval.criado_em, tipoAvaliacao, categorias, temProblema });
+        fichas.push({
+          id: aval.id,
+          criado_em: aval.criado_em,
+          tipoAvaliacao,
+          tipoFicha: aval.tipo_avaliacao, // <-- Enfermeiro, BP-TEAM, Médico...
+          categorias,
+          temProblema,
+        });
       }
 
       // agrupa por tipo
@@ -290,7 +299,6 @@ export default function PlanoDesenvolvimento() {
   );
 
   const fecharModal = () => setModalFicha(null);
-
   return (
     <div className="flex h-screen w-screen bg-white text-black">
       <Nav />
@@ -346,7 +354,11 @@ export default function PlanoDesenvolvimento() {
                           <td className="p-3 font-medium">{prof.nome}</td>
                           <td className="p-3 text-gray-600">{prof.funcao}</td>
                           <td className="p-3 text-center">
-                            <button onClick={() => { setFiltroTipoComparativo('todos'); setModalFicha({ profKey, fichaId: 'comparativo' });}} className="text-xl p-1 hover:bg-gray-100 rounded" title="Ver comparativo">👁️</button>
+                            <button
+                              onClick={() => {
+                                setFiltroTipoComparativo('todos');
+                                setModalFicha({ profKey, fichaId: 'comparativo' });
+                              }} className="text-xl p-1 hover:bg-gray-100 rounded" title="Ver comparativo">👁️</button>
                           </td>
                         </tr>
                       ))}
@@ -397,7 +409,7 @@ export default function PlanoDesenvolvimento() {
                               <tbody>
                                 {fichasTipo.map((ficha, idx) => (
                                   <tr key={ficha.id} className="border-t hover:bg-gray-50">
-                                    <td className="px-4 py-2 font-medium">Ficha {idx + 1}</td>
+                                    <td className="px-4 py-2 font-medium">Ficha {idx + 1} - {ficha.tipoFicha}</td>
                                     <td className="px-4 py-2">{formatarData(ficha.criado_em)}</td>
                                     <td className="px-4 py-2">
                                       <span className={`px-2 py-1 rounded text-xs font-semibold ${ficha.temProblema ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
@@ -436,7 +448,9 @@ export default function PlanoDesenvolvimento() {
             <div className="border-b p-5 flex items-start justify-between sticky top-0 bg-white z-10">
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">
-                  {modoComparativo ? 'Comparativo de Evolução' : `Ficha — ${tipoLabel(modalFicha.tipoAvaliacao ?? '')}`}
+                  {modoComparativo
+                    ? 'Comparativo de Evolução'
+                    : `Ficha — ${tipoLabel(fichaModal?.tipoAvaliacao ?? '')} - ${fichaModal?.tipoFicha ?? ''}`}
                 </p>
                 <h3 className="font-bold text-xl">{profModal.nome}</h3>
                 <p className="text-sm text-gray-600">{profModal.funcao}</p>
@@ -509,51 +523,94 @@ export default function PlanoDesenvolvimento() {
                 </>
               )}
 
-              {fichasDoTipoModal.length > 1 && (() => {
-                const linhas = modoComparativo ? linhasComparativoTodas : linhasComparativoComProblema;
-                if (linhas.length === 0) return modoComparativo ? <p className="text-sm text-gray-500">Nenhuma categoria registrada ainda.</p> : null;
-                return (
-                  <div className={!modoComparativo ? 'pt-4 border-t mt-4' : ''}>
-                    <h4 className="font-semibold text-sm mb-3">
-                      {modoComparativo ? 'Evolução por categoria (todas as fichas)' : 'Comparativo de evolução (fichas deste tipo)'}
-                    </h4>
-                    <div className="border rounded-lg overflow-auto">
-                      <table className="w-full text-sm">
-                        <thead className="bg-gray-50">
-                          <tr className="text-center">
-                            <th className="p-2 text-left">Tipo</th>
-                            <th className="p-2 text-left">Categoria</th>
-                            {fichasDoTipoModal.map((f, idx) => (
-                              <th key={f.id} className={`p-2 ${!modoComparativo && fichaModal && f.id === fichaModal.id ? 'bg-blue-50 text-blue-700' : ''}`}>
-                                Ficha {idx + 1}
-                                <div className="text-xs font-normal text-gray-500">{formatarData(f.criado_em)}</div>
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {linhas.map(([nomeCat, valores]) => (
-                            <tr key={nomeCat} className="border-t">
-                              <td className="p-2">{tipoLabel(modalFicha.tipoAvaliacao ?? '')}</td>
-                              <td className="p-2">{nomeCat}</td>
-                              {valores.map((valor, idx) => (
-                                <td key={idx} className={`p-2 text-center ${!modoComparativo && fichaModal && fichasDoTipoModal[idx]?.id === fichaModal.id ? 'bg-blue-50' : ''}`}>
-                                  {valor ? (
-                                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${badgeClasse(valor.classificacaoEvolucao)}`}>
-                                      {valor.mediaEvolucao} • {valor.classificacaoEvolucao}
-                                      {setaTendencia(valor.mediaEvolucao, valores[idx - 1]?.mediaEvolucao ?? null)}
-                                    </span>
-                                  ) : <span className="text-gray-300">—</span>}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                );
-              })()}
+              {/* MODAL - bloco comparativo no modo dedicado */}
+{modoComparativo && (() => {
+  const tiposDisponiveis = Object.keys(profModal.porTipo);
+
+  // fichas a considerar conforme filtro
+  const fichasParaComparativo = filtroTipoComparativo === 'todos'
+    ? profModal.fichas
+    : (profModal.porTipo[filtroTipoComparativo] ?? []);
+
+  const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
+  const linhas = Object.entries(comparativoFiltrado);
+
+  return (
+    <div>
+      {/* filtro de tipo */}
+      {tiposDisponiveis.length > 1 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setFiltroTipoComparativo('todos')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
+              filtroTipoComparativo === 'todos'
+                ? 'bg-gray-800 text-white border-gray-800'
+                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+            }`}
+          >
+            Todos
+          </button>
+          {tiposDisponiveis.map((tipo) => (
+            <button
+              key={tipo}
+              onClick={() => setFiltroTipoComparativo(tipo)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
+                filtroTipoComparativo === tipo
+                  ? 'bg-gray-800 text-white border-gray-800'
+                  : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {tipoLabel(tipo)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {linhas.length === 0 ? (
+        <p className="text-sm text-gray-500">Nenhuma categoria registrada ainda.</p>
+      ) : (
+        <div className="border rounded-lg overflow-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr className="text-center">
+                <th className="p-2 text">Categoria</th>
+                {fichasParaComparativo.map((f, idx) => (
+                  <th key={f.id} className="p-2">
+                    {/* quando "todos", mostra o tipo junto */}
+                    {filtroTipoComparativo === 'todos' && (
+                      <div className="text-xs font-normal text-blue-500 mb-0.5">{tipoLabel(f.tipoAvaliacao)}</div>
+                    )}
+                    Ficha {idx + 1} - {f.tipoFicha}
+                    <div className="text-xs font-normal text-gray-500">{formatarData(f.criado_em)}</div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {linhas.map(([nomeCat, valores]) => (
+                <tr key={nomeCat} className="border-t">
+                  <td className="p-2 whitespace-nowrap">{nomeCat}</td>
+                  {valores.map((valor, idx) => (
+                    <td key={idx} className="p-2 text-center">
+                      {valor ? (
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${badgeClasse(valor.classificacaoEvolucao)}`}>
+                          {valor.mediaEvolucao} • {valor.classificacaoEvolucao}
+                          {setaTendencia(valor.mediaEvolucao, valores[idx - 1]?.mediaEvolucao ?? null)}
+                        </span>
+                      ) : (
+                        <span className="text-gray-300">—</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+})()}
             </div>
           </div>
         </div>
