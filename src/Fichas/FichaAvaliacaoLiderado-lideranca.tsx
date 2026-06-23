@@ -204,10 +204,8 @@ export default function FichaAvaliacaoLideradoLideranca() {
 	}, {} as Record<string, Criterios[]>);
 
 
-	const { authauthFetch } = useAuthauthFetch();
-
 	useEffect(() => {
-		authauthFetch("/api/usuarios")
+		authFetch("/api/usuarios")
 			.then(r => r.json())
 			.then(setUsuarios);
 	}, []);

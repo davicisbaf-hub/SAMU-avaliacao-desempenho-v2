@@ -207,7 +207,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 	
 
 	useEffect(() => {
-		authauthFetch("/api/usuarios")
+		authFetch("/api/usuarios")
 			.then(r => r.json())
 			.then(setUsuarios);
 	}, []);
