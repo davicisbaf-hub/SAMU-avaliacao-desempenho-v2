@@ -8,6 +8,7 @@ import StatusCardsKPI from '../components/StatusCardsKPI'
 import KPIAvaliacoesPorCategoria from '../components/KPIAvaliacoesPorCategoria'
 import { useUserSession } from "../contexts/UserSession";
 import type { StatusKPIContagem } from "../components/KPIAvaliacoesPorCategoria";
+import { useAuthFetch } from "../hooks/useAuthFetch";
 
 type Ficha = {
   id: number;
@@ -48,16 +49,19 @@ export default function Inicio() {
     categoriasRisco: 0,
   });
   const isAdmin = user?.perfil === "🔑 Administrador — Todas as bases";
-  
+
+
+  // dentro do componente:
+  const { authFetch } = useAuthFetch();
 
   const carregar = async (url: string, setter: Function) => {
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      setter(data);
-    } catch (err) {
-      console.error(err);
-    }
+      try {
+          const res = await authFetch(url);
+          const data = await res.json();
+          setter(data);
+      } catch (err) {
+          console.error(err);
+      }
   };
 
   useEffect(() => {

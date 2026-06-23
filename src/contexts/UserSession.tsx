@@ -15,47 +15,46 @@ type User = {
   ativo: boolean;
   criadoEm: string;
 };
+
 type UserSessionType = {
   user: User | null;
-  login: (user: User) => void;
+  token: string | null;
+  login: (user: User, token: string) => void;
   logout: () => void;
 };
 
 const UserSession = createContext<UserSessionType | null>(null);
 
-export function UserSessionProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function UserSessionProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem("user");
-
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
   });
 
-  const login = (userData: User) => {
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("token");
+  });
+
+  const login = (userData: User, userToken: string) => {
     setUser(userData);
+    setToken(userToken);
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", userToken);
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
-    <UserSession.Provider
-      value={{
-        user,
-        login,
-        logout,
-      }}
-    >
+    <UserSession.Provider value={{ user, token, login, logout }}>
       {children}
     </UserSession.Provider>
   );
@@ -65,9 +64,7 @@ export function useUserSession() {
   const context = useContext(UserSession);
 
   if (!context) {
-    throw new Error(
-      "useUserSession deve ser usado dentro de UserSessionProvider"
-    );
+    throw new Error("useUserSession deve ser usado dentro de UserSessionProvider");
   }
 
   return context;

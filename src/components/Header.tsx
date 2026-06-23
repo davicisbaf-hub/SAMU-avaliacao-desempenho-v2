@@ -2,7 +2,7 @@ import { useUserSession } from "../contexts/UserSession";
 import { useState, useEffect } from "react";
 import { Menu } from 'lucide-react';
 import { NavLink, useNavigate } from "react-router";
-
+import { useAuthFetch } from "../hooks/useAuthFetch";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -32,14 +32,19 @@ export default function Header() {
     const { user, logout } = useUserSession();
     const [fichas, setFichas] = useState<Ficha[]>([]);
 
+   
+
+
+    const { authFetch } = useAuthFetch();
+
     useEffect(() => {
-        fetch("/api/bases")
+        authFetch("/api/bases")
             .then(res => res.json())
             .then(setBases);
     }, []);
 
     useEffect(() => {
-        fetch("/api/fichas")
+        authFetch("/api/fichas")
             .then((res) => res.json())
             .then((data) => setFichas(data));
     }, []);

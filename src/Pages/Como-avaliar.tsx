@@ -1,6 +1,7 @@
 import Header from '../components/Header'
 import Nav from '../components/Nav'
 import { useEffect, useState } from "react";
+import { useAuthFetch } from "../hooks/useAuthFetch";
 
 
 type EscalaLikert = {
@@ -22,10 +23,11 @@ export default function InstrucoesPage() {
 
   const [escalaLikert, setEscalaLikert] = useState<EscalaLikert[]>([]);
   const [frequencias, setFrequencias] = useState<FrequenciaAplicacao[]>([]);
+  const { authFetch } = useAuthFetch();
 
   const carregar = async (url: string, setter: Function) => {
     try {
-      const res = await fetch(url);
+      const res = await authFetch(url);
       const data = await res.json();
       setter(data);
     } catch (err) {

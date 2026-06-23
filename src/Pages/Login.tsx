@@ -43,7 +43,7 @@ function App() {
         return;
       }
 
-      login(data);
+      login(data, data.token); 
 
       navigate("/");
     } catch (error) {

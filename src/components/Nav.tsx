@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from "react-router";
 import { useUserSession } from "../contexts/UserSession";
 import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
-
+import { useAuthFetch } from "../hooks/useAuthFetch";
 type Ficha = {
   nome: string;
   link: string;
@@ -39,10 +39,15 @@ export default function Nav() {
         )
         : fichas;
 
+    
+
+    // dentro do componente, antes do useEffect:
+    const { authFetch } = useAuthFetch();
+
     useEffect(() => {
-    fetch("/api/fichas")
-        .then((res) => res.json())
-        .then((data) => setFichas(data));
+        authFetch("/api/fichas")
+            .then((res) => res.json())
+            .then((data) => setFichas(data));
     }, []);
 
     return (

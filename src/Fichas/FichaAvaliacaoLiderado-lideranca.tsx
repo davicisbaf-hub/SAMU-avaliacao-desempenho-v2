@@ -7,6 +7,7 @@ import Assinatura from '../components/Assinatura';
 import { useUserSession } from "../contexts/UserSession";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { useAuthFetch } from "../hooks/useAuthFetch";
 
 type Criterios = {
 	categoria: string;
@@ -70,6 +71,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 	const [pontosMelhorar, setPontosMelhorar] = useState("");
 	const [planoAcao, setPlanoAcao] = useState("");
 	const fichaRef = useRef<HTMLDivElement>(null);
+  	const { authFetch } = useAuthFetch();
 
 	const imprimirFicha = useReactToPrint({
 		contentRef: fichaRef,
@@ -109,7 +111,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 		}, {} as Record<string, any>);
 
 		try {
-			const response = await fetch(
+			const response = await authFetch(
 				"/api/avaliacoes",
 				{
 					method: "POST",
@@ -144,7 +146,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 	useEffect(() => {
 		async function carregarBases() {
-			const res = await fetch("/api/bases"); // sua rota backend
+			const res = await authFetch("/api/bases"); // sua rota backend
 			const data = await res.json();
 
 			setBases(data);
@@ -154,11 +156,11 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 
 	useEffect(() => {
-		fetch("/api/escala-likert")
+		authFetch("/api/escala-likert")
 			.then((r) => r.json())
 			.then(setEscalaLikert);
 
-		fetch("/api/pesos-avaliacao")
+		authFetch("/api/pesos-avaliacao")
 			.then((r) => r.json())
 			.then(setPesos);
 	}, []);
@@ -176,7 +178,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 
 	const carregar = async (url: string, setter: Function) => {
 		try {
-			const res = await fetch(url);
+			const res = await authFetch(url);
 			const data = await res.json();
 			setter(data);
 		} catch (err) {
@@ -202,8 +204,10 @@ export default function FichaAvaliacaoLideradoLideranca() {
 	}, {} as Record<string, Criterios[]>);
 
 
+	const { authauthFetch } = useAuthauthFetch();
+
 	useEffect(() => {
-		fetch("/api/usuarios")
+		authauthFetch("/api/usuarios")
 			.then(r => r.json())
 			.then(setUsuarios);
 	}, []);

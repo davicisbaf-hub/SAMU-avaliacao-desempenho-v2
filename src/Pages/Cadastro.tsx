@@ -1,9 +1,8 @@
 import Header from '../components/Header'
 import Nav from '../components/Nav'
 import { useUserSession } from "../contexts/UserSession";
-
-
 import { useEffect, useState } from "react";
+import { useAuthFetch } from "../hooks/useAuthFetch";
 
 type Base = {
     id: number;
@@ -55,11 +54,14 @@ export default function CadastroPage() {
 
     const usuariosFiltrados = isAdminGlobal ? usuarios : usuarios.filter( (u) => u.base === user?.base );
     const basesVisiveis = isAdminGlobal ? bases : bases.filter((base) => base.nome === user?.base);
+    const { authFetch } = useAuthFetch();
 
     async function salvarEdicao() {
         if (!usuarioEditando) return;
+        
 
-        await fetch(
+
+        await authFetch(
             `/api/usuarios/${usuarioEditando.id}`,
             {
             method: "PUT",
@@ -89,7 +91,9 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            const res = await fetch("/api/usuarios");
+            
+
+            const res = await authFetch("/api/usuarios");
             const data = await res.json();
 
             setUsuarios(Array.isArray(data) ? data : []);
@@ -101,7 +105,7 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await fetch("/api/bases"); // sua rota backend
+            const res = await authFetch("/api/bases"); // sua rota backend
             const data = await res.json();
 
             setBases(data);
@@ -114,7 +118,8 @@ export default function CadastroPage() {
     const cadastrarUsuario = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await fetch(
+            
+            const response = await authFetch(
                 "/api/usuarios",
                 {
                     method: "POST",
@@ -156,7 +161,7 @@ export default function CadastroPage() {
     
       const carregar = async (url: string, setter: Function) => {
         try {
-          const res = await fetch(url);
+          const res = await authFetch(url);
           const data = await res.json();
           setter(data);
         } catch (err) {
@@ -172,8 +177,9 @@ export default function CadastroPage() {
         if (!confirm("Deseja inativar este usuário?")) {
             return;
         }
+        
 
-        await fetch(
+        await authFetch(
             `/api/usuarios/${id}/inativar`,
             {
             method: "PUT",

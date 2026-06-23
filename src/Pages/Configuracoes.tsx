@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import Nav from "../components/Nav";
 import { useEffect, useState } from "react";
 import { useUserSession } from "../contexts/UserSession";
+import { useAuthFetch } from "../hooks/useAuthFetch";
 
 type Tipo = {
   tipo: string;
@@ -32,6 +33,7 @@ export default function ConfiguracaoPage() {
   const [peso, setPeso] = useState(1);
   const [indicador, setIndicador] = useState("");
   const { user } = useUserSession();
+  const { authFetch } = useAuthFetch();
 
   function toggleSelecionado(id: number) {
     setSelecionados((prev) =>
@@ -74,7 +76,7 @@ export default function ConfiguracaoPage() {
 
     const method = editandoId ? "PUT" : "POST";
 
-    await fetch(url, {
+    await authFetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +119,7 @@ export default function ConfiguracaoPage() {
 
     await Promise.all(
       selecionados.map((id) =>
-        fetch(
+        authFetch(
           `/api/criterios-avaliacao/${id}/inativar`,
           {
             method: "PUT",
@@ -141,14 +143,14 @@ export default function ConfiguracaoPage() {
   }, [tipoSelecionado]);
 
   async function carregarTipos() {
-    const res = await fetch("/api/tipos-avaliacao");
+    const res = await authFetch("/api/tipos-avaliacao");
     const data = await res.json();
 
     setTipos(Array.isArray(data) ? data : []);
   }
 
   async function carregarCriterios() {
-    const res = await fetch(
+    const res = await authFetch(
       `/api/criterios-avaliacao/${tipoSelecionado}`
     );
 

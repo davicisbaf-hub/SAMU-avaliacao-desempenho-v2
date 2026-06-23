@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ptBR } from 'date-fns/locale';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useAuthFetch } from "../hooks/useAuthFetch";
 
 type Avaliacao = {
   id: number;
@@ -79,12 +80,13 @@ export default function PlanoDesenvolvimento() {
   const comparativoPrintRef = useRef<HTMLDivElement>(null);
   const fichaPdfRef = useRef<HTMLDivElement>(null);
   const comparativoPdfRef = useRef<HTMLDivElement>(null);
+  const { authFetch } = useAuthFetch();
 
   useEffect(() => {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await fetch('/api/avaliacoes');
+        const res = await authFetch('/api/avaliacoes');
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {

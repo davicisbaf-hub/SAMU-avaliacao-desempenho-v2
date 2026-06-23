@@ -8,6 +8,8 @@ import { useReactToPrint } from "react-to-print";
 
 import { useEffect, useState, useRef } from "react";
 import FichaAvaliacaoTemplate from '../components/FichaAvaliacaoTemplate';
+import { useAuthFetch } from "../hooks/useAuthFetch";
+
 
 type Criterios = {
 	categoria: string;
@@ -88,6 +90,8 @@ export default function BaixarFicha() {
 	const userBase = user?.base;
 	const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases";
 	const isAdmin = user?.perfil === "Administrador";
+	const { authFetch } = useAuthFetch();
+	
 
 	useEffect(() => {
 		carregarUsuarios();
@@ -95,7 +99,7 @@ export default function BaixarFicha() {
 
 	async function carregarUsuarios() {
 		try {
-			const res = await fetch("/api/usuarios");
+			const res = await authFetch("/api/usuarios");
 			const data = await res.json();
 			setUsuarios(data);
 		} catch (error) {
@@ -109,7 +113,7 @@ export default function BaixarFicha() {
 	});
 
 	useEffect(() => {
-		fetch("/api/avaliacoes")
+		authFetch("/api/avaliacoes")
 			.then((res) => res.json())
 			.then(setAvaliacoes)
 			.catch(console.error);
@@ -117,9 +121,9 @@ export default function BaixarFicha() {
 
 	useEffect(() => {
 		Promise.all([
-			fetch("/api/escala-likert").then(r => r.json()),
-			fetch("/api/pesos-avaliacao").then(r => r.json()),
-			fetch("/api/bases").then(r => r.json()),
+			authFetch("/api/escala-likert").then(r => r.json()),
+			authFetch("/api/pesos-avaliacao").then(r => r.json()),
+			authFetch("/api/bases").then(r => r.json()),
 		]).then(([likert, pesos, bases]) => {
 			setEscalaLikert(likert);
 			setPesos(pesos);
@@ -133,7 +137,7 @@ export default function BaixarFicha() {
 		const tipoFicha = Object.values(avaliacaoSelecionada.resultado)[0]?.avaliacao;
 
 
-		fetch(
+		authFetch(
 			`/api/criterios-avaliacao/${avaliacaoSelecionada.tipo_avaliacao}/${tipoFicha}`
 		)
 			.then(res => res.json())
@@ -217,7 +221,7 @@ export default function BaixarFicha() {
 	
 	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
 		try {
-			const critResponse = await fetch(`/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
+			const critResponse = await authFetch(`/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
 			const crit = await critResponse.json();
 			setCriteriosParaPdf(crit);
 			setAvaliacaoParaPdf(avaliacao);
