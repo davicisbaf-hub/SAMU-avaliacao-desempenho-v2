@@ -7,6 +7,7 @@ import avaliacoesRoutes from "./routes/avaliacoes.js";
 import criteriosRoutes from "./routes/criterios.js";
 import kpisRoutes from "./routes/kpis.js";
 import auxiliaresRoutes from "./routes/auxiliares.js";
+import { autenticar } from "./middleware/auth.js";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -24,7 +25,9 @@ app.use(cors({
   ],
 }));
 
-app.use("/", authRoutes);
+app.use("/", authRoutes)
+  
+app.use(autenticar);
 app.use("/", usuariosRoutes);
 app.use("/", avaliacoesRoutes);
 app.use("/", criteriosRoutes);

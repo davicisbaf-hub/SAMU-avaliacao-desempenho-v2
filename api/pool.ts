@@ -1,7 +1,7 @@
 import pg from "pg";
 
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "db",
+  host: process.env.DB_HOST || "localhost",
   port: 5432,
   user: "samu",
   password: "samu",
