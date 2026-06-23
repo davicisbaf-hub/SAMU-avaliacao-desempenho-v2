@@ -51,6 +51,24 @@ export async function listarLiderado(req: Request, res: Response) {
   }
 }
 
+export async function listarPar(req: Request, res: Response) {
+  try {
+    const { tipo } = req.params;
+    const { rows } = await pool.query(
+      `
+      SELECT id, tipo, categoria, codigo, criterio, peso, indicador, avaliacao
+      FROM criterios_avaliacao
+      WHERE avaliacao = 'par' AND tipo = $1 AND ativo = true
+      ORDER BY categoria, codigo
+      `,
+      [tipo]
+    );
+    res.json(rows);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 export async function listarAutoavaliacao(req: Request, res: Response) {
   try {
     const { tipo } = req.params;

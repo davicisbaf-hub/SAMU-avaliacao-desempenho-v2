@@ -215,18 +215,21 @@ app.post("/avaliacoes", async (req, res) => {
 
     // Verifica se já respondeu hoje
     const avaliacaoHoje = await pool.query(
-        
-        `
+      `
         SELECT id
         FROM avaliacoes
         WHERE avaliado_id = $1
-        AND tipo_avaliacao = $2
-        AND DATE(criado_em AT TIME ZONE 'America/Sao_Paulo')
-        = DATE(NOW() AT TIME ZONE 'America/Sao_Paulo')
+          AND tipo_avaliacao = $2
+          AND (
+            $2 <> 'Par'
+            OR avaliador_id = $3
+          )
+          AND DATE(criado_em AT TIME ZONE 'America/Sao_Paulo')
+              = DATE(NOW() AT TIME ZONE 'America/Sao_Paulo')
         LIMIT 1
-        `,
-        [avaliadoId, tipoAvaliacao]
-      );
+      `,
+      [avaliadoId, tipoAvaliacao, avaliadorId]
+    );
       
     if (avaliacaoHoje.rows.length > 0) {
       return res.status(409).json({

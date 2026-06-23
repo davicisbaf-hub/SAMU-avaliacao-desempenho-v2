@@ -4,6 +4,7 @@ import {
   listarLider,
   listarLiderado,
   listarAutoavaliacao,
+  listarPar,
   listarTipos,
   cadastrar,
   atualizar,
@@ -16,6 +17,7 @@ router.get("/criterios-avaliacao/:tipo/:avaliacao", listarPorTipoEAvaliacao);
 router.get("/criterios-avaliacao-lider/:tipo", listarLider);
 router.get("/criterios-avaliacao-liderado/:tipo", listarLiderado);
 router.get("/criterios-avaliacao-autoavaliacao/:tipo", listarAutoavaliacao);
+router.get("/criterios-avaliacao-par/:tipo", listarPar);
 router.get("/tipos-avaliacao", listarTipos);
 router.post("/criterios-avaliacao", cadastrar);
 router.put("/criterios-avaliacao/:id", atualizar);

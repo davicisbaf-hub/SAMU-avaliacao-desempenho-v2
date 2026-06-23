@@ -50,14 +50,14 @@ export async function criar(req: Request, res: Response) {
 
     const avaliacaoHoje = await pool.query(
       `
-      SELECT id FROM avaliacoes
-      WHERE avaliado_id = $1
-        AND tipo_avaliacao = $2
-        AND DATE(criado_em AT TIME ZONE 'America/Sao_Paulo')
-          = DATE(NOW() AT TIME ZONE 'America/Sao_Paulo')
+      SELECT id FROM avaliacoes 
+      WHERE avaliado_id = $1 
+      AND tipo_avaliacao = $2 
+      AND avaliador_id = $3
+      AND DATE(criado_em AT TIME ZONE 'America/Sao_Paulo') = DATE(NOW() AT TIME ZONE 'America/Sao_Paulo')
       LIMIT 1
       `,
-      [avaliadoId, tipoAvaliacao]
+      [avaliadoId, tipoAvaliacao, avaliadorId]
     );
 
     if (avaliacaoHoje.rows.length > 0) {

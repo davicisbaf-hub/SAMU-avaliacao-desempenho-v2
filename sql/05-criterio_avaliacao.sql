@@ -257,3 +257,8 @@ INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indi
 INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
 	 ('Médico','Desenvolvimento da Equipe','1b472a02-da9d-4060-9804-9325cf6be7b6','Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',2,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider'),
 	 ('Enfermeiro','Desenvolvimento da Equipe','9bf98967-7f3a-4e2e-b785-2e30f6608949','Oferece feedback individual, construtivo e com frequência adequada (mínimo mensal), orientando o Plano de Desenvolvimento Individual (PDI).',2,'',true,'2026-06-16 19:12:56.829486','Liderado > Lider');
+	 
+INSERT INTO public.criterios_avaliacao (tipo,categoria,codigo,criterio,peso,indicador,ativo,created_at,avaliacao) VALUES
+('Avaliação Par','Desenvolvimento da Equipe', gen_random_uuid() ,'Essa pessoa é alguém em quem você confia para trabalhar em uma ocorrência crítica?',1,'',true,'2026-06-16 19:12:56.829486','Par'),
+('Avaliação Par','Desenvolvimento da Equipe', gen_random_uuid() ,'Essa pessoa contribui para um ambiente de equipe saudável ou gera desgaste desnecessário?',1,'',true,'2026-06-16 19:12:56.829486','Par'),
+('Avaliação Par','Desenvolvimento da Equipe', gen_random_uuid() ,'Essa pessoa age com humildade profissional — pede ajuda quando precisa e oferece ajuda quando vê necessidade?',1,'',true,'2026-06-16 19:12:56.829486','Par');
