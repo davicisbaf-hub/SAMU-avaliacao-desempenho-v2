@@ -58,7 +58,7 @@ export async function listarPar(req: Request, res: Response) {
       `
       SELECT id, tipo, categoria, codigo, criterio, peso, indicador, avaliacao
       FROM criterios_avaliacao
-      WHERE avaliacao = 'par' AND tipo = $1 AND ativo = true
+      WHERE avaliacao = 'Par' AND tipo = $1 AND ativo = true
       ORDER BY categoria, codigo
       `,
       [tipo]
