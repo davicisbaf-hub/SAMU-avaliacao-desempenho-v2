@@ -31,16 +31,17 @@ export async function listarPorBase(req: Request, res: Response) {
 
 export async function cadastrar(req: Request, res: Response) {
   try {
-    const { nome, email, senha, funcao, perfil, base } = req.body;
+    const { nome, email, senha, funcao, perfil, base, par } = req.body;
+
+    const parValue = Array.isArray(par) && par.length > 0 ? par : null;
 
     const { rows } = await pool.query(
-      `
-      INSERT INTO usuarios (nome, email, senha, funcao, perfil, base)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *
-      `,
-      [nome, email, senha, funcao, perfil, base]
+      `INSERT INTO usuarios (nome, email, senha, funcao, perfil, base, par)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *`,
+      [nome, email, senha, funcao, perfil, base, JSON.stringify(parValue)]
     );
+
     res.status(201).json(rows[0]);
   } catch (error: any) {
     res.status(500).json({ erro: error.message });

@@ -3,12 +3,15 @@ import Nav from '../components/Nav'
 import { useUserSession } from "../contexts/UserSession";
 import { useEffect, useState } from "react";
 import { useAuthFetch } from "../hooks/useAuthFetch";
+import MultiSelectPar from '../components/select'
 
 type Base = {
     id: number;
     nome: string;
     cor: string;
 };
+
+type ParItem = { id: number; nome: string; funcao: string };
 
 type Usuario = {
   id: number;
@@ -46,6 +49,7 @@ export default function CadastroPage() {
     const [senha, setSenha] = useState("");
     const [funcao, setFuncao] = useState("");
     const [perfil, setPerfil] = useState("");
+    const [par, setPar] = useState<ParItem[]>([]);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
@@ -84,7 +88,6 @@ export default function CadastroPage() {
 
         carregarUsuarios();
     }
-
     useEffect(() => {
         carregarUsuarios();
         }, []);
@@ -132,7 +135,8 @@ export default function CadastroPage() {
                         senha,
                         funcao,
                         base,
-                        perfil
+                        perfil,
+                        par
                     }),
                 }
             );
@@ -150,6 +154,7 @@ export default function CadastroPage() {
             setFuncao("");
             setPerfil("");
             setBase("");
+            setPar([]);
         } catch (error) {
             console.error(error);
             alert("Erro ao cadastrar usuário");
@@ -276,7 +281,7 @@ export default function CadastroPage() {
                             </div>
 
                             {/* Formulário */}
-                            <div className="bg-card border border-border rounded-xl overflow-hidden">
+                            <div className="bg-card border border-border rounded-xl overflow-visible">
 
                                 <div className="flex items-center gap-2 px-5 py-3 border-b border-border bg-[#e5ecf1]/30">
                                     <h2 className="text-sm font-semibold">
@@ -381,7 +386,14 @@ export default function CadastroPage() {
                                                 ))}
                                             </select>
                                         </div>
-
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold">Par</label>
+                                           <MultiSelectPar
+                                                usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
+                                                value={par}
+                                                onChange={setPar}
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="mt-4 flex gap-2">

@@ -22,8 +22,8 @@ export default defineConfig({
     
     proxy: {
       "/api": {
-        target: "http://192.168.1.10:8026",
-        // target: "http://localhost:41321",
+        // target: "http://192.168.1.10:8026",
+        target: "http://localhost:40357",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),

@@ -71,6 +71,7 @@ export default function FichaAvaliacaoPar() {
 	const [usuarios, setUsuarios] = useState<{id: string, nome: string, funcao: string}[]>([]);
 	const [avaliadoId, setAvaliadoId] = useState<string>("");
 
+
 	useEffect(() => {
 		async function carregarUsuarios() {
 			const res = await authFetch("/api/usuarios");
@@ -127,7 +128,7 @@ export default function FichaAvaliacaoPar() {
 			},
 			body: JSON.stringify({
 				avaliadorId: user?.id,   // quem avalia
-				avaliadoId: avaliadoId,  // ← corrigido
+				avaliadoId: avaliadoId, 
 				tipoAvaliacao,
 				resultado,
 				observacoesGerais: observacoes,
