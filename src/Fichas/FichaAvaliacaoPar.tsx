@@ -20,6 +20,8 @@ type Criterios = {
 	avaliacao: string;
 };
 
+type ParItem = { id: number; nome: string; funcao: string };
+
 
 const iconByTipo: Record<string, string> = {
 	"BP-TEAM": "⚕️",
@@ -71,7 +73,7 @@ export default function FichaAvaliacaoPar() {
 	const [usuarios, setUsuarios] = useState<{id: string, nome: string, funcao: string}[]>([]);
 	const [avaliadoId, setAvaliadoId] = useState<string>("");
 
-
+	
 	useEffect(() => {
 		async function carregarUsuarios() {
 			const res = await authFetch("/api/usuarios");
@@ -207,6 +209,16 @@ export default function FichaAvaliacaoPar() {
 
 		return acc;
 	}, {} as Record<string, Criterios[]>);
+
+	const pares: ParItem[] = (() => {
+		try {
+			if (!user?.par) return [];
+			if (Array.isArray(user.par)) return user.par as ParItem[];
+			return JSON.parse(user.par as string);
+		} catch {
+			return [];
+		}
+	})();
 	return (
 		<div>
 			<div className="flex h-screen w-screen bg-white text-black">
@@ -259,12 +271,12 @@ export default function FichaAvaliacaoPar() {
 									className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] focus:outline-none focus:ring-2 focus:ring-[#cd0048] text-black'
 									value={avaliadoId}
 									onChange={(e) => setAvaliadoId(e.target.value)}
-								>
+									>
 									<option value="" className="text-black">Selecione...</option>
-									{usuarios.map(u => (
-									<option key={u.id} value={u.id} className="text-black">
-										{u.nome} — {u.funcao}
-									</option>
+									{pares.map((p) => (
+										<option key={p.id} value={p.id} className="text-black">
+										{p.nome} — {p.funcao}
+										</option>
 									))}
 								</select>
 							</div>

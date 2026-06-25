@@ -41,5 +41,6 @@ export async function login(req: Request, res: Response) {
     base: usuario.base,
     ativo: usuario.ativo,
     criadoEm: usuario.criado_em,
+    par: usuario.par ?? [],
   });
 }

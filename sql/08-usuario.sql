@@ -6,7 +6,7 @@ CREATE TABLE usuarios (
     funcao VARCHAR(255) NOT NULL,
     perfil VARCHAR(100) NOT NULL,
     base VARCHAR(100),
-    resultado JSONB NOT NULL,
+    par JSONB,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

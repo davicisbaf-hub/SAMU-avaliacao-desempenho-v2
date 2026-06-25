@@ -4,7 +4,7 @@ import {
   useState,
 } from "react";
 import type { ReactNode } from "react";
-
+type ParItem = { id: number; nome: string; funcao: string };
 type User = {
   id: number;
   nome: string;
@@ -13,6 +13,7 @@ type User = {
   perfil: string;
   base: string;
   ativo: boolean;
+  par?: ParItem[] | string;
   criadoEm: string;
 };
 
