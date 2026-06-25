@@ -54,11 +54,15 @@ export default function CadastroPage() {
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
-    
+    const [busca, setBusca] = useState("");
 
     const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases"; 
-
-    const usuariosFiltrados = isAdminGlobal ? usuarios : usuarios.filter( (u) => u.base === user?.base );
+    
+    const usuariosFiltrados = (isAdminGlobal ? usuarios : usuarios.filter((u) => u.base === user?.base))
+    .filter((u) =>
+        u.nome.toLowerCase().includes(busca.toLowerCase()) ||
+        String(u.id).includes(busca)
+    );
     const basesVisiveis = isAdminGlobal ? bases : bases.filter((base) => base.nome === user?.base);
     const { authFetch } = useAuthFetch();
 
@@ -192,6 +196,7 @@ export default function CadastroPage() {
         setParEdicao(Array.isArray(usuario.par) ? usuario.par : (usuario.par ? JSON.parse(usuario.par) : []));
         setModalAberto(true);
     }
+
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -266,7 +271,6 @@ export default function CadastroPage() {
                                     </button>
                                     ))}
                             </div>
-
                             {/* Formulário */}
                             <div className="bg-card border border-border rounded-xl overflow-visible">
 
@@ -397,11 +401,17 @@ export default function CadastroPage() {
                             {/* Lista */}
                             <div className="bg-card border border-border rounded-xl overflow-hidden">
 
-                                <div className="px-5 py-3 border-b border-border bg-[#e5ecf1]/30">
-                                    <h2 className="text-sm font-semibold">
-                                        Profissionais Cadastrados
-                                    </h2>
+                                <div className="px-5 py-3 border-b border-border bg-[#e5ecf1]/30 flex items-center justify-between">
+                                    <h2 className="text-sm font-semibold">Profissionais Cadastrados</h2>
+                                    <input
+                                    type="text"
+                                    placeholder="Buscar por nome ou ID..."
+                                    value={busca}
+                                    onChange={(e) => setBusca(e.target.value)}
+                                    className="border rounded-lg px-3 py-1.5 text-sm w-56"
+                                    />
                                 </div>
+                                
 
                                 <div className="divide-y divide-border">
 
