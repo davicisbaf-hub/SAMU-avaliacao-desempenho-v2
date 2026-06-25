@@ -6,10 +6,12 @@ export default function MultiSelectPar({
   usuarios,
   value,
   onChange,
+  dropUp = false,
 }: {
   usuarios: { id: number; nome: string; funcao: string }[];
   value: ParItem[];
   onChange: (v: ParItem[]) => void;
+  dropUp?: boolean;
 }) {
   const [busca, setBusca] = useState("");
   const [aberto, setAberto] = useState(false);
@@ -59,7 +61,7 @@ export default function MultiSelectPar({
       </div>
 
       {aberto && (
-        <div className="absolute top-full mt-1 left-0 right-0 bg-white border rounded-lg z-50 max-h-48 overflow-y-auto shadow-sm">
+        <div className={`absolute ${dropUp ? "bottom-full mb-1" : "top-full mt-1"} left-0 right-0 bg-white border rounded-lg z-50 max-h-48 overflow-y-auto shadow-sm`}>
           {filtrados.length === 0 ? (
             <p className="text-xs text-gray-400 p-3">Nenhum resultado</p>
           ) : filtrados.map((u, i) => {

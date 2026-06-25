@@ -49,23 +49,18 @@ export async function cadastrar(req: Request, res: Response) {
 }
 
 export async function atualizar(req: Request, res: Response) {
-  try {
-    const { id } = req.params;
-    const { nome, email, senha, funcao, perfil, base } = req.body;
+  const { id } = req.params;
+  const { nome, email, senha, funcao, perfil, base, par } = req.body;
 
-    const { rows } = await pool.query(
-      `
-      UPDATE usuarios
-      SET nome = $1, email = $2, senha = $3, funcao = $4, perfil = $5, base = $6
-      WHERE id = $7
-      RETURNING *
-      `,
-      [nome, email, senha, funcao, perfil, base, id]
-    );
-    res.json(rows[0]);
-  } catch (error: any) {
-    res.status(500).json({ erro: error.message });
-  }
+  const parValue = Array.isArray(par) && par.length > 0 ? par : null;
+
+  await pool.query(
+    `UPDATE usuarios SET nome=$1, email=$2, senha=$3, funcao=$4, perfil=$5, base=$6, par=$7
+     WHERE id=$8`,
+    [nome, email, senha, funcao, perfil, base, JSON.stringify(parValue), id]
+  );
+
+  res.json({ ok: true });
 }
 
 export async function inativar(req: Request, res: Response) {

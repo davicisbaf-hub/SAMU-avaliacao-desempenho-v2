@@ -50,10 +50,12 @@ export default function CadastroPage() {
     const [funcao, setFuncao] = useState("");
     const [perfil, setPerfil] = useState("");
     const [par, setPar] = useState<ParItem[]>([]);
+    const [parEdicao, setParEdicao] = useState<ParItem[]>([]);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
     
+
     const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases"; 
 
     const usuariosFiltrados = isAdminGlobal ? usuarios : usuarios.filter( (u) => u.base === user?.base );
@@ -62,32 +64,18 @@ export default function CadastroPage() {
 
     async function salvarEdicao() {
         if (!usuarioEditando) return;
-        
 
-
-        await authFetch(
-            `/api/usuarios/${usuarioEditando.id}`,
-            {
+        await authFetch(`/api/usuarios/${usuarioEditando.id}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                nome,
-                email,
-                senha,
-                funcao,
-                base,
-                perfil,
-            }),
-            }
-        );
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, email, senha, funcao, base, perfil, par: parEdicao }),
+        });
 
         setModalAberto(false);
         setUsuarioEditando(null);
-
         carregarUsuarios();
     }
+
     useEffect(() => {
         carregarUsuarios();
         }, []);
@@ -193,16 +181,15 @@ export default function CadastroPage() {
 
         carregarUsuarios();
     }
-    function editarUsuario(usuario: Usuario) {
+    function editarUsuario(usuario: any) {
         setUsuarioEditando(usuario);
-
         setNome(usuario.nome);
         setEmail(usuario.email);
         setFuncao(usuario.funcao);
         setPerfil(usuario.perfil);
         setBase(usuario.base);
         setSenha(usuario.senha);
-
+        setParEdicao(Array.isArray(usuario.par) ? usuario.par : (usuario.par ? JSON.parse(usuario.par) : []));
         setModalAberto(true);
     }
     return (
@@ -435,12 +422,12 @@ export default function CadastroPage() {
                                             </div>
 
                                             <div className="flex gap-2">
-                                                <p
+                                                <button
                                                     onClick={() => editarUsuario(user)}
                                                     className="text-sm px-2 py-1 border rounded"
                                                     >
                                                     Editar
-                                                </p>
+                                                </button>
                                                 <button
                                                     onClick={() => removerUsuario(user.id)}
                                                     className="text-sm px-2 py-1 border rounded text-red-500"
@@ -526,8 +513,16 @@ export default function CadastroPage() {
                             <option value="Administrador">Administrador</option>
                             <option value="Usuario">Usuário</option>
                         </select>
+                    <label className="text-xs font-semibold">Par</label>
+                    
+                    <MultiSelectPar
+                            usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
+                            value={parEdicao}
+                            onChange={setParEdicao}
+                            dropUp
+                    />
                     </div>
-
+                    
                     <div className="flex justify-end gap-2 mt-5">
                         <button
                         onClick={() => setModalAberto(false)}
