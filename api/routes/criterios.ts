@@ -9,10 +9,12 @@ import {
   cadastrar,
   atualizar,
   inativar,
+  carregarTipoAvaliacao,
 } from "../controllers/criteriosController.js";
 
 const router = Router();
 
+router.get("/criterios-avaliacao/avaliacao", carregarTipoAvaliacao);
 router.get("/criterios-avaliacao/:tipo/:avaliacao", listarPorTipoEAvaliacao);
 router.get("/criterios-avaliacao-lider/:tipo", listarLider);
 router.get("/criterios-avaliacao-liderado/:tipo", listarLiderado);

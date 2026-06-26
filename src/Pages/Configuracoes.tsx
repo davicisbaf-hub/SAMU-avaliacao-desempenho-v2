@@ -20,6 +20,13 @@ type Criterio = {
   ativo: boolean;
 };
 
+type TipoAvaliacao = {
+  id: number;
+  nome: string;
+  descricao: string;
+  ativo: boolean;
+};
+
 const TIPOS_AVALIACAO = [
   { value: "autoavaliacao", label: "Autoavaliação" },
   { value: "Lider > Liderado", label: "Líder > Liderado" },
@@ -41,9 +48,27 @@ export default function ConfiguracaoPage() {
   const [criterio, setCriterio] = useState("");
   const [peso, setPeso] = useState(1);
   const [indicador, setIndicador] = useState("");
+  const [tipoAvaliacao, setAvaliacao] = useState<TipoAvaliacao[]>([]);
 
   const { user } = useUserSession();
   const { authFetch } = useAuthFetch();
+
+  async function carregarTipoAvaliacao() {
+    try {
+      const url = `/api/criterios-avaliacao/avaliacao`;
+      const res = await authFetch(url);
+      const data = await res.json();
+      setAvaliacao(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao carregar critérios:", error);
+      setAvaliacao([]);
+    }
+  }
+
+  useEffect(() => {
+    carregarTipoAvaliacao();
+  }, []);
+
 
   function toggleSelecionado(id: number) {
     setSelecionados((prev) =>
@@ -74,10 +99,7 @@ export default function ConfiguracaoPage() {
   }
 
   async function salvar() {
-    if (!tipoSelecionado || !categoria || !codigo || !criterio) {
-      alert("Preencha todos os campos obrigatórios.");
-      return;
-    }
+    
 
     const url = editandoId ? `/api/criterios-avaliacao/${editandoId}` : "/api/criterios-avaliacao";
     const method = editandoId ? "PUT" : "POST";
@@ -213,9 +235,9 @@ export default function ConfiguracaoPage() {
                   onChange={(e) => setAvaliacaoSelecionada(e.target.value)}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 >
-                  {TIPOS_AVALIACAO.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
+                  {tipoAvaliacao.map((t) => (
+                    <option key={t.id} value={t.nome}>
+                      {t.descricao}
                     </option>
                   ))}
                 </select>
@@ -385,9 +407,9 @@ export default function ConfiguracaoPage() {
                   onChange={(e) => setAvaliacaoSelecionada(e.target.value)}
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 >
-                  {TIPOS_AVALIACAO.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
+                  {tipoAvaliacao.map((t) => (
+                    <option key={t.id} value={t.nome}>
+                      {t.descricao}
                     </option>
                   ))}
                 </select>

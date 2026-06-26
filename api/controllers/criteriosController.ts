@@ -156,3 +156,18 @@ export async function inativar(req: Request, res: Response) {
     res.status(500).json({ erro: error.message });
   }
 }
+
+export async function carregarTipoAvaliacao(req: Request, res: Response) {
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT *
+      FROM tipo_avaliacao
+      WHERE ativo = true
+      `,
+    );
+    res.json(rows);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+}
