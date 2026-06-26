@@ -16,15 +16,24 @@ type Criterio = {
   criterio: string;
   peso: number;
   indicador: string;
+  avaliacao: string;
+  ativo: boolean;
 };
+
+const TIPOS_AVALIACAO = [
+  { value: "autoavaliacao", label: "Autoavaliação" },
+  { value: "Lider > Liderado", label: "Líder > Liderado" },
+  { value: "Liderado > Lider", label: "Liderado > Líder" },
+  { value: "Par", label: "Avaliação por Par" },
+];
 
 export default function ConfiguracaoPage() {
   const [tipos, setTipos] = useState<Tipo[]>([]);
   const [tipoSelecionado, setTipoSelecionado] = useState("");
+  const [avaliacaoSelecionada, setAvaliacaoSelecionada] = useState("autoavaliacao");
   const [selecionados, setSelecionados] = useState<number[]>([]);
   const [editandoId, setEditandoId] = useState<number | null>(null);
   const [modalAberto, setModalAberto] = useState(false);
-
   const [criterios, setCriterios] = useState<Criterio[]>([]);
 
   const [categoria, setCategoria] = useState("");
@@ -32,14 +41,13 @@ export default function ConfiguracaoPage() {
   const [criterio, setCriterio] = useState("");
   const [peso, setPeso] = useState(1);
   const [indicador, setIndicador] = useState("");
+
   const { user } = useUserSession();
   const { authFetch } = useAuthFetch();
 
   function toggleSelecionado(id: number) {
     setSelecionados((prev) =>
-      prev.includes(id)
-        ? prev.filter((item) => item !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   }
 
@@ -49,8 +57,8 @@ export default function ConfiguracaoPage() {
     setCodigo(item.codigo);
     setCriterio(item.criterio);
     setPeso(item.peso);
-    setIndicador(item.indicador);
-
+    setIndicador(item.indicador || "");
+    setAvaliacaoSelecionada(item.avaliacao || "autoavaliacao");
     setModalAberto(true);
   }
 
@@ -61,49 +69,50 @@ export default function ConfiguracaoPage() {
     setCriterio("");
     setPeso(1);
     setIndicador("");
+    setAvaliacaoSelecionada("autoavaliacao");
     setModalAberto(false);
   }
 
   async function salvar() {
     if (!tipoSelecionado || !categoria || !codigo || !criterio) {
-      alert("Preencha todos os campos.");
+      alert("Preencha todos os campos obrigatórios.");
       return;
     }
 
-    const url = editandoId
-      ? `/api/criterios-avaliacao/${editandoId}`
-      : "/api/criterios-avaliacao";
-
+    const url = editandoId ? `/api/criterios-avaliacao/${editandoId}` : "/api/criterios-avaliacao";
     const method = editandoId ? "PUT" : "POST";
 
-    await authFetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        tipo: tipoSelecionado,
-        categoria,
-        codigo,
-        criterio,
-        peso,
-        indicador,
-      }),
-    });
+    try {
+      await authFetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo: tipoSelecionado,
+          categoria,
+          codigo,
+          criterio,
+          peso,
+          indicador,
+          avaliacao: avaliacaoSelecionada,
+        }),
+      });
 
-    limparFormulario();
-    carregarCriterios();
+      limparFormulario();
+      carregarCriterios();
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      alert("Erro ao salvar o critério.");
+    }
   }
 
   function novoCriterio() {
     setEditandoId(null);
-
     setCategoria("");
     setCodigo("");
     setCriterio("");
     setPeso(1);
     setIndicador("");
-
+    setAvaliacaoSelecionada("autoavaliacao");
     setModalAberto(true);
   }
 
@@ -113,23 +122,23 @@ export default function ConfiguracaoPage() {
       return;
     }
 
-    if (!confirm(`Deseja inativar ${selecionados.length} critérios?`)) {
+    if (!confirm(`Deseja inativar ${selecionados.length} critério(s)?`)) {
       return;
     }
 
-    await Promise.all(
-      selecionados.map((id) =>
-        authFetch(
-          `/api/criterios-avaliacao/${id}/inativar`,
-          {
-            method: "PUT",
-          }
+    try {
+      await Promise.all(
+        selecionados.map((id) =>
+          authFetch(`/api/criterios-avaliacao/${id}/inativar`, { method: "PUT" })
         )
-      )
-    );
+      );
 
-    setSelecionados([]);
-    carregarCriterios();
+      setSelecionados([]);
+      carregarCriterios();
+    } catch (error) {
+      console.error("Erro ao inativar:", error);
+      alert("Erro ao inativar os critérios.");
+    }
   }
 
   useEffect(() => {
@@ -140,251 +149,263 @@ export default function ConfiguracaoPage() {
     if (tipoSelecionado) {
       carregarCriterios();
     }
-  }, [tipoSelecionado]);
+  }, [tipoSelecionado, avaliacaoSelecionada]);
 
   async function carregarTipos() {
-    const res = await authFetch("/api/tipos-avaliacao");
-    const data = await res.json();
-
-    setTipos(Array.isArray(data) ? data : []);
+    try {
+      const res = await authFetch("/api/tipos-avaliacao");
+      const data = await res.json();
+      setTipos(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao carregar tipos:", error);
+    }
   }
 
   async function carregarCriterios() {
-    const res = await authFetch(
-      `/api/criterios-avaliacao/${tipoSelecionado}`
-    );
-
-    const data = await res.json();
-    setCriterios(Array.isArray(data) ? data : []);
+    try {
+      const url = `/api/criterios-avaliacao/${tipoSelecionado}/${avaliacaoSelecionada}`;
+      const res = await authFetch(url);
+      const data = await res.json();
+      setCriterios(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao carregar critérios:", error);
+      setCriterios([]);
+    }
   }
-
 
   return (
     <div className="flex h-screen w-screen bg-white text-black">
       <Nav />
-
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
-
         <div className="p-8 overflow-y-auto custom-scrollbar">
           <div className="rounded-xl border p-6 space-y-6">
-
             {/* HEADER */}
             <div>
-              <h1 className="text-2xl font-bold">
-                Configuração das Fichas
-              </h1>
+              <h1 className="text-2xl font-bold">Configuração das Fichas</h1>
               <p className="text-sm text-gray-500">
-                Adicione e gerencie critérios de avaliação.
+                Adicione e gerencie critérios de avaliação para cada tipo de ficha.
               </p>
             </div>
 
-            {/* SELECT */}
-            <div>
-              <label className="text-sm font-semibold">
-                Tipo de Avaliação
-              </label>
+            {/* SELECTS */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-semibold">Tipo de Profissional</label>
+                <select
+                  value={tipoSelecionado}
+                  onChange={(e) => setTipoSelecionado(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                >
+                  <option value="">Selecione o tipo</option>
+                  {tipos.map((t) => (
+                    <option key={t.tipo} value={t.tipo}>
+                      {t.tipo}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              <select
-                value={tipoSelecionado}
-                onChange={(e) => setTipoSelecionado(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 mt-1"
-              >
-                <option value="">Selecione</option>
-
-                  <option value={user?.funcao}>
-                    {user?.funcao}
-                  </option>
-              </select>
+              <div>
+                <label className="text-sm font-semibold">Tipo de Avaliação</label>
+                <select
+                  value={avaliacaoSelecionada}
+                  onChange={(e) => setAvaliacaoSelecionada(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                >
+                  {TIPOS_AVALIACAO.map((t) => (
+                    <option key={t.value} value={t.value}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-            
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-semibold text-lg">
-                Critérios da Ficha
-              </h2>
 
+            {/* AÇÕES */}
+            <div className="flex justify-between items-center">
+              <h2 className="font-semibold text-lg">Critérios da Ficha</h2>
               <div className="flex gap-2">
-                {/* <button
+                <button
                   onClick={novoCriterio}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg"
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                 >
                   Novo Critério
                 </button>
-
                 <button
                   onClick={inativarSelecionados}
                   disabled={selecionados.length === 0}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50 hover:bg-red-700 transition"
                 >
                   Inativar ({selecionados.length})
-                </button> */}
+                </button>
               </div>
             </div>
+
             {/* LISTA */}
             {tipoSelecionado && (
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b bg-gray-100">
-                    <th className="px-3 py-2 text-left">#</th>
-
-                    <th className="px-3 py-2 text-center w-12">
-                      <input
-                        type="checkbox"
-                        checked={
-                          criterios.length > 0 &&
-                          selecionados.length === criterios.length
-                        }
-                        onChange={(e) =>
-                          setSelecionados(
-                            e.target.checked
-                              ? criterios.map((c) => c.id)
-                              : []
-                          )
-                        }
-                      />
-                    </th>
-
-                    <th className="px-3 py-2 text-left">Categoria</th>
-                    <th className="px-3 py-2 text-left">Código</th>
-                    <th className="px-3 py-2 text-left">Critério</th>
-                    <th className="px-3 py-2 text-center">Peso</th>
-                    <th className="px-3 py-2 text-left">Indicador</th>
-                    <th className="px-3 py-2 text-center">Ações</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {criterios.map((item) => (
-                    <tr
-                      key={item.id}
-                      className="border-b hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-3 py-3">
-                        {item.id}
-                      </td>
-
-                      <td className="px-3 py-3 text-center">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b bg-gray-100 text-center">
+                      <th className="px-3 py-2 text-left">#</th>
+                      <th className="px-3 py-2 text-center w-12">
                         <input
                           type="checkbox"
-                          checked={selecionados.includes(item.id)}
-                          onChange={() => toggleSelecionado(item.id)}
+                          checked={
+                            criterios.length > 0 &&
+                            selecionados.length === criterios.length
+                          }
+                          onChange={(e) =>
+                            setSelecionados(
+                              e.target.checked ? criterios.map((c) => c.id) : []
+                            )
+                          }
                         />
-                      </td>
+                      </th>
 
-                      <td className="px-3 py-3">
-                        {item.categoria}
-                      </td>
-
-                      <td className="px-3 py-3 font-medium">
-                        {item.codigo}
-                      </td>
-
-                      <td className="px-3 py-3">
-                        {item.criterio}
-                      </td>
-
-                      <td className="px-3 py-3 text-center">
-                        {item.peso}
-                      </td>
-
-                      <td className="px-3 py-3">
-                        {item.indicador}
-                      </td>
-                      <td className="px-3 py-3 text-center">
-                        <button
-                          onClick={() => editarCriterio(item)}
-                          className="text-blue-600 hover:underline"
-                        >
-                          Editar
-                        </button>
-                      </td>
+                      <th className="px-3 py-2">Categoria</th>
+                      <th className="px-3 py-2">Critério</th>
+                      <th className="px-3 py-2">Peso</th>
+                      <th className="px-3 py-2">Indicador</th>
+                      <th className="px-3 py-2">Ações</th>
                     </tr>
-                  ))}
-
-                  {criterios.length === 0 && (
-                    <tr>
-                      <td
-                        colSpan={7}
-                        className="px-3 py-6 text-center text-gray-500"
+                  </thead>
+                  <tbody>
+                    {criterios.map((item) => (
+                      <tr
+                        key={item.id}
+                        className="border-b hover:bg-gray-50 transition-colors"
                       >
-                        Nenhum critério encontrado.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                        <td className="px-3 py-3">{item.id}</td>
+                        <td className="px-3 py-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selecionados.includes(item.id)}
+                            onChange={() => toggleSelecionado(item.id)}
+                          />
+                        </td>
+                        <td className="px-3 py-3">{item.categoria}</td>
+                        <td className="px-3 py-3 max-w-xs truncate">
+                          {item.criterio}
+                        </td>
+                        <td className="px-3 py-3 text-center">{item.peso}</td>
+                        <td className="px-3 py-3 max-w-xs truncate">
+                          {item.indicador || "-"}
+                        </td>
+                        <td className="px-3 py-3 text-center">
+                          <button
+                            onClick={() => editarCriterio(item)}
+                            className="text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {criterios.length === 0 && (
+                      <tr>
+                        <td colSpan={8} className="px-3 py-6 text-center text-gray-500">
+                          Nenhum critério encontrado para esta seleção.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             )}
-
           </div>
         </div>
       </div>
+
+      {/* MODAL */}
       {modalAberto && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl w-full max-w-2xl p-6 shadow-xl">
+          <div className="bg-white rounded-xl w-full max-w-2xl p-6 shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
-                Editar Critério
+                {editandoId ? "Editar Critério" : "Novo Critério"}
               </h2>
-
               <button
                 onClick={limparFormulario}
-                className="text-gray-500 text-xl"
+                className="text-gray-500 hover:text-gray-700 text-xl"
               >
                 ×
               </button>
             </div>
 
-            <div className="space-y-3">
-              <input
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
-                placeholder="Categoria"
-                className="w-full border rounded-lg px-3 py-2"
-              />
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Categoria *</label>
+                <input
+                  value={categoria}
+                  onChange={(e) => setCategoria(e.target.value)}
+                  placeholder="Ex: Habilidades Não Técnicas"
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                />
+              </div>
 
-              <input
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value)}
-                placeholder="Código"
-                className="w-full border rounded-lg px-3 py-2"
-              />
+              <div>
+                <label className="text-sm font-medium">Critério *</label>
+                <textarea
+                  value={criterio}
+                  onChange={(e) => setCriterio(e.target.value)}
+                  placeholder="Descreva o critério de avaliação"
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  rows={4}
+                />
+              </div>
 
-              <textarea
-                value={criterio}
-                onChange={(e) => setCriterio(e.target.value)}
-                placeholder="Critério"
-                className="w-full border rounded-lg px-3 py-2"
-                rows={4}
-              />
+              <div>
+                <label className="text-sm font-medium">Peso *</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="3"
+                  value={peso}
+                  onChange={(e) => setPeso(Number(e.target.value))}
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                />
+              </div>
 
-              <input
-                type="number"
-                value={peso}
-                onChange={(e) => setPeso(Number(e.target.value))}
-                className="w-full border rounded-lg px-3 py-2"
-              />
+              <div>
+                <label className="text-sm font-medium">Indicador</label>
+                <input
+                  value={indicador}
+                  onChange={(e) => setIndicador(e.target.value)}
+                  placeholder="Ex: Humanização do cuidado"
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                />
+              </div>
 
-              <input
-                value={indicador}
-                onChange={(e) => setIndicador(e.target.value)}
-                placeholder="Indicador"
-                className="w-full border rounded-lg px-3 py-2"
-              />
+              <div>
+                <label className="text-sm font-medium">Tipo de Avaliação</label>
+                <select
+                  value={avaliacaoSelecionada}
+                  onChange={(e) => setAvaliacaoSelecionada(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                >
+                  {TIPOS_AVALIACAO.map((t) => (
+                    <option key={t.value} value={t.value}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={limparFormulario}
-                className="px-4 py-2 border rounded-lg"
+                className="px-4 py-2 border rounded-lg hover:bg-gray-50 transition"
               >
                 Cancelar
               </button>
-
               <button
-                  onClick={salvar}
-                  className="px-4 py-2 bg-black text-white rounded-lg"
-                >
-                  {editandoId ? "Salvar Alterações" : "Adicionar Critério"}
+                onClick={salvar}
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
+              >
+                {editandoId ? "Salvar Alterações" : "Adicionar Critério"}
               </button>
             </div>
           </div>
