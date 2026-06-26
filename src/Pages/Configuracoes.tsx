@@ -27,12 +27,6 @@ type TipoAvaliacao = {
   ativo: boolean;
 };
 
-const TIPOS_AVALIACAO = [
-  { value: "autoavaliacao", label: "Autoavaliação" },
-  { value: "Lider > Liderado", label: "Líder > Liderado" },
-  { value: "Liderado > Lider", label: "Liderado > Líder" },
-  { value: "Par", label: "Avaliação por Par" },
-];
 
 export default function ConfiguracaoPage() {
   const [tipos, setTipos] = useState<Tipo[]>([]);
