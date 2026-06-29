@@ -1,0 +1,1126 @@
+openapi: 3.0.3
+info:
+  title: SAMU - API de Avaliação de Desempenho
+  description: |
+    API REST do sistema de avaliação de desempenho do SAMU (Serviço de Atendimento Móvel de Urgência).
+
+    ## Autenticação
+    A maioria dos endpoints requer um token JWT obtido via `POST /login`.
+    Envie o token no header `Authorization: Bearer <token>`.
+
+    O token expira em **8 horas**.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3001
+    description: Desenvolvimento local
+  - url: https://avaliacao360.cisbaf.org.br
+    description: Produção
+
+tags:
+  - name: Auth
+    description: Autenticação
+  - name: Usuários
+    description: Gestão de usuários
+  - name: Avaliações
+    description: Registro e consulta de avaliações
+  - name: Critérios
+    description: Critérios e tipos de avaliação
+  - name: KPIs
+    description: Indicadores e métricas de desempenho
+  - name: Auxiliares
+    description: Tabelas auxiliares (fichas, bases, escalas, etc.)
+
+# ---------------------------------------------------------------------------
+# SECURITY
+# ---------------------------------------------------------------------------
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # -------------------------------------------------------------------------
+  # SCHEMAS
+  # -------------------------------------------------------------------------
+  schemas:
+
+    # --- Auth ---------------------------------------------------------------
+    LoginRequest:
+      type: object
+      required: [email, senha]
+      properties:
+        email:
+          type: string
+          format: email
+          example: joao.silva@samu.com.br
+        senha:
+          type: string
+          example: "senha123"
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: "João Silva"
+        email:
+          type: string
+          example: joao.silva@samu.com.br
+        funcao:
+          type: string
+          example: "Médico Regulador"
+        perfil:
+          type: string
+          enum: [admin, gestor, avaliador, avaliado]
+          example: "gestor"
+        base:
+          type: string
+          example: "Base Central"
+        ativo:
+          type: boolean
+          example: true
+        criadoEm:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        par:
+          type: array
+          items:
+            type: integer
+          example: [2, 5]
+          nullable: true
+
+    # --- Usuário ------------------------------------------------------------
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: "João Silva"
+        email:
+          type: string
+          format: email
+          example: joao.silva@samu.com.br
+        funcao:
+          type: string
+          example: "Médico Regulador"
+        perfil:
+          type: string
+          enum: [admin, gestor, avaliador, avaliado]
+          example: "gestor"
+        base:
+          type: string
+          example: "Base Central"
+        ativo:
+          type: boolean
+          example: true
+        criado_em:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        par:
+          type: array
+          items:
+            type: integer
+          nullable: true
+          example: [2, 5]
+
+    UsuarioResumo:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        email:
+          type: string
+        funcao:
+          type: string
+        perfil:
+          type: string
+
+    UsuarioRequest:
+      type: object
+      required: [nome, email, senha, funcao, perfil, base]
+      properties:
+        nome:
+          type: string
+          example: "João Silva"
+        email:
+          type: string
+          format: email
+          example: joao.silva@samu.com.br
+        senha:
+          type: string
+          example: "senha123"
+        funcao:
+          type: string
+          example: "Médico Regulador"
+        perfil:
+          type: string
+          enum: [admin, gestor, avaliador, avaliado]
+          example: "avaliador"
+        base:
+          type: string
+          example: "Base Central"
+        par:
+          type: array
+          items:
+            type: integer
+          nullable: true
+          example: [2, 5]
+
+    # --- Avaliação ----------------------------------------------------------
+    ResultadoCriterio:
+      type: object
+      description: Mapa de critério → nota e peso
+      additionalProperties:
+        type: object
+        properties:
+          nota:
+            type: integer
+            minimum: 0
+            maximum: 10
+            example: 8
+          peso:
+            type: integer
+            example: 3
+      example:
+        criterio_01:
+          nota: 8
+          peso: 3
+        criterio_02:
+          nota: 7
+          peso: 2
+
+    AvaliacaoRequest:
+      type: object
+      required: [avaliadorId, avaliadoId, tipoAvaliacao, resultado]
+      properties:
+        avaliadorId:
+          type: integer
+          example: 1
+        avaliadoId:
+          type: integer
+          example: 3
+        tipoAvaliacao:
+          type: string
+          example: "Médico"
+        resultado:
+          $ref: '#/components/schemas/ResultadoCriterio'
+        observacoesGerais:
+          type: string
+          nullable: true
+          example: "Profissional comprometido e proativo."
+        pontosMelhorar:
+          type: string
+          nullable: true
+          example: "Melhorar comunicação com a equipe."
+        planoAcao:
+          type: string
+          nullable: true
+          example: "Participar de treinamento de liderança."
+
+    Avaliacao:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        avaliador_nome:
+          type: string
+          example: "João Silva"
+        avaliador_funcao:
+          type: string
+          example: "Médico Regulador"
+        avaliado_nome:
+          type: string
+          example: "Maria Souza"
+        avaliado_funcao:
+          type: string
+          example: "Técnica de Enfermagem"
+        tipo_avaliacao:
+          type: string
+          example: "Médico"
+        resultado:
+          $ref: '#/components/schemas/ResultadoCriterio'
+        observacoes_gerais:
+          type: string
+          nullable: true
+        pontos_melhorar:
+          type: string
+          nullable: true
+        plano_acao:
+          type: string
+          nullable: true
+        criado_em:
+          type: string
+          format: date-time
+          example: "2024-06-01T14:00:00Z"
+
+    # --- Critério -----------------------------------------------------------
+    CriterioRequest:
+      type: object
+      required: [tipo, categoria, codigo, criterio, peso, avaliacao]
+      properties:
+        tipo:
+          type: string
+          example: "Médico"
+        categoria:
+          type: string
+          example: "Competência Técnica"
+        codigo:
+          type: string
+          example: "CT-01"
+        criterio:
+          type: string
+          example: "Conhecimento em protocolos de urgência"
+        peso:
+          type: integer
+          example: 3
+        indicador:
+          type: string
+          nullable: true
+          example: "Aplica corretamente os protocolos em 90% dos atendimentos"
+        avaliacao:
+          type: string
+          enum: ["Lider > Liderado", "Liderado > Lider", "Par", "autoavaliacao"]
+          example: "autoavaliacao"
+
+    Criterio:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              example: 10
+            ativo:
+              type: boolean
+              example: true
+        - $ref: '#/components/schemas/CriterioRequest'
+
+    TipoAvaliacao:
+      type: object
+      properties:
+        id:
+          type: integer
+        tipo:
+          type: string
+          example: "Médico"
+        ativo:
+          type: boolean
+
+    # --- KPIs ---------------------------------------------------------------
+    KpiCategoria:
+      type: object
+      properties:
+        categoria:
+          type: string
+          example: "Competência Técnica"
+        tipo_avaliacao:
+          type: string
+          example: "Médico"
+        total_avaliacoes:
+          type: integer
+          example: 25
+        profissionais_avaliados:
+          type: integer
+          example: 10
+        media_ponderada:
+          type: number
+          format: float
+          example: 7.85
+        nota_maxima:
+          type: integer
+          example: 10
+        nota_minima:
+          type: integer
+          example: 4
+        soma_pesos:
+          type: integer
+          example: 75
+
+    KpiProfissional:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "Maria Souza"
+        funcao:
+          type: string
+          example: "Técnica de Enfermagem"
+        total_avaliacoes:
+          type: integer
+          example: 5
+        tipo_avaliacao:
+          type: string
+          example: "Técnico de Enfermagem"
+        media_geral:
+          type: number
+          format: float
+          example: 8.2
+
+    # --- Auxiliares ---------------------------------------------------------
+    Ficha:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+          example: "Ficha Médico Regulador"
+        ordem:
+          type: integer
+        ativo:
+          type: boolean
+
+    Frequencia:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+          example: "Mensal"
+        ordem:
+          type: integer
+        ativo:
+          type: boolean
+
+    Fluxo:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+          example: "Líder avalia liderado"
+        ordem:
+          type: integer
+        ativo:
+          type: boolean
+
+    Base:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+          example: "Base Central"
+
+    EscalaLikert:
+      type: object
+      properties:
+        id:
+          type: integer
+        nota:
+          type: integer
+          example: 5
+        descricao:
+          type: string
+          example: "Excelente"
+        cor:
+          type: string
+          example: "#4CAF50"
+
+    PesoAvaliacao:
+      type: object
+      properties:
+        valor:
+          type: integer
+          example: 3
+        descricao:
+          type: string
+          example: "Alta relevância"
+        cor:
+          type: string
+          example: "#FF5722"
+
+    # --- Erros --------------------------------------------------------------
+    Erro:
+      type: object
+      properties:
+        erro:
+          type: string
+          example: "Credenciais inválidas"
+
+# ---------------------------------------------------------------------------
+# PATHS
+# ---------------------------------------------------------------------------
+paths:
+
+  # ==========================================================================
+  # AUTH
+  # ==========================================================================
+  /login:
+    post:
+      tags: [Auth]
+      summary: Autenticar usuário
+      description: Valida email e senha e retorna um token JWT válido por 8 horas.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+              example:
+                erro: "Credenciais inválidas"
+
+  # ==========================================================================
+  # USUÁRIOS
+  # ==========================================================================
+  /usuarios:
+    get:
+      tags: [Usuários]
+      summary: Listar todos os usuários ativos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuários ativos ordenados por nome
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+    post:
+      tags: [Usuários]
+      summary: Cadastrar novo usuário
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioRequest'
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /usuarios/base/{base}:
+    get:
+      tags: [Usuários]
+      summary: Listar usuários por base
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: base
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Base Central"
+      responses:
+        '200':
+          description: Usuários da base especificada
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioResumo'
+
+  /usuarios/{id}:
+    put:
+      tags: [Usuários]
+      summary: Atualizar dados de um usuário
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioRequest'
+      responses:
+        '200':
+          description: Atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+
+  /usuarios/{id}/inativar:
+    put:
+      tags: [Usuários]
+      summary: Inativar um usuário
+      description: Define `ativo = false` para o usuário. Operação não destrutiva.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Usuário inativado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  # ==========================================================================
+  # AVALIAÇÕES
+  # ==========================================================================
+  /avaliacoes:
+    get:
+      tags: [Avaliações]
+      summary: Listar avaliações
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: base
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtra avaliações pelo nome da base do avaliado
+          example: "Base Central"
+      responses:
+        '200':
+          description: Lista de avaliações ordenadas pela data (mais recentes primeiro)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Avaliacao'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+    post:
+      tags: [Avaliações]
+      summary: Criar nova avaliação
+      description: |
+        Registra uma avaliação de desempenho.
+
+        **Regra de negócio:** Um avaliador não pode avaliar o mesmo avaliado com o mesmo tipo de avaliação mais de uma vez por dia. Se tentar, retorna `409 Conflict`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvaliacaoRequest'
+            example:
+              avaliadorId: 1
+              avaliadoId: 3
+              tipoAvaliacao: "Médico"
+              resultado:
+                criterio_01:
+                  nota: 8
+                  peso: 3
+                criterio_02:
+                  nota: 7
+                  peso: 2
+              observacoesGerais: "Profissional comprometido."
+              pontosMelhorar: "Melhorar comunicação."
+              planoAcao: "Treinamento de liderança."
+      responses:
+        '201':
+          description: Avaliação criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Avaliacao'
+        '409':
+          description: Avaliação já realizada hoje para este avaliado e tipo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+              example:
+                erro: "Você já preencheu esta ficha hoje. Tente novamente amanhã."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  # ==========================================================================
+  # CRITÉRIOS DE AVALIAÇÃO
+  # ==========================================================================
+  /criterios-avaliacao/avaliacao:
+    get:
+      tags: [Critérios]
+      summary: Listar tipos de avaliação ativos
+      description: Retorna os registros da tabela `tipo_avaliacao` onde `ativo = true`.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de tipos de avaliação
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TipoAvaliacao'
+
+  /criterios-avaliacao/{tipo}/{avaliacao}:
+    get:
+      tags: [Critérios]
+      summary: Listar critérios por tipo e modalidade de avaliação
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tipo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Médico"
+        - name: avaliacao
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: ["Lider > Liderado", "Liderado > Lider", "Par", "autoavaliacao"]
+          example: "autoavaliacao"
+      responses:
+        '200':
+          description: Lista de critérios ativos para o tipo e modalidade
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Criterio'
+
+  /criterios-avaliacao-lider/{tipo}:
+    get:
+      tags: [Critérios]
+      summary: Listar critérios — Líder avalia Liderado
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tipo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Médico"
+      responses:
+        '200':
+          description: Critérios da modalidade "Lider > Liderado"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Criterio'
+
+  /criterios-avaliacao-liderado/{tipo}:
+    get:
+      tags: [Critérios]
+      summary: Listar critérios — Liderado avalia Líder
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tipo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Médico"
+      responses:
+        '200':
+          description: Critérios da modalidade "Liderado > Lider"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Criterio'
+
+  /criterios-avaliacao-autoavaliacao/{tipo}:
+    get:
+      tags: [Critérios]
+      summary: Listar critérios — Autoavaliação
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tipo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Médico"
+      responses:
+        '200':
+          description: Critérios da modalidade "autoavaliacao"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Criterio'
+
+  /criterios-avaliacao-par/{tipo}:
+    get:
+      tags: [Critérios]
+      summary: Listar critérios — Avaliação entre pares
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tipo
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "Médico"
+      responses:
+        '200':
+          description: Critérios da modalidade "Par"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Criterio'
+
+  /tipos-avaliacao:
+    get:
+      tags: [Critérios]
+      summary: Listar tipos distintos de avaliação (de critérios ativos)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de tipos distintos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    tipo:
+                      type: string
+                      example: "Médico"
+
+  /criterios-avaliacao:
+    post:
+      tags: [Critérios]
+      summary: Cadastrar critério de avaliação
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriterioRequest'
+      responses:
+        '201':
+          description: Critério criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Criterio'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /criterios-avaliacao/{id}:
+    put:
+      tags: [Critérios]
+      summary: Atualizar critério de avaliação
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriterioRequest'
+      responses:
+        '200':
+          description: Critério atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Criterio'
+
+  /criterios-avaliacao/{id}/inativar:
+    put:
+      tags: [Critérios]
+      summary: Inativar critério de avaliação
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Critério inativado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Criterio'
+
+  # ==========================================================================
+  # KPIs
+  # ==========================================================================
+  /kpis/avaliacoes-por-categoria:
+    get:
+      tags: [KPIs]
+      summary: Médias ponderadas por categoria de critério
+      description: |
+        Agrega os resultados de todas as avaliações agrupando por categoria de critério e tipo de avaliação.
+        Retorna média ponderada, nota máxima, nota mínima e total de avaliações.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: base
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filtra pelo nome da base do avaliado
+          example: "Base Central"
+      responses:
+        '200':
+          description: KPIs por categoria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KpiCategoria'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /kpis/avaliacoes-por-profissional:
+    get:
+      tags: [KPIs]
+      summary: Média geral de avaliações por profissional
+      description: |
+        Retorna a média geral de notas de cada profissional agrupado por função e tipo de avaliação.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: KPIs por profissional
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KpiProfissional'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  # ==========================================================================
+  # AUXILIARES
+  # ==========================================================================
+  /fichas:
+    get:
+      tags: [Auxiliares]
+      summary: Listar fichas de avaliação ativas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de fichas ordenadas por `ordem`
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ficha'
+
+  /fichasVw:
+    get:
+      tags: [Auxiliares]
+      summary: Listar fichas de avaliação (via view do banco)
+      description: Retorna os dados da view `vw_fichas_avaliacao`, que pode conter campos enriquecidos.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de fichas via view
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ficha'
+
+  /frequencias:
+    get:
+      tags: [Auxiliares]
+      summary: Listar frequências de aplicação
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de frequências ordenadas por `ordem`
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Frequencia'
+
+  /fluxos-avaliacao:
+    get:
+      tags: [Auxiliares]
+      summary: Listar fluxos de avaliação ativos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de fluxos ordenados por `ordem`
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Fluxo'
+
+  /bases:
+    get:
+      tags: [Auxiliares]
+      summary: Listar bases do SAMU
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de bases ordenadas por nome
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Base'
+
+  /escala-likert:
+    get:
+      tags: [Auxiliares]
+      summary: Listar escala Likert de notas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Escala Likert ordenada por nota
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EscalaLikert'
+
+  /pesos-avaliacao:
+    get:
+      tags: [Auxiliares]
+      summary: Listar pesos de avaliação
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Pesos ordenados por valor (decrescente)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PesoAvaliacao'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
