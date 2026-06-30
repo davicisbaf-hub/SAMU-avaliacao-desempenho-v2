@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TableAvaliacao from '../components/table-avaliacao';
 import TextArea from '../components/TextArea';
 import Assinatura from '../components/Assinatura';
+import BotaoCategoria from '../components/botaoCategoria';
 import { useUserSession } from "../contexts/UserSession";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
@@ -353,18 +354,15 @@ export default function FichaAvaliacaoCondutor() {
 									([categoria, itens]) => {
 										const respondidos = itens.filter(item => notas[item.criterio] !== undefined).length;
 										return (
-											<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden ">
+											<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden my-2">
 												
-
-												<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-[#e5ecf1]/30 transition-colors text-left bg-white">
-													<div className="flex items-center gap-3">
-														<div className="w-1.5 h-5 rounded-full bg-[#cd0048]" />
-
-														<h2 className="font-semibold text-[#0e1216] text-sm">{categoria}</h2>
-														<span className="text-xs [text-#555f69]">{respondidos} / {itens.length} respondidos</span>
-													</div>
-													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
-												</button>
+												{/* Header perguntas */}
+												<BotaoCategoria 
+													categoria={categoria}
+													itens={itens}
+													respondidos={respondidos}
+												/>
+												
 												<div className='bg-white'>
 													<div className="overflow-x-auto bg-white">
 
