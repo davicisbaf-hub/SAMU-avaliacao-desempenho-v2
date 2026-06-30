@@ -62,7 +62,7 @@ export default function TableAvaliacao({
           : "hover:bg-[#e5ecf1]/30"
       }`}
     >
-      <td className="py-3 px-4 w-32">
+      <td className="  text-center">
         <span className="text-xs font-mono [text-#555f69] bg-[#e5ecf1] px-1.5 py-0.5 rounded">
           {codigo}
         </span>

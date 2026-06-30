@@ -67,6 +67,16 @@ export default function AvaliacaoPage() {
 	const [pontosMelhorar, setPontosMelhorar] = useState("");
 	const [planoAcao, setPlanoAcao] = useState("");
 	const fichaRef = useRef<HTMLDivElement>(null);
+
+	const [categoriasAbertas, setCategoriasAbertas] = useState<Record<string, boolean>>({});
+	
+	const alternarCategoria = (categoria: string) => {
+		setCategoriasAbertas((prev) => ({
+			...prev,
+			[categoria]: !prev[categoria],
+		}));
+	};
+
 	const { authFetch } = useAuthFetch();
 
 	const imprimirFicha = useReactToPrint({
@@ -368,49 +378,54 @@ export default function AvaliacaoPage() {
 													categoria={categoria}
 													itens={itens}
 													respondidos={respondidos}
+													aberto={categoriasAbertas[categoria] ?? true}
+													onClick={() => alternarCategoria(categoria)}
 												/>
 
-												<div className='bg-white'>
-													<div className="overflow-x-auto bg-white">
+												{(categoriasAbertas[categoria] ?? true) && (
 
-														<table className="w-full bg-white">
-															<thead>
-																<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-[#d2d8de] bg-white">
-																	<th className="px-4 py-2 text-left w-28">Código</th>
-																	<th className="px-4 py-2 text-left">
-																		Critério de Avaliação / Indicador
-																	</th>
-																	<th className="px-4 py-2 text-center w-16">Peso</th>
-																	<th className="px-4 py-2 text-left min-w-56">
-																		Pontuação (1–5)
-																	</th>
-																	<th className="px-4 py-2 text-center w-32">
-																		Classificação
-																	</th>
-																</tr>
-															</thead>
+													<div className='bg-white'>
+														<div className="overflow-x-auto bg-white">
 
-															<tbody>
-																{itens.map((criterio) => (
-																	<TableAvaliacao
-																		pesos={pesos}
-																		key={criterio.codigo}
-																		codigo={criterio.id}
-																		criterio={criterio.criterio}
-																		peso={1}
-																		indicador={criterio.indicador}
-																		escalaLikert={escalaLikert}
-																		notaSelecionada={notas[criterio.criterio]}
-																		onSelecionarNota={selecionarNota}
-																		obrigatorio={!notas[criterio.criterio]}
-																		tentouEnviar={tentouEnviar}
+															<table className="w-full bg-white">
+																<thead>
+																	<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-[#d2d8de] bg-white">
+																		<th className="px-4 py-2 text-left w-28">Código</th>
+																		<th className="px-4 py-2 text-left">
+																			Critério de Avaliação / Indicador
+																		</th>
+																		<th className="px-4 py-2 text-center w-16">Peso</th>
+																		<th className="px-4 py-2 text-left min-w-56">
+																			Pontuação (1–5)
+																		</th>
+																		<th className="px-4 py-2 text-center w-32">
+																			Classificação
+																		</th>
+																	</tr>
+																</thead>
 
-																	/>
-																))}
-															</tbody>
-														</table>
+																<tbody>
+																	{itens.map((criterio) => (
+																		<TableAvaliacao
+																			pesos={pesos}
+																			key={criterio.codigo}
+																			codigo={criterio.id}
+																			criterio={criterio.criterio}
+																			peso={1}
+																			indicador={criterio.indicador}
+																			escalaLikert={escalaLikert}
+																			notaSelecionada={notas[criterio.criterio]}
+																			onSelecionarNota={selecionarNota}
+																			obrigatorio={!notas[criterio.criterio]}
+																			tentouEnviar={tentouEnviar}
+
+																		/>
+																	))}
+																</tbody>
+															</table>
+														</div>
 													</div>
-												</div>
+												)}
 											</div>
 										)
 									}
