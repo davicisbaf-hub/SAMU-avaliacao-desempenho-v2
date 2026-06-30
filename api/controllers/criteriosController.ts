@@ -9,6 +9,7 @@ export async function listarPorTipoEAvaliacao(req: Request, res: Response) {
       SELECT *
       FROM criterios_avaliacao
       WHERE tipo = $1 AND avaliacao  = $2 AND ativo = true
+      ORDER BY categoria
       `,
       [tipo, avaliacao]
     );

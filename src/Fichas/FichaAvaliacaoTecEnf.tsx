@@ -349,61 +349,65 @@ export default function FichaAvaliacaoTecEnf() {
 
 								{/* PErguntas */}
 								{Object.entries(criteriosPorCategoria).map(
-									([categoria, itens]) => (
-										<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden my-2">
+									([categoria, itens]) => {
+										const respondidos = itens.filter(item => notas[item.criterio] !== undefined).length;
+										return (
+											<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden ">
+												
 
-											<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-[#e5ecf1]/30 transition-colors text-left bg-white">
-												<div className="flex items-center gap-3">
-													<div className="w-1.5 h-5 rounded-full bg-[#cd0048]" />
+												<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-[#e5ecf1]/30 transition-colors text-left bg-white">
+													<div className="flex items-center gap-3">
+														<div className="w-1.5 h-5 rounded-full bg-[#cd0048]" />
 
-													<h2 className="font-semibold text-[#0e1216] text-sm">{categoria}</h2>
-													<span className="text-xs [text-#555f69]">0 / {itens.length} respondidos</span>
-												</div>
-												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
-											</button>
-											<div className='bg-white'>
-												<div className="overflow-x-auto bg-white">
+														<h2 className="font-semibold text-[#0e1216] text-sm">{categoria}</h2>
+														<span className="text-xs [text-#555f69]">{respondidos} / {itens.length} respondidos</span>
+													</div>
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+												</button>
+												<div className='bg-white'>
+													<div className="overflow-x-auto bg-white">
 
-													<table className="w-full bg-white">
-														<thead>
-															<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-[#d2d8de] bg-white">
-																<th className="px-4 py-2 text-left w-28">Código</th>
-																<th className="px-4 py-2 text-left">
-																	Critério de Avaliação / Indicador
-																</th>
-																<th className="px-4 py-2 text-center w-16">Peso</th>
-																<th className="px-4 py-2 text-left min-w-56">
-																	Pontuação (1–5)
-																</th>
-																<th className="px-4 py-2 text-center w-32">
-																	Classificação
-																</th>
-															</tr>
-														</thead>
+														<table className="w-full bg-white">
+															<thead>
+																<tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-[#d2d8de] bg-white">
+																	<th className="px-4 py-2 text-left w-28">Código</th>
+																	<th className="px-4 py-2 text-left">
+																		Critério de Avaliação / Indicador
+																	</th>
+																	<th className="px-4 py-2 text-center w-16">Peso</th>
+																	<th className="px-4 py-2 text-left min-w-56">
+																		Pontuação (1–5)
+																	</th>
+																	<th className="px-4 py-2 text-center w-32">
+																		Classificação
+																	</th>
+																</tr>
+															</thead>
 
-														<tbody>
-															{itens.map((criterio) => (
-																<TableAvaliacao
-																	pesos={pesos}
-																	key={criterio.codigo}
-																	codigo={criterio.id}
-																	criterio={criterio.criterio}
-																	peso={1}
-																	indicador={criterio.indicador}
-																	escalaLikert={escalaLikert}
-																	notaSelecionada={notas[criterio.criterio]}
-																	onSelecionarNota={selecionarNota}
-																	obrigatorio={!notas[criterio.criterio]}
-																	tentouEnviar={tentouEnviar}
+															<tbody>
+																{itens.map((criterio) => (
+																	<TableAvaliacao
+																		pesos={pesos}
+																		key={criterio.codigo}
+																		codigo={criterio.id}
+																		criterio={criterio.criterio}
+																		peso={1}
+																		indicador={criterio.indicador}
+																		escalaLikert={escalaLikert}
+																		notaSelecionada={notas[criterio.criterio]}
+																		onSelecionarNota={selecionarNota}
+																		obrigatorio={!notas[criterio.criterio]}
+																		tentouEnviar={tentouEnviar}
 
-																/>
-															))}
-														</tbody>
-													</table>
+																	/>
+																))}
+															</tbody>
+														</table>
+													</div>
 												</div>
 											</div>
-										</div>
-									)
+										)
+									}
 								)}
 								<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 									<TextArea
