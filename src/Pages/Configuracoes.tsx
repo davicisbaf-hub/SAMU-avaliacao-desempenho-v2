@@ -128,6 +128,7 @@ export default function ConfiguracaoPage() {
     setCriterio("");
     setPeso(1);
     setIndicador("");
+    setTipoSelecionado("");
     setAvaliacaoSelecionada("autoavaliacao");
     setModalAberto(true);
   }
@@ -392,6 +393,22 @@ export default function ConfiguracaoPage() {
                   placeholder="Ex: Humanização do cuidado"
                   className="w-full border rounded-lg px-3 py-2 mt-1"
                 />
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold">Tipo de Profissional</label>
+                <select
+                  value={tipoSelecionado}
+                  onChange={(e) => setTipoSelecionado(e.target.value)}
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                >
+                  <option value="">Selecione o tipo</option>
+                  {tipos.map((t) => (
+                    <option key={t.tipo} value={t.tipo}>
+                      {t.tipo}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

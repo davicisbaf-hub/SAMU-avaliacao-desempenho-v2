@@ -350,7 +350,7 @@ export default function FichaAvaliacaoEnf() {
 								{/* PErguntas */}
 								{Object.entries(criteriosPorCategoria).map(
 									([categoria, itens]) => (
-										<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden ">
+										<div key={categoria} className="bg-card border border-[#d2d8de] rounded-xl overflow-hidden my-2">
 
 											<button className="w-full flex items-center justify-between px-5 py-3.5 hover:bg-[#e5ecf1]/30 transition-colors text-left bg-white">
 												<div className="flex items-center gap-3">
