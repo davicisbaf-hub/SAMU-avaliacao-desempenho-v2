@@ -244,7 +244,7 @@ export default function FichaAvaliacaoCondutor() {
 										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Condutor</p>
-									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
+									<p className='text-xs [text-#555f69] mt-1'>O condutor avalia sua própria performance técnica e comportamental</p>
 								</button>
 							</div>
 

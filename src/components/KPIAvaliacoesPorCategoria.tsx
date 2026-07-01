@@ -182,7 +182,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
         <div className="flex gap-2 flex-wrap items-center">
           <button
             onClick={handleSelecionarTodos}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
+            className={`px-2 py-1 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
               ? "bg-[#1f2937] text-white"
               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
@@ -196,7 +196,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
             <button
               key={tipo}
               onClick={() => handleToggleTipo(tipo)}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
+              className={`px-2 py-1 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
                 ? "bg-[#cd0048] text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}

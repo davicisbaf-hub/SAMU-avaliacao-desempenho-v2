@@ -3,6 +3,7 @@ import Nav from '../components/Nav'
 import KPIAvaliacoesPorCategoria from '../components/KPIAvaliacoesPorCategoria'
 import StatusCardsKPI from '../components/StatusCardsKPI'
 import { useState } from 'react'
+import { useUserSession } from "../contexts/UserSession";
 import type { StatusKPIContagem } from '../components/KPIAvaliacoesPorCategoria'
 
 export default function Painel() {
@@ -11,6 +12,7 @@ export default function Painel() {
         categoriasAtenção: 0,
         categoriasRisco: 0,
     })
+    const { user } = useUserSession();
 
     return (
         <div>
@@ -21,12 +23,14 @@ export default function Painel() {
                     <Header />
 
                     {/* conteudo */}
-                    <div className='custom-scrollbar p-[32px] overflow-y-auto'>
+                    <div className='custom-scrollbar p-[38px] overflow-y-auto'>
                         <div className='space-y-8'>
                             {/* Título */}
-                            <div>
-                                <h1 className='text-3xl font-bold text-foreground mb-2'>Painel de Desempenho</h1>
-                                <p className='text-sm text-gray-600'>Visualize KPIs de avaliações por categoria e tipo de função</p>
+                            <div className='text-left'>
+                                <h1 className='text-3xl font-bold text-foreground mb-2'>Painel de KPIs Operacionais</h1>
+                                <p className='text-sm text-gray-600'>
+                                    Indicadores baseados na Portaria MS 2.048/2002 e parâmetros internacionais ACLS/PHTLS
+                                </p>
                             </div>
 
                             {/* Status Cards KPI */}

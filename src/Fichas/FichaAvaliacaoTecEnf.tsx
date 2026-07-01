@@ -244,7 +244,7 @@ export default function FichaAvaliacaoTecEnf() {
 										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Técnico de Enfermagem</p>
-									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
+									<p className='text-xs [text-#555f69] mt-1'>O técnico de enfermagem avalia sua própria performance</p>
 								</button>
 							</div>
 

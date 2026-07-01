@@ -213,11 +213,11 @@ export default function CadastroPage() {
 
                             {/* Cabeçalho */}
                             <div>
-                                <h1 className="text-2xl font-bold text-foreground">
+                                <h1 className="text-2xl font-bold text-foreground text-left">
                                     Cadastro de Profissionais
                                 </h1>
-                                <p className="[text-#555f69] mt-1 text-sm">
-                                    Registre os profissionais e líderes de cada base.
+                                <p className="[text-#555f69] mt-1 text-sm text-left">
+                                    Registre os profissionais e líderes de cada base. Os nomes cadastrados ficam disponíveis como opções nas fichas de avaliação, facilitando o preenchimento.
                                 </p>
                             </div>
 
@@ -402,7 +402,9 @@ export default function CadastroPage() {
                             <div className="bg-card border border-border rounded-xl overflow-hidden">
 
                                 <div className="px-5 py-3 border-b border-border bg-[#e5ecf1]/30 flex items-center justify-between">
-                                    <h2 className="text-sm font-semibold">Profissionais Cadastrados</h2>
+                                    <h2 className="text-sm font-semibold">
+                                        Profissionais Cadastrados
+                                    </h2>
                                     <input
                                     type="text"
                                     placeholder="Buscar por nome ou ID..."

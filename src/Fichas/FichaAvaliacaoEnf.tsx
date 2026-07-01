@@ -244,7 +244,7 @@ export default function FichaAvaliacaoEnf() {
 										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Enfermeiro</p>
-									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
+									<p className='text-xs [text-#555f69] mt-1'>O enfermeiro avalia sua própria performance assistencial e de liderança</p>
 								</button>
 							</div>
 

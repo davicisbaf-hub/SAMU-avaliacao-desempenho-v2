@@ -245,7 +245,7 @@ export default function FichaAvaliacaoMedico() {
 										}`}
 								>
 									<p className='font-semibold text-sm text-foreground'>Autoavaliação: Médico</p>
-									<p className='text-xs [text-#555f69] mt-1'>Avaliação em cenário simulado — Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS</p>
+									<p className='text-xs [text-#555f69] mt-1'>O médico intervencionista avalia sua própria performance clínica</p>
 								</button>
 							</div>
 

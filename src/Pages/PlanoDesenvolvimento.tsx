@@ -398,7 +398,8 @@ export default function PlanoDesenvolvimento() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
         <div className="custom-scrollbar p-[32px] overflow-y-auto">
-          <h2 className="text-2xl font-bold mb-6">Plano de Desenvolvimento</h2>
+          <h2 className="text-2xl font-bold text-left">Plano de Desenvolvimento Individual (PDI)</h2>
+          <p className="mb-4 text-left text-[16px] text-gray-700">Planos de ação baseados nas lacunas identificadas nas avaliações 360° e simulações bp-TEAM. Cada PDI deve ser elaborado conjuntamente com o profissional e acompanhado mensalmente.</p>
 
           {/* FILTROS */}
           <div className="flex flex-wrap gap-3 mb-6 bg-gray-50 border rounded-lg p-3">
