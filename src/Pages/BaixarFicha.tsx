@@ -16,7 +16,7 @@ type Criterios = {
 	codigo: string;
 	criterio: string;
 	peso: number;
-	id: number;
+	id: string | number;
 	indicador: string;
 	titulo: string;
 };
@@ -134,18 +134,20 @@ export default function BaixarFicha() {
 	useEffect(() => {
   		if (!avaliacaoSelecionada) return;
 
-		const tipoFicha = Object.values(avaliacaoSelecionada.resultado)[0]?.avaliacao;
-
-
-		authFetch(
-			`/api/criterios-avaliacao/${avaliacaoSelecionada.tipo_avaliacao}/${tipoFicha}`
-		)
-			.then(res => res.json())
-			.then(data => {
-			setCriterios(data);
-			})
-			.catch(console.error);
-
+		// Usar critérios salvos na avaliação (histórico) em vez de buscar os atuais
+		const criteriosFromResultado = Object.values(avaliacaoSelecionada.resultado)
+			.filter((item: any) => item.criterio && item.codigo)
+			.map((item: any, idx: number) => ({
+				id: String(idx),
+				categoria: item.categoria || "Sem categoria",
+				codigo: item.codigo,
+				criterio: item.criterio,
+				peso: item.peso ?? 1,
+				indicador: "",
+				titulo: item.criterio,
+			}));
+		
+		setCriterios(criteriosFromResultado);
 		}, [avaliacaoSelecionada]);
 	
 	
@@ -221,9 +223,20 @@ export default function BaixarFicha() {
 	
 	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
 		try {
-			const critResponse = await authFetch(`/api/criterios-avaliacao-autoavaliacao/${avaliacao.tipo_avaliacao}`);
-			const crit = await critResponse.json();
-			setCriteriosParaPdf(crit);
+			// Reconstruir critérios a partir do resultado salvo na avaliação (histórico)
+			const criteriosFromResultado = Object.values(avaliacao.resultado)
+				.filter((item: any) => item.criterio && item.codigo)
+				.map((item: any, idx: number) => ({
+					id: String(idx),
+					categoria: item.categoria || "Sem categoria",
+					codigo: item.codigo,
+					criterio: item.criterio,
+					peso: item.peso ?? 1,
+					indicador: "",
+					titulo: item.criterio,
+				}));
+			
+			setCriteriosParaPdf(criteriosFromResultado);
 			setAvaliacaoParaPdf(avaliacao);
 			setTimeout(() => {
 				imprimirParaPdf();
