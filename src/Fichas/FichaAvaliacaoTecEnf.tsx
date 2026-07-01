@@ -100,7 +100,7 @@ export default function FichaAvaliacaoTecEnf() {
 		const resultado = criterios.reduce((acc, criterio) => {
 			acc[criterio.criterio] = {
 				criterio: criterio.criterio,
-				codigo: criterio.codigo,
+				codigo: criterio.id,
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 1,
 				categoria: criterio.categoria,

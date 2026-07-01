@@ -110,7 +110,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 		const resultado = criterios.reduce((acc, criterio) => {
 			acc[criterio.criterio] = {
 				criterio: criterio.criterio,
-				codigo: criterio.codigo,
+				codigo: criterio.id,
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 2,
 				categoria: criterio.categoria,

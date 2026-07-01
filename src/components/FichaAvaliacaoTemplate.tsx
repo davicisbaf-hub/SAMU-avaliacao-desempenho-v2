@@ -250,7 +250,7 @@ export default function FichaAvaliacaoTemplate({
 													<TableAvaliacao
 														pesos={pesos}
 														key={criterio.codigo}
-														codigo={String(criterio.id)}
+														codigo={criterio.codigo}
 														criterio={criterio.criterio}
 														peso={criterio.peso}
 														indicador={criterio.indicador}
