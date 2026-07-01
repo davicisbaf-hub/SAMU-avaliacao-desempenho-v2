@@ -1,9 +1,10 @@
 import pg from "pg";
 
 const pool = new pg.Pool({
-  host: process.env.DB_HOST || "192.168.1.10",
-  // port: 5432,
-  port: 5490,
+  // host: process.env.DB_HOST || "192.168.1.10",
+  host: process.env.DB_HOST || "localhost",
+  port: 5432,
+  // port: 5490,
   user: "samu",
   password: "samu",
   database: "samu",

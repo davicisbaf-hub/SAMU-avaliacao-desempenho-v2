@@ -14,7 +14,7 @@ export default function PrivateRoutePerfil({ children }: Props) {
 
   const permitido = [
     "Administrador",
-    "🔑 Administrador — Todas as bases",
+    "🔑 Administrador - Todas as bases",
   ].includes(user.perfil);
 
   if (!permitido) {

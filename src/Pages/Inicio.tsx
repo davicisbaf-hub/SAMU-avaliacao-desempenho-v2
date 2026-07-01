@@ -48,7 +48,7 @@ export default function Inicio() {
     categoriasAtenção: 0,
     categoriasRisco: 0,
   });
-  const isAdmin = user?.perfil === "🔑 Administrador — Todas as bases";
+  const isAdmin = user?.perfil === "🔑 Administrador - Todas as bases";
 
 
   // dentro do componente:
@@ -99,7 +99,7 @@ export default function Inicio() {
                     <span className='inline-flex items-center gap-1.5 bg-[#cd0048]/30 text-[#fcfcfc] text-xs px-2.5 py-1 rounded-full font-medium'>{user?.perfil}</span>
                   </div>
 
-                  <p className='text-[#f8f8f8]/70 text-sm'>Equipes de Intervenção SAMU 192 — CRUR-BF / CISBAF — Baixada Fluminense, RJ</p>
+                  <p className='text-[#f8f8f8]/70 text-sm'>Equipes de Intervenção SAMU 192 - CRUR-BF / CISBAF - Baixada Fluminense, RJ</p>
                   <p className='text-[#f8f8f8]/50 text-xs mt-1'>Baseado em bp-TEAM, NTS, Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023)</p>
                   
                   <div className='grid-fluxo-inicio'>
@@ -121,7 +121,7 @@ export default function Inicio() {
             {/* painel KPI */}
             <div className='mb-8'>
               <div className='flex items-center justify-between mb-3'>
-                <h2 className='font-semibold text-foreground'>Painel — Situação por Categoria</h2>
+                <h2 className='font-semibold text-foreground'>Painel - Situação por Categoria</h2>
                 {isAdmin || user?.perfil == 'Administrador' && (
                   <a href='/painel-kpis' className='text-xs text-[#c1314a] hover:underline'>Ver todos →</a>
                 )}
@@ -192,8 +192,8 @@ export default function Inicio() {
 
             {/* aviso */}
             <div className='bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900 text-left'>
-              <p className='font-semibold mb-1'>⚠️ Princípio Fundamental — Avaliação Não Punitiva</p>
-              <p className='text-xs leading-relaxed'>Este instrumento tem caráter exclusivamente educativo e de melhoria da qualidade assistencial. Os resultados devem orientar o Plano de Desenvolvimento Individual (PDI) e as ações de Educação Permanente. A meta é a redução do tempo-resposta, a melhoria da segurança do paciente e o fortalecimento das equipes de intervenção do SAMU 192 — CRUR-BF.</p>
+              <p className='font-semibold mb-1'>⚠️ Princípio Fundamental - Avaliação Não Punitiva</p>
+              <p className='text-xs leading-relaxed'>Este instrumento tem caráter exclusivamente educativo e de melhoria da qualidade assistencial. Os resultados devem orientar o Plano de Desenvolvimento Individual (PDI) e as ações de Educação Permanente. A meta é a redução do tempo-resposta, a melhoria da segurança do paciente e o fortalecimento das equipes de intervenção do SAMU 192 - CRUR-BF.</p>
             </div>
 
 

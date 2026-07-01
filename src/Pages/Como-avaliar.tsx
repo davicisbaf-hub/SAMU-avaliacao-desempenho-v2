@@ -77,10 +77,10 @@ export default function InstrucoesPage() {
                 </div>
                 <div className='p-2'>
                   <p className='font-semibold text-[#f8f8f8] mb-1'>Processo de Enfermagem no SAMU</p>
-                  <p className='text-[#f8f8f8]/70'>Instrumento validado (IVC = 0,94) para registro do PE no APH móvel — Pizzolato et al., Rev. Enferm. UFSM 2023.</p>
+                  <p className='text-[#f8f8f8]/70'>Instrumento validado (IVC = 0,94) para registro do PE no APH móvel - Pizzolato et al., Rev. Enferm. UFSM 2023.</p>
                 </div>
                 <div className='p-2'>
-                  <p className='font-semibold text-[#f8f8f8] mb-1'>Portaria MS 2.048/2002 — Competências</p>
+                  <p className='font-semibold text-[#f8f8f8] mb-1'>Portaria MS 2.048/2002 - Competências</p>
                   <p className='text-[#f8f8f8]/70'>Define competências mínimas obrigatórias para cada função da equipe de intervenção SAMU (condutor, TEC, enf, médico).</p>
                 </div>
                 <div className='p-2'>
@@ -135,7 +135,7 @@ export default function InstrucoesPage() {
 
             {/* escala de pontuação */}
             <div className='bg-card border border-border rounded-xl p-5 space-y-3 mb-6'>
-              <p className="text-xs font-semibold [text-#555f69] uppercase tracking-wider mb-3">Escala de Pontuação Likert — 1 a 5</p>
+              <p className="text-xs font-semibold [text-#555f69] uppercase tracking-wider mb-3">Escala de Pontuação Likert - 1 a 5</p>
               <div className="flex flex-col gap-3 ">
                 {escalaLikert.map((item) => (
                   <div
@@ -158,7 +158,7 @@ export default function InstrucoesPage() {
 
                       <span className="[text-#555f69]">
                         {" "}
-                        — {item.descricao}
+                        - {item.descricao}
                       </span>
                     </span>
                   </div>
@@ -240,7 +240,7 @@ export default function InstrucoesPage() {
                         </p>
 
                         <span className="text-xs [text-#555f69]">
-                          — {item.responsavel}
+                          - {item.responsavel}
                         </span>
                       </div>
 

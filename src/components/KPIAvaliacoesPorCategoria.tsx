@@ -41,7 +41,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   const [avaliacoesFull, setAvaliacoesFull] = useState<any[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set([`${user?.funcao}`]));
-  const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases";
+  const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases";
 
   useEffect(() => {
     async function carregarKPIs() {
@@ -117,7 +117,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       ? (
         kpisFiltrados.reduce((acc, k) => acc + (k.media_ponderada * k.total_avaliacoes), 0) / totalAvaliacoes
       ).toFixed(1)
-      : "—";
+      : "- ";
 
   const profissionaisDistintos = Array.from(new Set(
     avaliacoesFull

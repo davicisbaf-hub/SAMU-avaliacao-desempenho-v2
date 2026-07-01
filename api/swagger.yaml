@@ -760,7 +760,7 @@ paths:
   /criterios-avaliacao-lider/{tipo}:
     get:
       tags: [Critérios]
-      summary: Listar critérios — Líder avalia Liderado
+      summary: Listar critérios - Líder avalia Liderado
       security:
         - bearerAuth: []
       parameters:
@@ -783,7 +783,7 @@ paths:
   /criterios-avaliacao-liderado/{tipo}:
     get:
       tags: [Critérios]
-      summary: Listar critérios — Liderado avalia Líder
+      summary: Listar critérios - Liderado avalia Líder
       security:
         - bearerAuth: []
       parameters:
@@ -806,7 +806,7 @@ paths:
   /criterios-avaliacao-autoavaliacao/{tipo}:
     get:
       tags: [Critérios]
-      summary: Listar critérios — Autoavaliação
+      summary: Listar critérios - Autoavaliação
       security:
         - bearerAuth: []
       parameters:
@@ -829,7 +829,7 @@ paths:
   /criterios-avaliacao-par/{tipo}:
     get:
       tags: [Critérios]
-      summary: Listar critérios — Avaliação entre pares
+      summary: Listar critérios - Avaliação entre pares
       security:
         - bearerAuth: []
       parameters:

@@ -243,7 +243,7 @@ export default function FichaAvaliacaoPar() {
 
 	
 							<div>
-								<h1>Avaliação de Par — Selecione o profissional</h1>
+								<h1>Avaliação de Par - Selecione o profissional</h1>
 								<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>
 									Profissional Avaliado
 								</label>
@@ -255,7 +255,7 @@ export default function FichaAvaliacaoPar() {
 									<option value="" className="text-black">Selecione...</option>
 									{pares.map((p) => (
 										<option key={p.id} value={p.id} className="text-black">
-										{p.nome} — {p.funcao}
+										{p.nome} - {p.funcao}
 										</option>
 									))}
 								</select>
@@ -277,7 +277,7 @@ export default function FichaAvaliacaoPar() {
 												<h1 className='text-lg font-bold text-[#f8f8f8]'>Ficha de Avaliação de Desempenho</h1>
 												<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Autoavaliação: {tipoAvaliacao}</span>
 											</div>
-											<p className='text-[#f8f8f8]/70 text-sm mt-0.5'>{tipoAvaliacao} — SAMU 192 / CRUR-BF / CISBAF</p>
+											<p className='text-[#f8f8f8]/70 text-sm mt-0.5'>{tipoAvaliacao} - SAMU 192 / CRUR-BF / CISBAF</p>
 										</div>
 										<div className='text-right hidden sm:block'>
 											<p className='text-[#f8f8f8]/60 text-xs'>Data</p>
@@ -324,7 +324,7 @@ export default function FichaAvaliacaoPar() {
 								{/* escala de pontuacao */}
 								<div className="bg-[#e5ecf1]/50 rounded-xl p-4 pontuacao">
 									<p className="text-xs font-semibold [text-#555f69] uppercase tracking-wider mb-3">
-										Escala de Pontuação Likert — 1 a 5
+										Escala de Pontuação Likert - 1 a 5
 									</p>
 
 									<div className="flex flex-col gap-3 ">
@@ -349,7 +349,7 @@ export default function FichaAvaliacaoPar() {
 
 													<span className="[text-#555f69]">
 														{" "}
-														— {item.descricao}
+														- {item.descricao}
 													</span>
 												</span>
 											</div>
@@ -485,7 +485,7 @@ export default function FichaAvaliacaoPar() {
 								</button>
 							</div>
 							<p className='text-xs [text-#555f69] text-center print:hidden'>
-								Instrumento baseado em bp-TEAM (validado em português), Habilidades Não Técnicas (NTS), Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023). Avaliação com foco na melhoria contínua da qualidade assistencial — caráter educativo, não punitivo.
+								Instrumento baseado em bp-TEAM (validado em português), Habilidades Não Técnicas (NTS), Portaria MS 2.048/2002 e Processo de Enfermagem no SAMU (Pizzolato et al., 2023). Avaliação com foco na melhoria contínua da qualidade assistencial - caráter educativo, não punitivo.
 							</p>
 						</div>
 					</div>

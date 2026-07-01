@@ -49,7 +49,7 @@ VALUES
 (
     '🏆',
     'Anual',
-    'PDI — revisão de metas e certificações (ACLS/PHTLS/BLS)',
+    'PDI - revisão de metas e certificações (ACLS/PHTLS/BLS)',
     'Direção Técnica / CISBAF',
     5
 );

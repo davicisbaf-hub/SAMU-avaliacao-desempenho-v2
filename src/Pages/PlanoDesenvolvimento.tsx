@@ -46,6 +46,13 @@ type FichaProcessada = {
   temProblema: boolean;
 };
 
+type EvolucaoConsolidadaItem = {
+  categoria: string;
+  media: number;
+  classificacao: 'BOM' | 'REGULAR' | 'RUIM';
+  orientacao: string;
+};
+
 type ModalState = { profKey: string; fichaId: number | 'comparativo'; tipoAvaliacao?: string } | null;
 
 const TIPO_LABEL: Record<string, string> = {
@@ -72,10 +79,10 @@ export default function PlanoDesenvolvimento() {
   const [buscaTexto, setBuscaTexto] = useState('');
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
   const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
-  
+
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [dataFim, setDataFim] = useState<Date | null>(null);
-  
+
   const fichaPrintRef = useRef<HTMLDivElement>(null);
   const comparativoPrintRef = useRef<HTMLDivElement>(null);
   const fichaPdfRef = useRef<HTMLDivElement>(null);
@@ -159,7 +166,12 @@ export default function PlanoDesenvolvimento() {
         (a, b) => new Date(a.criado_em).getTime() - new Date(b.criado_em).getTime()
       );
 
-      const historicoPorTipoCategoria: Record<string, Record<string, number[]>> = {};
+      // CORREÇÃO: em vez de guardar um array de médias por ficha e tirar a média
+      // desse array (média das médias), acumulamos soma(nota*peso) e soma(peso)
+      // de TODOS os critérios de TODAS as fichas já processadas. Assim a evolução
+      // é uma média ponderada real pelo volume de critérios avaliados, e não
+      // uma média simples entre os resultados de cada ficha.
+      const historicoPorTipoCategoria: Record<string, Record<string, { somaNotaPeso: number; somaPeso: number }>> = {};
       const fichas: FichaProcessada[] = [];
 
       for (const aval of ordenada) {
@@ -189,11 +201,12 @@ export default function PlanoDesenvolvimento() {
 
           const mediaPonderada = somaPeso > 0 ? Number((somaNotaPeso / somaPeso).toFixed(2)) : 0;
 
-          if (!historicoCat[nomeCat]) historicoCat[nomeCat] = [];
-          historicoCat[nomeCat].push(mediaPonderada);
-          const mediaEvolucao = Number(
-            (historicoCat[nomeCat].reduce((a, b) => a + b, 0) / historicoCat[nomeCat].length).toFixed(2)
-          );
+          if (!historicoCat[nomeCat]) historicoCat[nomeCat] = { somaNotaPeso: 0, somaPeso: 0 };
+          historicoCat[nomeCat].somaNotaPeso += somaNotaPeso;
+          historicoCat[nomeCat].somaPeso += somaPeso;
+          const mediaEvolucao = historicoCat[nomeCat].somaPeso > 0
+            ? Number((historicoCat[nomeCat].somaNotaPeso / historicoCat[nomeCat].somaPeso).toFixed(2))
+            : 0;
 
           const atual = classificar(mediaPonderada);
           const evolucao = classificar(mediaEvolucao);
@@ -255,17 +268,34 @@ export default function PlanoDesenvolvimento() {
     return linhas;
   };
 
+  // NOVO: evolução consolidada — soma nota*peso de TODOS os critérios de TODAS as
+  // fichas informadas (por categoria) e divide pela soma total de pesos.
+  // Isso é diferente de "média das médias" das fichas: cada critério individual
+  // pesa igual no resultado final, não cada ficha.
+  const calcularEvolucaoConsolidada = (fichas: FichaProcessada[]): EvolucaoConsolidadaItem[] => {
+    const agrupado: Record<string, { somaNotaPeso: number; somaPeso: number }> = {};
+
+    fichas.forEach((ficha) => {
+      ficha.categorias.forEach((cat) => {
+        if (!agrupado[cat.nome]) agrupado[cat.nome] = { somaNotaPeso: 0, somaPeso: 0 };
+        cat.itens.forEach((item) => {
+          agrupado[cat.nome].somaNotaPeso += item.nota * item.peso;
+          agrupado[cat.nome].somaPeso += item.peso;
+        });
+      });
+    });
+
+    return Object.entries(agrupado).map(([categoria, dados]) => {
+      const media = dados.somaPeso > 0 ? Number((dados.somaNotaPeso / dados.somaPeso).toFixed(2)) : 0;
+      const { classificacao, orientacao } = classificar(media);
+      return { categoria, media, classificacao, orientacao };
+    });
+  };
+
   const badgeClasse = (classificacao: string) =>
     classificacao === 'BOM' ? 'bg-green-100 text-green-700'
       : classificacao === 'REGULAR' ? 'bg-amber-100 text-amber-700'
         : 'bg-red-100 text-red-700';
-
-  const setaTendencia = (atual: number, anterior: number | null) => {
-    if (anterior === null) return null;
-    if (atual > anterior) return <span className="text-green-600">▲</span>;
-    if (atual < anterior) return <span className="text-red-600">▼</span>;
-    return <span className="text-gray-400">▬</span>;
-  };
 
   const funcoesUnicas = useMemo(() => {
     const set = new Set(Object.values(porProfissional).map((p) => p.funcao).filter(Boolean));
@@ -275,19 +305,19 @@ export default function PlanoDesenvolvimento() {
   const profissionaisFiltrados = useMemo(() => {
     return Object.entries(porProfissional).filter(([, prof]) => {
       if (filtroFuncao !== 'Todas' && prof.funcao !== filtroFuncao) return false;
-      
+
       if (buscaTexto.trim()) {
         const termo = buscaTexto.trim().toLowerCase();
         if (!prof.nome.toLowerCase().includes(termo)) return false;
       }
-      
+
       if (filtroPendencia !== 'todos') {
         const ultimaFicha = prof.fichas[prof.fichas.length - 1];
         const temPendenciaAtual = ultimaFicha ? ultimaFicha.temProblema : false;
         if (filtroPendencia === 'com' && !temPendenciaAtual) return false;
         if (filtroPendencia === 'sem' && temPendenciaAtual) return false;
       }
-      
+
       if (dataInicio || dataFim) {
         const temFichaNoPeriodo = prof.fichas.some(ficha => {
           const dataFicha = new Date(ficha.criado_em);
@@ -297,7 +327,7 @@ export default function PlanoDesenvolvimento() {
         });
         if (!temFichaNoPeriodo) return false;
       }
-      
+
       return true;
     });
   }, [porProfissional, filtroFuncao, buscaTexto, filtroPendencia, dataInicio, dataFim]);
@@ -313,12 +343,6 @@ export default function PlanoDesenvolvimento() {
     ? fichasDoTipoModal.find((f) => f.id === modalFicha?.fichaId) ?? null
     : null;
   const idxFichaModal = fichaModal ? fichasDoTipoModal.findIndex((f) => f.id === fichaModal.id) : -1;
-
-  const comparativoModal = montarComparativoCategorias(fichasDoTipoModal);
-  const linhasComparativoTodas = Object.entries(comparativoModal);
-  const linhasComparativoComProblema = linhasComparativoTodas.filter(([, valores]) =>
-    valores.some((v) => v && v.classificacaoAtual !== 'BOM')
-  );
 
   const fecharModal = () => setModalFicha(null);
 
@@ -337,10 +361,29 @@ export default function PlanoDesenvolvimento() {
     return ultimaFicha ? ultimaFicha.temProblema : false;
   };
 
+  // Aplica os filtros (tipo + período) de forma centralizada, reaproveitado
+  // tanto no modal em tela quanto na versão exportada em PDF.
+  const obterFichasComparativoFiltradas = (prof: { fichas: FichaProcessada[]; porTipo: Record<string, FichaProcessada[]> }) => {
+    let fichasParaComparativo = filtroTipoComparativo === 'todos'
+      ? prof.fichas
+      : (prof.porTipo[filtroTipoComparativo] ?? []);
+
+    if (dataInicio || dataFim) {
+      fichasParaComparativo = fichasParaComparativo.filter(ficha => {
+        const dataFicha = new Date(ficha.criado_em);
+        if (dataInicio && dataFicha < dataInicio) return false;
+        if (dataFim && dataFicha > dataFim) return false;
+        return true;
+      });
+    }
+
+    return fichasParaComparativo;
+  };
+
   // FUNÇÃO PARA BAIXAR PDF DIRETO (SEM TELA DE IMPRESSÃO)
   const baixarPDF = async (elemento: HTMLElement | null, nomeArquivo: string) => {
     if (!elemento) return;
-    
+
     try {
       const canvas = await html2canvas(elemento, {
         scale: 2,
@@ -348,20 +391,20 @@ export default function PlanoDesenvolvimento() {
         logging: false,
         backgroundColor: '#ffffff',
       });
-      
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
+
       let heightLeft = pdfHeight;
       let position = 0;
       const pageHeight = pdf.internal.pageSize.getHeight();
-      
+
       // Adiciona a primeira página
       pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
       heightLeft -= pageHeight;
-      
+
       // Adiciona páginas extras se necessário
       while (heightLeft > 0) {
         position = heightLeft - pdfHeight;
@@ -369,7 +412,7 @@ export default function PlanoDesenvolvimento() {
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
         heightLeft -= pageHeight;
       }
-      
+
       pdf.save(`${nomeArquivo}.pdf`);
     } catch (error) {
       console.error('Erro ao gerar PDF:', error);
@@ -410,12 +453,12 @@ export default function PlanoDesenvolvimento() {
                 {funcoesUnicas.map((f) => <option key={f} value={f}>{f}</option>)}
               </select>
             </div>
-            
+
             <div className="flex flex-col flex-1 min-w-[200px]">
               <label className="text-xs text-gray-500 mb-1">Buscar profissional</label>
               <input type="text" value={buscaTexto} onChange={(e) => setBuscaTexto(e.target.value)} placeholder="Digite o nome..." className="border rounded-md px-3 py-2 text-sm bg-white" />
             </div>
-            
+
             <div className="flex flex-col">
               <label className="text-xs text-gray-500 mb-1">Pendência (última ficha)</label>
               <select value={filtroPendencia} onChange={(e) => setFiltroPendencia(e.target.value as any)} className="border rounded-md px-3 py-2 text-sm bg-white">
@@ -502,8 +545,8 @@ export default function PlanoDesenvolvimento() {
                                 onClick={() => {
                                   setFiltroTipoComparativo('todos');
                                   setModalFicha({ profKey, fichaId: 'comparativo' });
-                                }} 
-                                className="text-xl p-1 hover:bg-gray-100 rounded" 
+                                }}
+                                className="text-xl p-1 hover:bg-gray-100 rounded"
                                 title="Ver comparativo"
                               >
                                 👁️
@@ -520,7 +563,7 @@ export default function PlanoDesenvolvimento() {
               {/* FICHAS POR PROFISSIONAL → TIPO → FICHAS */}
               {profissionaisFiltrados.map(([profKey, prof]) => (
                 <div key={profKey} className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
-                  <h3 className="font-bold text-lg text-left mb-4">{prof.funcao} — {prof.nome}</h3>
+                  <h3 className="font-bold text-lg text-left mb-4">{prof.funcao} - {prof.nome}</h3>
 
                   <div className="space-y-2">
                     {Object.entries(prof.porTipo).map(([tipo, fichasTipo]) => {
@@ -640,7 +683,7 @@ export default function PlanoDesenvolvimento() {
                 <p className="text-xs uppercase tracking-wide text-gray-400">
                   {modoComparativo
                     ? 'Comparativo de Evolução'
-                    : `Ficha — ${tipoLabel(fichaModal?.tipoAvaliacao ?? '')} - ${fichaModal?.tipoFicha ?? ''}`}
+                    : `Ficha - ${tipoLabel(fichaModal?.tipoAvaliacao ?? '')} - ${fichaModal?.tipoFicha ?? ''}`}
                 </p>
                 <h3 className="font-bold text-xl">{profModal.nome}</h3>
                 <p className="text-sm text-gray-600">{profModal.funcao}</p>
@@ -752,22 +795,10 @@ export default function PlanoDesenvolvimento() {
               {/* MODAL - bloco comparativo no modo dedicado */}
               {modoComparativo && (() => {
                 const tiposDisponiveis = Object.keys(profModal.porTipo);
-
-                let fichasParaComparativo = filtroTipoComparativo === 'todos'
-                  ? profModal.fichas
-                  : (profModal.porTipo[filtroTipoComparativo] ?? []);
-
-                if (dataInicio || dataFim) {
-                  fichasParaComparativo = fichasParaComparativo.filter(ficha => {
-                    const dataFicha = new Date(ficha.criado_em);
-                    if (dataInicio && dataFicha < dataInicio) return false;
-                    if (dataFim && dataFicha > dataFim) return false;
-                    return true;
-                  });
-                }
-
+                const fichasParaComparativo = obterFichasComparativoFiltradas(profModal);
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
+                const evolucaoConsolidada = calcularEvolucaoConsolidada(fichasParaComparativo);
 
                 return (
                   <div>
@@ -820,7 +851,10 @@ export default function PlanoDesenvolvimento() {
                           {filtroTipoComparativo !== 'todos' && ` do tipo ${tipoLabel(filtroTipoComparativo)}`}
                           {(dataInicio || dataFim) && ' no período selecionado'}
                         </div>
-                        
+
+                        {/* Fichas lado a lado — cada coluna mostra o resultado
+                            PRÓPRIO daquela ficha (mediaPonderada), sem misturar
+                            com o resultado de outra ficha. */}
                         <div className="border rounded-lg overflow-auto">
                           <table className="w-full text-sm">
                             <thead className="bg-gray-50">
@@ -848,12 +882,11 @@ export default function PlanoDesenvolvimento() {
                                   {valores.map((valor, idx) => (
                                     <td key={idx} className="p-2 text-center">
                                       {valor ? (
-                                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${badgeClasse(valor.classificacaoEvolucao)}`}>
-                                          {valor.mediaEvolucao} • {valor.classificacaoEvolucao}
-                                          {setaTendencia(valor.mediaEvolucao, valores[idx - 1]?.mediaEvolucao ?? null)}
+                                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold ${badgeClasse(valor.classificacaoAtual)}`}>
+                                          {valor.mediaPonderada} • {valor.classificacaoAtual}
                                         </span>
                                       ) : (
-                                        <span className="text-gray-300">—</span>
+                                        <span className="text-gray-300">-</span>
                                       )}
                                     </td>
                                   ))}
@@ -862,6 +895,31 @@ export default function PlanoDesenvolvimento() {
                             </tbody>
                           </table>
                         </div>
+
+                        {/* NOVO: Evolução consolidada em div separada — soma de
+                            nota*peso de TODAS as fichas filtradas, dividido pela
+                            soma total de pesos. Não é média das médias. */}
+                        {evolucaoConsolidada.length > 0 && (
+                          <div className="mt-6 bg-gray-50 border rounded-lg p-4">
+                            <h4 className="font-bold text-sm text-gray-800 mb-1">Evolução Consolidada</h4>
+                            <p className="text-xs text-gray-500 mb-3">
+                              Soma de todas as notas das fichas exibidas acima, dividida pela quantidade total de critérios avaliados por categoria.
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {evolucaoConsolidada.map((item) => (
+                                <div key={item.categoria} className="bg-white border rounded-lg p-3">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-700">{item.categoria}</span>
+                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${badgeClasse(item.classificacao)}`}>
+                                      {item.media} • {item.classificacao}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-gray-500 mt-1">{item.orientacao}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </>
                     )}
                   </div>
@@ -880,7 +938,7 @@ export default function PlanoDesenvolvimento() {
               <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
                 Ficha de Avaliação
               </h1>
-              
+
               <div style={{ marginBottom: '20px' }}>
                 <p><strong>Profissional:</strong> {profModal.nome}</p>
                 <p><strong>Função:</strong> {profModal.funcao}</p>
@@ -895,7 +953,7 @@ export default function PlanoDesenvolvimento() {
               {fichaModal.categorias.map((cat) => (
                 <div key={cat.nome} style={{ marginBottom: '25px' }}>
                   <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>{cat.nome}</h3>
-                  
+
                   <div style={{ marginBottom: '10px' }}>
                     <p><strong>Nota:</strong> {cat.mediaPonderada}</p>
                     <p><strong>Classificação:</strong> {cat.classificacaoAtual}</p>
@@ -939,7 +997,7 @@ export default function PlanoDesenvolvimento() {
               <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
                 Ficha de Avaliação
               </h1>
-              
+
               <div style={{ marginBottom: '20px' }}>
                 <p><strong>Profissional:</strong> {profModal.nome}</p>
                 <p><strong>Função:</strong> {profModal.funcao}</p>
@@ -954,7 +1012,7 @@ export default function PlanoDesenvolvimento() {
               {fichaModal.categorias.map((cat) => (
                 <div key={cat.nome} style={{ marginBottom: '25px' }}>
                   <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>{cat.nome}</h3>
-                  
+
                   <div style={{ marginBottom: '10px' }}>
                     <p><strong>Nota:</strong> {cat.mediaPonderada}</p>
                     <p><strong>Classificação:</strong> {cat.classificacaoAtual}</p>
@@ -998,7 +1056,7 @@ export default function PlanoDesenvolvimento() {
               <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
                 Comparativo de Evolução
               </h1>
-              
+
               <div style={{ marginBottom: '20px' }}>
                 <p><strong>Profissional:</strong> {profModal.nome}</p>
                 <p><strong>Função:</strong> {profModal.funcao}</p>
@@ -1009,66 +1067,86 @@ export default function PlanoDesenvolvimento() {
               <hr style={{ marginBottom: '20px' }} />
 
               {(() => {
-                let fichasParaComparativo = filtroTipoComparativo === 'todos'
-                  ? profModal.fichas
-                  : (profModal.porTipo[filtroTipoComparativo] ?? []);
-
-                if (dataInicio || dataFim) {
-                  fichasParaComparativo = fichasParaComparativo.filter(ficha => {
-                    const dataFicha = new Date(ficha.criado_em);
-                    if (dataInicio && dataFicha < dataInicio) return false;
-                    if (dataFim && dataFicha > dataFim) return false;
-                    return true;
-                  });
-                }
-
+                const fichasParaComparativo = obterFichasComparativoFiltradas(profModal);
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
+                const evolucaoConsolidada = calcularEvolucaoConsolidada(fichasParaComparativo);
 
                 return (
                   <div>
                     {fichasParaComparativo.length === 0 ? (
                       <p style={{ textAlign: 'center', color: '#666' }}>Nenhuma ficha encontrada com os filtros aplicados.</p>
                     ) : (
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                        <thead>
-                          <tr style={{ backgroundColor: '#f0f0f0' }}>
-                            <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', minWidth: '150px' }}>Categoria</th>
-                            {fichasParaComparativo.map((f, idx) => (
-                              <th key={f.id} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
-                                Ficha {idx + 1} - {f.tipoFicha}
-                                <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>
-                                  {formatarData(f.criado_em)}
-                                </div>
-                                {f.temProblema && (
-                                  <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#d97706', marginTop: '2px' }}>
-                                    ⚠️ Com pendência
+                      <>
+                        {/* Fichas lado a lado — cada coluna com seu próprio resultado */}
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                          <thead>
+                            <tr style={{ backgroundColor: '#f0f0f0' }}>
+                              <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left', minWidth: '150px' }}>Categoria</th>
+                              {fichasParaComparativo.map((f, idx) => (
+                                <th key={f.id} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                  Ficha {idx + 1} - {f.tipoFicha}
+                                  <div style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>
+                                    {formatarData(f.criado_em)}
                                   </div>
-                                )}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {linhas.map(([nomeCat, valores]) => (
-                            <tr key={nomeCat} style={{ borderTop: '1px solid #ddd' }}>
-                              <td style={{ border: '1px solid #ddd', padding: '10px', fontWeight: 'bold' }}>{nomeCat}</td>
-                              {valores.map((valor, idx) => (
-                                <td key={idx} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
-                                  {valor ? (
-                                    <div>
-                                      <div style={{ fontWeight: 'bold' }}>{valor.mediaEvolucao}</div>
-                                      <div style={{ fontSize: '12px' }}>{valor.classificacaoEvolucao}</div>
+                                  {f.temProblema && (
+                                    <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#d97706', marginTop: '2px' }}>
+                                      ⚠️ Com pendência
                                     </div>
-                                  ) : (
-                                    <span style={{ color: '#999' }}>—</span>
                                   )}
-                                </td>
+                                </th>
                               ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {linhas.map(([nomeCat, valores]) => (
+                              <tr key={nomeCat} style={{ borderTop: '1px solid #ddd' }}>
+                                <td style={{ border: '1px solid #ddd', padding: '10px', fontWeight: 'bold' }}>{nomeCat}</td>
+                                {valores.map((valor, idx) => (
+                                  <td key={idx} style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                    {valor ? (
+                                      <div>
+                                        <div style={{ fontWeight: 'bold' }}>{valor.mediaPonderada}</div>
+                                        <div style={{ fontSize: '12px' }}>{valor.classificacaoAtual}</div>
+                                      </div>
+                                    ) : (
+                                      <span style={{ color: '#999' }}>-</span>
+                                    )}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+
+                        {/* Evolução consolidada em bloco separado */}
+                        {evolucaoConsolidada.length > 0 && (
+                          <div style={{ marginTop: '25px' }}>
+                            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '5px' }}>Evolução Consolidada</h2>
+                            <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+                              Soma de todas as notas das fichas acima, dividida pela quantidade total de critérios avaliados por categoria.
+                            </p>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                              <thead>
+                                <tr style={{ backgroundColor: '#f0f0f0' }}>
+                                  <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'left' }}>Categoria</th>
+                                  <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center', width: '120px' }}>Média Consolidada</th>
+                                  <th style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center', width: '100px' }}>Classificação</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {evolucaoConsolidada.map((item) => (
+                                  <tr key={item.categoria}>
+                                    <td style={{ border: '1px solid #ddd', padding: '10px' }}>{item.categoria}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center', fontWeight: 'bold' }}>{item.media}</td>
+                                    <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>{item.classificacao}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 );

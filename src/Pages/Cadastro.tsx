@@ -56,7 +56,7 @@ export default function CadastroPage() {
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
     const [busca, setBusca] = useState("");
 
-    const isAdminGlobal = user?.perfil === "🔑 Administrador — Todas as bases"; 
+    const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases"; 
     
     const usuariosFiltrados = (isAdminGlobal ? usuarios : usuarios.filter((u) => u.base === user?.base))
     .filter((u) =>

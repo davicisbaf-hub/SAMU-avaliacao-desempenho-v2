@@ -132,7 +132,7 @@ export default function TableAvaliacao({
             color: classificacao?.cor,
           }}
         >
-          {classificacao?.titulo ?? "—"}
+          {classificacao?.titulo ?? "-"}
         </span>
       </td>
     </tr>

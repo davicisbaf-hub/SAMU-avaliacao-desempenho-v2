@@ -18,6 +18,6 @@ VALUES
     'admin@admin.com',
     '123456',
     'Medico',
-    '🔑 Administrador — Todas as bases',
+    '🔑 Administrador - Todas as bases',
     'Itaguai'
 );

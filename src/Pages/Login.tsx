@@ -67,7 +67,7 @@ function App() {
           </p>
 
           <p className="text-[#f8f8f8]/50 text-xs mt-0.5">
-            CRUR-BF / CISBAF — Baixada Fluminense
+            CRUR-BF / CISBAF - Baixada Fluminense
           </p>
         </div>
 
