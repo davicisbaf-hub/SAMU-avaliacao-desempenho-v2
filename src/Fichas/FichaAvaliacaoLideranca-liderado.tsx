@@ -199,7 +199,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 
 	useEffect(() => {
 		carregar(
-			`/api/criterios-avaliacao-liderado/${tipoAvaliacao}`,
+			`/api/criterios-avaliacao-lider/${tipoAvaliacao}`,
 			setCriterios
 		);
 	}, [tipoAvaliacao]);
