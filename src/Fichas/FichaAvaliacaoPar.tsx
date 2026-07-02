@@ -125,12 +125,13 @@ export default function FichaAvaliacaoPar() {
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 1,
 				categoria: criterio.categoria,
-				avaliacao: criterio.avaliacao,
 			};
 
 			return acc;
 		}, {} as Record<string, any>);
 
+
+		const modalidade = criterios[0]?.avaliacao
 		const res = await authFetch("/api/avaliacoes", {
 
 			method: "POST",
@@ -140,6 +141,7 @@ export default function FichaAvaliacaoPar() {
 			body: JSON.stringify({
 				avaliadorId: user?.id,   // quem avalia
 				avaliadoId: avaliadoId, 
+				modalidade:modalidade,
 				tipoAvaliacao,
 				resultado,
 				observacoesGerais: observacoes,

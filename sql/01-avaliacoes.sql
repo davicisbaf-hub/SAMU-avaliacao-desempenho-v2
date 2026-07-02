@@ -3,6 +3,7 @@ CREATE TABLE avaliacoes (
 
     avaliador_id INTEGER NOT NULL,
     avaliado_id INTEGER NOT NULL,
+    modalidade TEXT,
 
     tipo_avaliacao VARCHAR(100) NOT NULL,
     resultado JSONB NOT NULL,

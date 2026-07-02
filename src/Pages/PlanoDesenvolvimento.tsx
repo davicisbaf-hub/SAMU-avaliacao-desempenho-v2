@@ -859,7 +859,7 @@ export default function PlanoDesenvolvimento() {
                           <table className="w-full text-sm">
                             <thead className="bg-gray-50">
                               <tr className="text-center">
-                                <th className="p-2 text-left">Categoria</th>
+                                <th className="p-2 text-center">Categoria</th>
                                 {fichasParaComparativo.map((f, idx) => (
                                   <th key={f.id} className="p-2 min-w-[100px]">
                                     {filtroTipoComparativo === 'todos' && (

@@ -99,19 +99,21 @@ export default function FichaAvaliacaoMedico() {
 		}
 
 		const resultado = criterios.reduce((acc, criterio) => {
-			acc[criterio.criterio] = {
-				criterio: criterio.criterio,
-				codigo: criterio.id,
-				nota: notas[criterio.criterio],
-				peso: criterio.peso ?? 1,
-				categoria: criterio.categoria,
-				avaliacao: criterio.avaliacao,
-			};
+		acc[criterio.criterio] = {
+			criterio: criterio.criterio,
+			codigo: criterio.id,
+			nota: notas[criterio.criterio],
+			peso: criterio.peso ?? 1,
+			categoria: criterio.categoria,
+		};
 
-			return acc;
+		return acc;
 		}, {} as Record<string, any>);
 
+		const modalidade = criterios[0]?.avaliacao;
+		
 		const res = await authFetch("/api/avaliacoes", {
+
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -119,6 +121,7 @@ export default function FichaAvaliacaoMedico() {
 			body: JSON.stringify({
 				avaliadorId: user?.id,
 				avaliadoId: user?.id,
+				modalidade: modalidade,
 				tipoAvaliacao,
 				resultado,
 				observacoesGerais: observacoes,

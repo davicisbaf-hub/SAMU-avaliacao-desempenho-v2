@@ -98,18 +98,19 @@ export default function FichaAvaliacaoBpTeam() {
 		}
 
 		const resultado = criterios.reduce((acc, criterio) => {
-			acc[criterio.criterio] = {
-				criterio: criterio.criterio,
-				codigo: criterio.id,
-				nota: notas[criterio.criterio],
-				peso: criterio.peso ?? 1,
-				categoria: criterio.categoria,
-				avaliacao: criterio.avaliacao,
-			};
+		acc[criterio.criterio] = {
+			criterio: criterio.criterio,
+			codigo: criterio.id,
+			nota: notas[criterio.criterio],
+			peso: criterio.peso ?? 1,
+			categoria: criterio.categoria,
+		};
 
-			return acc;
+		return acc;
 		}, {} as Record<string, any>);
 
+		const modalidade = criterios[0]?.avaliacao;
+		
 		const res = await authFetch("/api/avaliacoes", {
 
 			method: "POST",
@@ -119,6 +120,7 @@ export default function FichaAvaliacaoBpTeam() {
 			body: JSON.stringify({
 				avaliadorId: user?.id,
 				avaliadoId: user?.id,
+				modalidade: modalidade,
 				tipoAvaliacao,
 				resultado,
 				observacoesGerais: observacoes,
@@ -136,7 +138,7 @@ export default function FichaAvaliacaoBpTeam() {
 		if (res.ok) {
 			alert("Avaliação enviada com sucesso!");
 		}
-	}
+	};
 
 	useEffect(() => {
 		async function carregarBases() {

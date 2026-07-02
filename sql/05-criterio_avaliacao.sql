@@ -2,7 +2,7 @@ CREATE TABLE public.criterios_avaliacao (
 	id serial4 NOT NULL,
 	tipo varchar(50) NOT NULL,
 	categoria varchar(100) NOT NULL,
-	codigo varchar(100) NOT NULL,
+	codigo UUID DEFAULT gen_random_uuid (),
 	criterio VARCHAR NOT NULL,
 	peso int4 NOT NULL,
 	indicador VARCHAR NULL,

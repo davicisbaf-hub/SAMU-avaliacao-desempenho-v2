@@ -16,6 +16,7 @@ export async function listar(req: Request, res: Response) {
         avaliado.nome AS avaliado_nome,
         avaliado.funcao AS avaliado_funcao,
         avaliado.funcao,
+        a.modalidade,
         a.tipo_avaliacao,
         a.resultado,
         a.observacoes_gerais,
@@ -36,11 +37,13 @@ export async function listar(req: Request, res: Response) {
   }
 }
 
+
 export async function criar(req: Request, res: Response) {
   try {
     const {
       avaliadorId,
       avaliadoId,
+      modalidade,
       tipoAvaliacao,
       resultado,
       observacoesGerais,
@@ -48,32 +51,59 @@ export async function criar(req: Request, res: Response) {
       planoAcao,
     } = req.body;
 
-    const avaliacaoHoje = await pool.query(
-      `
-      SELECT id FROM avaliacoes 
-      WHERE avaliado_id = $1 
-      AND tipo_avaliacao = $2 
-      AND avaliador_id = $3
-      AND DATE(criado_em AT TIME ZONE 'America/Sao_Paulo') = DATE(NOW() AT TIME ZONE 'America/Sao_Paulo')
-      LIMIT 1
-      `,
-      [avaliadoId, tipoAvaliacao, avaliadorId]
-    );
-
-    if (avaliacaoHoje.rows.length > 0) {
-      return res.status(409).json({
-        erro: "Você já preencheu esta ficha hoje. Tente novamente amanhã.",
-      });
+    if (!modalidade) {
+      return res.status(400).json({ erro: "Campo 'modalidade' é obrigatório para verificar a frequência da avaliação." });
     }
 
+    // 1) Busca a frequência configurada usando MODALIDADE (não tipoAvaliacao)
+    const freqResult = await pool.query(
+      `
+      SELECT dia, semana, mes, ano
+      FROM frequencia_avaliacao
+      WHERE tipo_avaliacao = $1 AND ativo = TRUE
+      LIMIT 1
+      `,
+      [modalidade]
+    );
+
+    const freq = freqResult.rows[0] ?? { dia: 0, semana: 0, mes: 0, ano: 0 };
+    const semRestricao = freq.dia === 0 && freq.semana === 0 && freq.mes === 0 && freq.ano === 0;
+
+    // 2) Só checa bloqueio se houver alguma frequência configurada
+    if (!semRestricao) {
+      const bloqueio = await pool.query(
+        `
+        SELECT id, criado_em,
+          (criado_em + make_interval(years => $4, months => $5, weeks => $6, days => $7)) AS libera_em
+          FROM avaliacoes
+          WHERE avaliado_id = $1
+          AND modalidade = $2
+          AND avaliador_id = $3
+          AND (criado_em + make_interval(years => $4, months => $5, weeks => $6, days => $7)) > NOW()
+          ORDER BY criado_em DESC
+          LIMIT 1
+        `,
+        [avaliadoId, modalidade, avaliadorId, freq.ano, freq.mes, freq.semana, freq.dia]
+      );
+
+      if (bloqueio.rows.length > 0) {
+        const liberaEm = new Date(bloqueio.rows[0].libera_em);
+        return res.status(409).json({
+          erro: `Você já avaliou esta ficha recentemente. Próxima avaliação liberada em ${liberaEm.toLocaleDateString("pt-BR")} às ${liberaEm.toLocaleTimeString("pt-BR")}.`,
+          liberaEm,
+        });
+      }
+    }
+
+    // 3) Cria a avaliação normalmente
     const { rows } = await pool.query(
       `
       INSERT INTO avaliacoes
-        (avaliador_id, avaliado_id, tipo_avaliacao, resultado, observacoes_gerais, pontos_melhorar, plano_acao)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+        (avaliador_id, avaliado_id, modalidade, tipo_avaliacao, resultado, observacoes_gerais, pontos_melhorar, plano_acao)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
       `,
-      [avaliadorId, avaliadoId, tipoAvaliacao, resultado, observacoesGerais, pontosMelhorar, planoAcao]
+      [avaliadorId, avaliadoId, modalidade, tipoAvaliacao, resultado, observacoesGerais, pontosMelhorar, planoAcao]
     );
 
     res.status(201).json(rows[0]);

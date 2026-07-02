@@ -114,11 +114,12 @@ export default function FichaAvaliacaoLideradoLideranca() {
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 2,
 				categoria: criterio.categoria,
-				avaliacao: criterio.avaliacao,
 			};
 
 			return acc;
 		}, {} as Record<string, any>);
+
+		const modalidade = criterios[0]?.avaliacao
 
 		try {
 			const response = await authFetch(
@@ -131,6 +132,7 @@ export default function FichaAvaliacaoLideradoLideranca() {
 					body: JSON.stringify({
 						avaliadorId: user?.id,
 						avaliadoId: avaliado?.id,
+						modalidade: modalidade,
 						tipoAvaliacao,
 						resultado,
 
