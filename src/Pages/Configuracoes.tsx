@@ -27,6 +27,15 @@ type TipoAvaliacao = {
   ativo: boolean;
 };
 
+type Frequencia = {
+  id: number;
+  tipo_avaliacao: string;
+  dia: number;
+  semana: number;
+  mes: number;
+  ano: number;
+  ativo: boolean;
+};
 
 export default function ConfiguracaoPage() {
   const [tipos, setTipos] = useState<Tipo[]>([]);
@@ -44,8 +53,60 @@ export default function ConfiguracaoPage() {
   const [indicador, setIndicador] = useState("");
   const [tipoAvaliacao, setAvaliacao] = useState<TipoAvaliacao[]>([]);
 
+  const [frequencias, setFrequencias] = useState<Frequencia[]>([]);
+
   const { user } = useUserSession();
   const { authFetch } = useAuthFetch();
+
+  async function carregarFrequencias() {
+    try {
+      const res = await authFetch("/api/frequencia-avaliacoes");
+      const data = await res.json();
+      setFrequencias(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao carregar frequências:", error);
+      setFrequencias([]);
+    }
+  }
+
+  async function salvarFrequencia(item: Frequencia) {
+    try {
+      await authFetch(`/api/frequencia-avaliacoes/${item.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(item),
+      });
+
+      carregarFrequencias();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao salvar frequência.");
+    }
+  }
+
+  function atualizarFrequencia(
+    id: number,
+    campo: keyof Frequencia,
+    valor: any
+  ) {
+    setFrequencias((prev) =>
+      prev.map((f) =>
+        f.id === id
+          ? {
+              ...f,
+              [campo]: valor,
+            }
+          : f
+      )
+    );
+  }
+
+  useEffect(() => {
+    carregarTipoAvaliacao();
+    carregarFrequencias();
+  }, []);
 
   async function carregarTipoAvaliacao() {
     try {
@@ -196,7 +257,7 @@ export default function ConfiguracaoPage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
         <div className="p-8 overflow-y-auto custom-scrollbar">
-          <div className="rounded-xl border p-6 space-y-6">
+          <div className="rounded-xl border p-6 space-y-6 ">
             {/* HEADER */}
             <div>
               <h1 className="text-2xl font-bold">Configuração das Fichas</h1>
@@ -332,8 +393,94 @@ export default function ConfiguracaoPage() {
               </div>
             )}
           </div>
+          <div className="rounded-lg border p-4">
+            <h2 className="font-semibold text-lg mb-4">
+              Frequência das Avaliações
+            </h2>
+
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b bg-gray-100">
+                  <th className="p-2 text-left">Ficha</th>
+                  <th className="p-2">Dias</th>
+                  <th className="p-2">Semanas</th>
+                  <th className="p-2">Meses</th>
+                  <th className="p-2">Anos</th>
+                  <th className="p-2">Ação</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {frequencias.map((item) => (
+                  <tr key={item.id} className="border-b">
+                    <td className="p-2">{item.tipo_avaliacao}</td>
+
+                    <td className="p-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.dia}
+                        onChange={(e) =>
+                          atualizarFrequencia(item.id, "dia", Number(e.target.value))
+                        }
+                        className="w-16 border rounded px-2 py-1"
+                      />
+                    </td>
+
+                    <td className="p-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.semana}
+                        onChange={(e) =>
+                          atualizarFrequencia(item.id, "semana", Number(e.target.value))
+                        }
+                        className="w-16 border rounded px-2 py-1"
+                      />
+                    </td>
+
+                    <td className="p-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.mes}
+                        onChange={(e) =>
+                          atualizarFrequencia(item.id, "mes", Number(e.target.value))
+                        }
+                        className="w-16 border rounded px-2 py-1"
+                      />
+                    </td>
+
+                    <td className="p-2">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.ano}
+                        onChange={(e) =>
+                          atualizarFrequencia(item.id, "ano", Number(e.target.value))
+                        }
+                        className="w-16 border rounded px-2 py-1"
+                      />
+                    </td>
+
+                    <td className="p-2">
+                      <button
+                        onClick={() => salvarFrequencia(item)}
+                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      >
+                        Salvar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+        
       </div>
+
+      
 
       {/* MODAL */}
       {modalAberto && (

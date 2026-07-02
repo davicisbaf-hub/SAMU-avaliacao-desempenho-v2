@@ -112,3 +112,55 @@ export async function criar(req: Request, res: Response) {
     res.status(500).json({ erro: error.message });
   }
 }
+
+export async function frequenciaAvaliacoes(req: Request, res: Response) {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        id,
+        tipo_avaliacao,
+        dia,
+        semana,
+        mes,
+        ano,
+        ativo
+      FROM frequencia_avaliacao
+      ORDER BY tipo_avaliacao;
+    `);
+
+    res.json(rows);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ erro: error.message });
+  }
+}
+export async function definirFrequencia(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { dia, semana, mes, ano, ativo } = req.body;
+
+    const { rows } = await pool.query(
+      `
+      UPDATE frequencia_avaliacao
+      SET
+        dia = $1,
+        semana = $2,
+        mes = $3,
+        ano = $4,
+        ativo = $5
+      WHERE id = $6
+      RETURNING *;
+      `,
+      [dia, semana, mes, ano, ativo, id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ erro: "Frequência não encontrada." });
+    }
+
+    res.json(rows[0]);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ erro: error.message });
+  }
+}
