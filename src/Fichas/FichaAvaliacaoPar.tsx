@@ -99,6 +99,16 @@ export default function FichaAvaliacaoPar() {
 		documentTitle: "Ficha-Avaliacao",
 	});
 
+
+	function limparFormulario() {
+		setAvaliadoId("");
+		setNotas({});
+		setObservacoes("");
+		setPontosMelhorar("");
+		setPlanoAcao("");
+		setTentouEnviar(false);
+  	}
+
 	const enviarAvaliacao = async () => {
 		setTentouEnviar(true);
 
@@ -125,6 +135,7 @@ export default function FichaAvaliacaoPar() {
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 1,
 				categoria: criterio.categoria,
+				avaliacao: criterio.avaliacao,
 			};
 
 			return acc;
@@ -159,6 +170,7 @@ export default function FichaAvaliacaoPar() {
 		if (res.ok) {
 			alert("Avaliação enviada com sucesso!");
 		}
+		limparFormulario();
 	}
 
 	useEffect(() => {

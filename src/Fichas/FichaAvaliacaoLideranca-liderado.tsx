@@ -113,6 +113,7 @@ export default function FichaAvaliacaoLideradoLiderado() {
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 2,
 				categoria: criterio.categoria,
+				avaliacao: criterio.avaliacao,
 			};
 
 			return acc;

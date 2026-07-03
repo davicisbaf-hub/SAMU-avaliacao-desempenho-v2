@@ -10,6 +10,7 @@ import { ptBR } from 'date-fns/locale';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useAuthFetch } from "../hooks/useAuthFetch";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 type Avaliacao = {
   id: number;
@@ -79,6 +80,8 @@ export default function PlanoDesenvolvimento() {
   const [buscaTexto, setBuscaTexto] = useState('');
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
   const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
+
+  const [filtroTipoFichaModal, setFiltroTipoFichaModal] = useState<string>('todos');
 
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [dataFim, setDataFim] = useState<Date | null>(null);
@@ -159,6 +162,7 @@ export default function PlanoDesenvolvimento() {
       funcao: string;
       fichas: FichaProcessada[];
       porTipo: Record<string, FichaProcessada[]>;
+      porTipoFicha: Record<string, FichaProcessada[]>;
     }> = {};
 
     Object.entries(grupos).forEach(([chave, lista]) => {
@@ -166,11 +170,6 @@ export default function PlanoDesenvolvimento() {
         (a, b) => new Date(a.criado_em).getTime() - new Date(b.criado_em).getTime()
       );
 
-      // CORREÇÃO: em vez de guardar um array de médias por ficha e tirar a média
-      // desse array (média das médias), acumulamos soma(nota*peso) e soma(peso)
-      // de TODOS os critérios de TODAS as fichas já processadas. Assim a evolução
-      // é uma média ponderada real pelo volume de critérios avaliados, e não
-      // uma média simples entre os resultados de cada ficha.
       const historicoPorTipoCategoria: Record<string, Record<string, { somaNotaPeso: number; somaPeso: number }>> = {};
       const fichas: FichaProcessada[] = [];
 
@@ -234,12 +233,23 @@ export default function PlanoDesenvolvimento() {
       }
 
       const porTipo: Record<string, FichaProcessada[]> = {};
+      const porTipoFicha: Record<string, FichaProcessada[]> = {};
+      
       fichas.forEach((f) => {
         if (!porTipo[f.tipoAvaliacao]) porTipo[f.tipoAvaliacao] = [];
         porTipo[f.tipoAvaliacao].push(f);
+        
+        if (!porTipoFicha[f.tipoFicha]) porTipoFicha[f.tipoFicha] = [];
+        porTipoFicha[f.tipoFicha].push(f);
       });
 
-      resultado[chave] = { nome: ordenada[0].avaliado_nome, funcao: ordenada[0].avaliado_funcao, fichas, porTipo };
+      resultado[chave] = { 
+        nome: ordenada[0].avaliado_nome, 
+        funcao: ordenada[0].avaliado_funcao, 
+        fichas, 
+        porTipo,
+        porTipoFicha
+      };
     });
 
     return resultado;
@@ -268,10 +278,6 @@ export default function PlanoDesenvolvimento() {
     return linhas;
   };
 
-  // NOVO: evolução consolidada — soma nota*peso de TODOS os critérios de TODAS as
-  // fichas informadas (por categoria) e divide pela soma total de pesos.
-  // Isso é diferente de "média das médias" das fichas: cada critério individual
-  // pesa igual no resultado final, não cada ficha.
   const calcularEvolucaoConsolidada = (fichas: FichaProcessada[]): EvolucaoConsolidadaItem[] => {
     const agrupado: Record<string, { somaNotaPeso: number; somaPeso: number }> = {};
 
@@ -344,7 +350,10 @@ export default function PlanoDesenvolvimento() {
     : null;
   const idxFichaModal = fichaModal ? fichasDoTipoModal.findIndex((f) => f.id === fichaModal.id) : -1;
 
-  const fecharModal = () => setModalFicha(null);
+  const fecharModal = () => {
+    setModalFicha(null);
+    setFiltroTipoFichaModal('todos');
+  };
 
   const imprimirFicha = useReactToPrint({
     contentRef: fichaPrintRef,
@@ -361,12 +370,10 @@ export default function PlanoDesenvolvimento() {
     return ultimaFicha ? ultimaFicha.temProblema : false;
   };
 
-  // Aplica os filtros (tipo + período) de forma centralizada, reaproveitado
-  // tanto no modal em tela quanto na versão exportada em PDF.
-  const obterFichasComparativoFiltradas = (prof: { fichas: FichaProcessada[]; porTipo: Record<string, FichaProcessada[]> }) => {
-    let fichasParaComparativo = filtroTipoComparativo === 'todos'
+  const obterFichasComparativoFiltradas = (prof: { fichas: FichaProcessada[]; porTipoFicha: Record<string, FichaProcessada[]> }) => {
+    let fichasParaComparativo = filtroTipoFichaModal === 'todos'
       ? prof.fichas
-      : (prof.porTipo[filtroTipoComparativo] ?? []);
+      : (prof.porTipoFicha[filtroTipoFichaModal] ?? []);
 
     if (dataInicio || dataFim) {
       fichasParaComparativo = fichasParaComparativo.filter(ficha => {
@@ -380,7 +387,41 @@ export default function PlanoDesenvolvimento() {
     return fichasParaComparativo;
   };
 
-  // FUNÇÃO PARA BAIXAR PDF DIRETO (SEM TELA DE IMPRESSÃO)
+  // Função para preparar os dados do gráfico
+  const prepararDadosGrafico = (fichas: FichaProcessada[]) => {
+    if (fichas.length === 0) return { dadosGrafico: [], categorias: [] };
+    
+    const categoriasMap: Record<string, { nome: string; notas: number[] }> = {};
+    
+    fichas.forEach((ficha) => {
+      ficha.categorias.forEach((cat) => {
+        if (!categoriasMap[cat.nome]) {
+          categoriasMap[cat.nome] = { 
+            nome: cat.nome, 
+            notas: []
+          };
+        }
+        categoriasMap[cat.nome].notas.push(cat.mediaPonderada);
+      });
+    });
+
+    const dadosGrafico = fichas.map((ficha, idx) => {
+      const ponto: any = { 
+        nome: `Ficha ${idx + 1}`,
+        data: formatarData(ficha.criado_em),
+        tipo: ficha.tipoFicha
+      };
+      
+      Object.entries(categoriasMap).forEach(([nomeCat]) => {
+        ponto[nomeCat] = categoriasMap[nomeCat].notas[idx] || 0;
+      });
+      
+      return ponto;
+    });
+
+    return { dadosGrafico, categorias: Object.keys(categoriasMap) };
+  };
+
   const baixarPDF = async (elemento: HTMLElement | null, nomeArquivo: string) => {
     if (!elemento) return;
 
@@ -401,11 +442,9 @@ export default function PlanoDesenvolvimento() {
       let position = 0;
       const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // Adiciona a primeira página
       pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
       heightLeft -= pageHeight;
 
-      // Adiciona páginas extras se necessário
       while (heightLeft > 0) {
         position = heightLeft - pdfHeight;
         pdf.addPage();
@@ -420,7 +459,6 @@ export default function PlanoDesenvolvimento() {
     }
   };
 
-  // Funções para baixar os PDFs
   const baixarFichaPDF = () => {
     if (fichaPdfRef.current) {
       const nome = `Ficha-${profModal?.nome}-${fichaModal?.id}`;
@@ -444,7 +482,6 @@ export default function PlanoDesenvolvimento() {
           <h2 className="text-2xl font-bold text-left">Plano de Desenvolvimento Individual (PDI)</h2>
           <p className="mb-4 text-left text-[16px] text-gray-700">Planos de ação baseados nas lacunas identificadas nas avaliações 360° e simulações bp-TEAM. Cada PDI deve ser elaborado conjuntamente com o profissional e acompanhado mensalmente.</p>
 
-          {/* FILTROS */}
           <div className="flex flex-wrap gap-3 mb-6 bg-gray-50 border rounded-lg p-3">
             <div className="flex flex-col">
               <label className="text-xs text-gray-500 mb-1">Função</label>
@@ -515,7 +552,6 @@ export default function PlanoDesenvolvimento() {
             <div className="text-center py-10 text-gray-500">Nenhum profissional encontrado com esses filtros.</div>
           ) : (
             <>
-              {/* COMPARATIVO GERAL */}
               <div className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
                 <h3 className="font-bold text-lg mb-4">Comparativo de Evolução</h3>
                 <div className="border rounded-lg overflow-hidden">
@@ -544,6 +580,7 @@ export default function PlanoDesenvolvimento() {
                               <button
                                 onClick={() => {
                                   setFiltroTipoComparativo('todos');
+                                  setFiltroTipoFichaModal('todos');
                                   setModalFicha({ profKey, fichaId: 'comparativo' });
                                 }}
                                 className="text-xl p-1 hover:bg-gray-100 rounded"
@@ -560,7 +597,6 @@ export default function PlanoDesenvolvimento() {
                 </div>
               </div>
 
-              {/* FICHAS POR PROFISSIONAL → TIPO → FICHAS */}
               {profissionaisFiltrados.map(([profKey, prof]) => (
                 <div key={profKey} className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
                   <h3 className="font-bold text-lg text-left mb-4">{prof.funcao} - {prof.nome}</h3>
@@ -674,10 +710,9 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* MODAL */}
       {modalFicha && profModal && (modoComparativo || fichaModal) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={fecharModal}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
             <div className="border-b p-5 flex items-start justify-between sticky top-0 bg-white z-10">
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">
@@ -792,41 +827,39 @@ export default function PlanoDesenvolvimento() {
                 </>
               )}
 
-              {/* MODAL - bloco comparativo no modo dedicado */}
               {modoComparativo && (() => {
-                const tiposDisponiveis = Object.keys(profModal.porTipo);
+                const tiposFichaDisponiveis = Object.keys(profModal.porTipoFicha);
                 const fichasParaComparativo = obterFichasComparativoFiltradas(profModal);
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
+                
+                // Preparar dados do gráfico com as fichas filtradas
+                const { dadosGrafico, categorias } = prepararDadosGrafico(fichasParaComparativo);
+                
+                const CORES = ['#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'];
 
                 return (
                   <div>
-                    {tiposDisponiveis.length > 1 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        <span className="text-xs text-gray-500 mr-2 self-center">Filtrar por tipo:</span>
-                        <button
-                          onClick={() => setFiltroTipoComparativo('todos')}
-                          className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${filtroTipoComparativo === 'todos'
-                              ? 'bg-gray-800 text-white border-gray-800'
-                              : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-                            }`}
-                        >
-                          Todos
-                        </button>
-                        {tiposDisponiveis.map((tipo) => (
-                          <button
-                            key={tipo}
-                            onClick={() => setFiltroTipoComparativo(tipo)}
-                            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${filtroTipoComparativo === tipo
-                                ? 'bg-gray-800 text-white border-gray-800'
-                                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-                              }`}
-                          >
-                            {tipoLabel(tipo)}
-                          </button>
+                    <div className="flex items-center gap-3 mb-4 bg-gray-50 p-3 rounded-lg border">
+                      <label className="text-sm font-medium text-gray-700">Filtrar por tipo de ficha:</label>
+                      <select
+                        value={filtroTipoFichaModal}
+                        onChange={(e) => setFiltroTipoFichaModal(e.target.value)}
+                        className="border rounded-md px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      >
+                        <option value="todos">Todas as fichas</option>
+                        {tiposFichaDisponiveis.map((tipoFicha) => (
+                          <option key={tipoFicha} value={tipoFicha}>
+                            {tipoFicha}
+                          </option>
                         ))}
-                      </div>
-                    )}
+                      </select>
+                      
+                      <span className="text-sm text-gray-500 ml-auto">
+                        {fichasParaComparativo.length} ficha(s) {filtroTipoFichaModal !== 'todos' && `do tipo ${filtroTipoFichaModal}`}
+                        {(dataInicio || dataFim) && ' no período selecionado'}
+                      </span>
+                    </div>
 
                     {fichasParaComparativo.length === 0 ? (
                       <div className="text-center py-8">
@@ -845,15 +878,56 @@ export default function PlanoDesenvolvimento() {
                       </div>
                     ) : (
                       <>
-                        <div className="text-sm text-gray-500 mb-2">
-                          Mostrando {fichasParaComparativo.length} ficha(s)
-                          {filtroTipoComparativo !== 'todos' && ` do tipo ${tipoLabel(filtroTipoComparativo)}`}
-                          {(dataInicio || dataFim) && ' no período selecionado'}
-                        </div>
+                        {/* GRÁFICO - aparece SOMENTE quando um tipo específico de ficha é selecionado */}
+                        {filtroTipoFichaModal !== 'todos' && fichasParaComparativo.length > 1 && dadosGrafico.length > 0 && categorias.length > 0 && (
+                          <div className="mb-6 p-4 bg-white border rounded-lg">
+                            <h4 className="font-semibold text-sm text-gray-700 mb-4">
+                              📈 Evolução por Categoria - {filtroTipoFichaModal}
+                            </h4>
+                            <div className="h-[300px] w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart
+                                  data={dadosGrafico}
+                                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                                >
+                                  <CartesianGrid strokeDasharray="3 3" />
+                                  <XAxis 
+                                    dataKey="nome" 
+                                    label={{ value: 'Fichas', position: 'insideBottom', offset: -5 }}
+                                  />
+                                  <YAxis 
+                                    domain={[0, 5]} 
+                                    label={{ value: 'Nota', angle: -90, position: 'insideLeft' }}
+                                  />
+                                  <Tooltip 
+                                    formatter={(value: number) => value.toFixed(2)}
+                                    labelFormatter={(label) => {
+                                      const item = dadosGrafico.find(d => d.nome === label);
+                                      return `${label}${item?.data ? ` (${item.data})` : ''}`;
+                                    }}
+                                  />
+                                  <Legend />
+                                  {categorias.map((categoria, index) => (
+                                    <Line
+                                      key={categoria}
+                                      type="monotone"
+                                      dataKey={categoria}
+                                      stroke={CORES[index % CORES.length]}
+                                      strokeWidth={2}
+                                      dot={{ r: 4 }}
+                                      activeDot={{ r: 6 }}
+                                    />
+                                  ))}
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <div className="mt-2 text-xs text-gray-500 text-center">
+                              Mostrando {fichasParaComparativo.length} ficha(s) do tipo {filtroTipoFichaModal}
+                            </div>
+                          </div>
+                        )}
 
-                        {/* Fichas lado a lado — cada coluna mostra o resultado
-                            PRÓPRIO daquela ficha (mediaPonderada), sem misturar
-                            com o resultado de outra ficha. */}
+                        {/* Tabela comparativa */}
                         <div className="border rounded-lg overflow-auto">
                           <table className="w-full text-sm">
                             <thead className="bg-gray-50">
@@ -861,9 +935,6 @@ export default function PlanoDesenvolvimento() {
                                 <th className="p-2 text-center">Categoria</th>
                                 {fichasParaComparativo.map((f, idx) => (
                                   <th key={f.id} className="p-2 min-w-[100px]">
-                                    {filtroTipoComparativo === 'todos' && (
-                                      <div className="text-xs font-normal text-blue-500 mb-0.5">{tipoLabel(f.tipoAvaliacao)}</div>
-                                    )}
                                     <div className="font-semibold">Ficha {idx + 1}</div>
                                     <div className="text-xs font-normal text-gray-500">{f.tipoFicha}</div>
                                     <div className="text-xs font-normal text-gray-500">{formatarData(f.criado_em)}</div>
@@ -905,7 +976,6 @@ export default function PlanoDesenvolvimento() {
         </div>
       )}
 
-      {/* CONTEÚDO PARA IMPRESSÃO DA FICHA (OCULTO) */}
       <div style={{ display: 'none' }}>
         <div ref={fichaPrintRef}>
           {fichaModal && profModal && (
@@ -964,7 +1034,6 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* CONTEÚDO PARA PDF DA FICHA (VISÍVEL APENAS PARA CAPTURA) */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '800px', background: 'white', padding: '30px' }}>
         <div ref={fichaPdfRef}>
           {fichaModal && profModal && (
@@ -1023,7 +1092,6 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* CONTEÚDO PARA PDF DO COMPARATIVO (VISÍVEL APENAS PARA CAPTURA) */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '1000px', background: 'white', padding: '30px' }}>
         <div ref={comparativoPdfRef}>
           {profModal && modoComparativo && (
@@ -1053,7 +1121,6 @@ export default function PlanoDesenvolvimento() {
                       <p style={{ textAlign: 'center', color: '#666' }}>Nenhuma ficha encontrada com os filtros aplicados.</p>
                     ) : (
                       <>
-                        {/* Fichas lado a lado — cada coluna com seu próprio resultado */}
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                           <thead>
                             <tr style={{ backgroundColor: '#f0f0f0' }}>
@@ -1094,7 +1161,6 @@ export default function PlanoDesenvolvimento() {
                           </tbody>
                         </table>
 
-                        {/* Evolução consolidada em bloco separado */}
                         {evolucaoConsolidada.length > 0 && (
                           <div style={{ marginTop: '25px' }}>
                             <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '5px' }}>Evolução Consolidada</h2>
