@@ -2,7 +2,7 @@ import Header from '../components/Header'
 import Nav from '../components/Nav'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Eye, Download } from "lucide-react";
+import { Eye, Download, Trash } from "lucide-react";
 import { useUserSession } from "../contexts/UserSession";
 import { useReactToPrint } from "react-to-print";
 

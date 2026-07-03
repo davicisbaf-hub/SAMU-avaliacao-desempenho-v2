@@ -13,7 +13,7 @@ import { autenticar } from "./middleware/auth.js";
 
 // swaggerUi
 
-// import swaggerUi from "swagger-ui-express";
+import swaggerUi from "swagger-ui-express";
 import { readFileSync } from "fs";
 import { parse } from "yaml";
 import { fileURLToPath } from "url";
@@ -38,10 +38,10 @@ app.use(cors({
   ],
 }));
 
-// const swaggerDoc = parse(
-//  readFileSync(join(__dirname, "swagger.yaml"), "utf-8")
-//);
-// app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+const swaggerDoc = parse(
+  readFileSync(join(__dirname, "swagger.yaml"), "utf-8")
+);
+ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 
 app.use("/", authRoutes);

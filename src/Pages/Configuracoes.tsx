@@ -29,11 +29,13 @@ type TipoAvaliacao = {
 
 type Frequencia = {
   id: number;
-  tipo_avaliacao: string;
-  dia: number;
-  semana: number;
-  mes: number;
-  ano: number;
+  nivel: string;
+  dias_minimos: number;
+  dias_maximos: number;
+  dias: number;
+  semanas: number;
+  meses: number;
+  anos: number;
   ativo: boolean;
 };
 
@@ -54,6 +56,8 @@ export default function ConfiguracaoPage() {
   const [tipoAvaliacao, setAvaliacao] = useState<TipoAvaliacao[]>([]);
 
   const [frequencias, setFrequencias] = useState<Frequencia[]>([]);
+  const [frequenciaEditando, setFrequenciaEditando] = useState<Frequencia | null>(null);
+  const [salvando, setSalvando] = useState(false);
 
   const { user } = useUserSession();
   const { authFetch } = useAuthFetch();
@@ -70,37 +74,53 @@ export default function ConfiguracaoPage() {
   }
 
   async function salvarFrequencia(item: Frequencia) {
+    if (salvando) return;
+    setSalvando(true);
+
     try {
-      await authFetch(`/api/frequencia-avaliacoes/${item.id}`, {
+      console.log("Salvando frequência ID:", item.id);
+      console.log("Dados:", item);
+
+      const response = await authFetch(`/api/frequencia-avaliacoes/${item.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(item),
+        body: JSON.stringify({
+          nivel: item.nivel,
+          dias: item.dias,
+          semanas: item.semanas,
+          meses: item.meses,
+          anos: item.anos,
+          dias_minimos: item.dias_minimos,
+          dias_maximos: item.dias_maximos,
+          ativo: item.ativo,
+        }),
       });
 
-      carregarFrequencias();
-    } catch (error) {
-      console.error(error);
-      alert("Erro ao salvar frequência.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.erro || "Erro ao salvar");
+      }
+
+      await carregarFrequencias();
+      setFrequenciaEditando(null);
+      alert("Frequência salva com sucesso!");
+    } catch (error: any) {
+      console.error("Erro ao salvar:", error);
+      alert(error.message || "Erro ao salvar frequência.");
+    } finally {
+      setSalvando(false);
     }
   }
 
-  function atualizarFrequencia(
-    id: number,
-    campo: keyof Frequencia,
-    valor: any
-  ) {
-    setFrequencias((prev) =>
-      prev.map((f) =>
-        f.id === id
-          ? {
-              ...f,
-              [campo]: valor,
-            }
-          : f
-      )
-    );
+  function editarFrequencia(item: Frequencia) {
+    setFrequenciaEditando({ ...item });
+  }
+
+  function cancelarEdicaoFrequencia() {
+    setFrequenciaEditando(null);
+    carregarFrequencias();
   }
 
   useEffect(() => {
@@ -123,7 +143,6 @@ export default function ConfiguracaoPage() {
   useEffect(() => {
     carregarTipoAvaliacao();
   }, []);
-
 
   function toggleSelecionado(id: number) {
     setSelecionados((prev) =>
@@ -154,8 +173,6 @@ export default function ConfiguracaoPage() {
   }
 
   async function salvar() {
-    
-
     const url = editandoId ? `/api/criterios-avaliacao/${editandoId}` : "/api/criterios-avaliacao";
     const method = editandoId ? "PUT" : "POST";
 
@@ -393,15 +410,20 @@ export default function ConfiguracaoPage() {
               </div>
             )}
           </div>
-          <div className="rounded-lg border p-4">
+
+          {/* FREQUÊNCIA DAS AVALIAÇÕES */}
+          <div className="rounded-lg border p-4 mt-6">
             <h2 className="font-semibold text-lg mb-4">
-              Frequência das Avaliações
+              Frequência das Avaliações por Nível
             </h2>
 
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-gray-100">
-                  <th className="p-2 text-left">Ficha</th>
+                  <th className="p-2">ID</th>
+                  <th className="p-2">Nível</th>
+                  <th className="p-2">Dias Mínimos</th>
+                  <th className="p-2">Dias Máximos</th>
                   <th className="p-2">Dias</th>
                   <th className="p-2">Semanas</th>
                   <th className="p-2">Meses</th>
@@ -413,74 +435,140 @@ export default function ConfiguracaoPage() {
               <tbody>
                 {frequencias.map((item) => (
                   <tr key={item.id} className="border-b">
-                    <td className="p-2">{item.tipo_avaliacao}</td>
-
-                    <td className="p-2">
-                      <input
-                        type="number"
-                        min={0}
-                        value={item.dia}
-                        onChange={(e) =>
-                          atualizarFrequencia(item.id, "dia", Number(e.target.value))
-                        }
-                        className="w-16 border rounded px-2 py-1"
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <input
-                        type="number"
-                        min={0}
-                        value={item.semana}
-                        onChange={(e) =>
-                          atualizarFrequencia(item.id, "semana", Number(e.target.value))
-                        }
-                        className="w-16 border rounded px-2 py-1"
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <input
-                        type="number"
-                        min={0}
-                        value={item.mes}
-                        onChange={(e) =>
-                          atualizarFrequencia(item.id, "mes", Number(e.target.value))
-                        }
-                        className="w-16 border rounded px-2 py-1"
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <input
-                        type="number"
-                        min={0}
-                        value={item.ano}
-                        onChange={(e) =>
-                          atualizarFrequencia(item.id, "ano", Number(e.target.value))
-                        }
-                        className="w-16 border rounded px-2 py-1"
-                      />
-                    </td>
-
-                    <td className="p-2">
-                      <button
-                        onClick={() => salvarFrequencia(item)}
-                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                      >
-                        Salvar
-                      </button>
-                    </td>
+                    {frequenciaEditando?.id === item.id ? (
+                      // Modo edição
+                      <>
+                        <td className="p-2 text-center">{item.id}</td>
+                        <td className="p-2 text-center">
+                          <input
+                            type="text"
+                            value={frequenciaEditando.nivel}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              nivel: e.target.value
+                            })}
+                            className="w-32 border rounded px-2 py-1"
+                            placeholder="Nome do nível"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="number"
+                            min={0}
+                            value={frequenciaEditando.dias_minimos}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              dias_minimos: Number(e.target.value)
+                            })}
+                            className="w-16 border rounded px-2 py-1"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="number"
+                            min={0}
+                            value={frequenciaEditando.dias_maximos}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              dias_maximos: Number(e.target.value)
+                            })}
+                            className="w-16 border rounded px-2 py-1"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="number"
+                            min={0}
+                            value={frequenciaEditando.dias}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              dias: Number(e.target.value)
+                            })}
+                            className="w-16 border rounded px-2 py-1"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="number"
+                            min={0}
+                            value={frequenciaEditando.semanas}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              semanas: Number(e.target.value)
+                            })}
+                            className="w-16 border rounded px-2 py-1"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="number"
+                            min={0}
+                            value={frequenciaEditando.meses}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              meses: Number(e.target.value)
+                            })}
+                            className="w-16 border rounded px-2 py-1"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <input
+                            type="number"
+                            min={0}
+                            value={frequenciaEditando.anos}
+                            onChange={(e) => setFrequenciaEditando({
+                              ...frequenciaEditando,
+                              anos: Number(e.target.value)
+                            })}
+                            className="w-16 border rounded px-2 py-1"
+                          />
+                        </td>
+                        <td className="p-2">
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => salvarFrequencia(frequenciaEditando)}
+                              disabled={salvando}
+                              className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 text-xs disabled:opacity-50"
+                            >
+                              {salvando ? 'Salvando...' : 'Salvar'}
+                            </button>
+                            <button
+                              onClick={cancelarEdicaoFrequencia}
+                              className="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400 text-xs"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    ) : (
+                      // Modo visualização
+                      <>
+                        <td className="p-2 text-center">{item.id}</td>
+                        <td className="p-2 font-medium ">{item.nivel}</td>
+                        <td className="p-2 text-center">{item.dias_minimos}</td>
+                        <td className="p-2 text-center">{item.dias_maximos}</td>
+                        <td className="p-2 text-center">{item.dias}</td>
+                        <td className="p-2 text-center">{item.semanas}</td>
+                        <td className="p-2 text-center">{item.meses}</td>
+                        <td className="p-2 text-center">{item.anos}</td>
+                        <td className="p-2">
+                          <button
+                            onClick={() => editarFrequencia(item)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs"
+                          >
+                            Editar
+                          </button>
+                        </td>
+                      </>
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
-        
       </div>
-
-      
 
       {/* MODAL */}
       {modalAberto && (
