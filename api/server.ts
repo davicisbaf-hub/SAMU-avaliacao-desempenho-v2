@@ -46,7 +46,7 @@ app.use(cors({
 
 app.use("/", authRoutes);
 
-app.use(autenticar);
+// app.use(autenticar);
 app.use("/", usuariosRoutes);
 app.use("/", avaliacoesRoutes);
 app.use("/", criteriosRoutes);

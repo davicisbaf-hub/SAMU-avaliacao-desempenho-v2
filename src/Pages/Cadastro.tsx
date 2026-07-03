@@ -37,6 +37,26 @@ type Ficha = {
   created_at: string;
 };
 
+type InfoUsuario = {
+  usuarioId: number;
+  nome: string;
+  nivel: string;
+  dias_desde_criacao: number;
+  frequencia: {
+    id: number;
+    nivel: string;
+    dias_minimos: number;
+    dias_maximos: number;
+    dias: number;
+    semanas: number;
+    meses: number;
+    anos: number;
+    ativo: boolean;
+  } | null;
+  ultima_avaliacao?: Date;
+  proxima_liberacao?: Date;
+  pode_avaliar?: boolean;
+};
 
 export default function CadastroPage() {
     const { user } = useUserSession();
@@ -55,6 +75,9 @@ export default function CadastroPage() {
     const [modalAberto, setModalAberto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
     const [busca, setBusca] = useState("");
+    const [modalInfoAberto, setModalInfoAberto] = useState(false);
+    const [infoUsuario, setInfoUsuario] = useState<InfoUsuario | null>(null);
+    const [carregandoInfo, setCarregandoInfo] = useState(false);
 
     const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases"; 
     
@@ -86,8 +109,6 @@ export default function CadastroPage() {
 
         async function carregarUsuarios() {
         try {
-            
-
             const res = await authFetch("/api/usuarios");
             const data = await res.json();
 
@@ -100,20 +121,18 @@ export default function CadastroPage() {
 
     useEffect(() => {
         async function carregarBases() {
-            const res = await authFetch("/api/bases"); // sua rota backend
+            const res = await authFetch("/api/bases");
             const data = await res.json();
 
             setBases(data);
-            setBaseSelecionada(data[0]); // seleciona a primeira automaticamente
+            setBaseSelecionada(data[0]);
         }
         carregarBases();
     }, []);
 
-
     const cadastrarUsuario = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            
             const response = await authFetch(
                 "/api/usuarios",
                 {
@@ -133,7 +152,6 @@ export default function CadastroPage() {
                 }
             );
 
-
             if (!response.ok) {
                 return;
             }
@@ -147,16 +165,17 @@ export default function CadastroPage() {
             setPerfil("");
             setBase("");
             setPar([]);
+            
+            carregarUsuarios();
         } catch (error) {
             console.error(error);
             alert("Erro ao cadastrar usuário");
         }
     };
 
-    
-      const [fichas, setFichas] = useState<Ficha[]>([]);
-    
-      const carregar = async (url: string, setter: Function) => {
+    const [fichas, setFichas] = useState<Ficha[]>([]);
+  
+    const carregar = async (url: string, setter: Function) => {
         try {
           const res = await authFetch(url);
           const data = await res.json();
@@ -164,17 +183,16 @@ export default function CadastroPage() {
         } catch (err) {
           console.error(err);
         }
-      };
-    
-      useEffect(() => {
-        carregar("/api/fichas", setFichas);
-      }, []);
+    };
 
-      async function removerUsuario(id: number) {
+    useEffect(() => {
+        carregar("/api/fichas", setFichas);
+    }, []);
+
+    async function removerUsuario(id: number) {
         if (!confirm("Deseja inativar este usuário?")) {
             return;
         }
-        
 
         await authFetch(
             `/api/usuarios/${id}/inativar`,
@@ -185,6 +203,7 @@ export default function CadastroPage() {
 
         carregarUsuarios();
     }
+
     function editarUsuario(usuario: any) {
         setUsuarioEditando(usuario);
         setNome(usuario.nome);
@@ -197,6 +216,24 @@ export default function CadastroPage() {
         setModalAberto(true);
     }
 
+    // NOVA FUNÇÃO: Buscar informações do usuário
+    async function verInfoUsuario(usuarioId: number) {
+        setCarregandoInfo(true);
+        setModalInfoAberto(true);
+        setInfoUsuario(null);
+        
+        try {
+            const res = await authFetch(`/api/avaliacoes/info?usuarioId=${usuarioId}`);
+            const data = await res.json();
+            setInfoUsuario(data);
+        } catch (error) {
+            console.error("Erro ao buscar informações do usuário:", error);
+            alert("Erro ao carregar informações do usuário");
+        } finally {
+            setCarregandoInfo(false);
+        }
+    }
+
     return (
         <div>
             <div className="flex h-screen w-screen bg-white text-black">
@@ -207,7 +244,6 @@ export default function CadastroPage() {
 
                     {/* conteudo */}
                     <div className='custom-scrollbar p-[32px] overflow-y-auto'>
-
 
                         <div className="space-y-6">
 
@@ -271,6 +307,7 @@ export default function CadastroPage() {
                                     </button>
                                     ))}
                             </div>
+
                             {/* Formulário */}
                             <div className="bg-card border border-border rounded-xl overflow-visible">
 
@@ -413,7 +450,6 @@ export default function CadastroPage() {
                                     className="border rounded-lg px-3 py-1.5 text-sm w-56"
                                     />
                                 </div>
-                                
 
                                 <div className="divide-y divide-border">
 
@@ -423,7 +459,7 @@ export default function CadastroPage() {
                                                 <p className="text-sm font-semibold">{user.nome}</p>
                                                 
                                                 <p className="text-xs [text-#555f69]">
-                                                    Matrícula: {user.matricula}
+                                                    Matrícula: {user.matricula || '-'}
                                                 </p>
                                                 <p className="text-xs [text-#555f69]">
                                                     Função: {user.funcao}
@@ -434,6 +470,13 @@ export default function CadastroPage() {
                                             </div>
 
                                             <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => verInfoUsuario(user.id)}
+                                                    className="text-sm px-2 py-1 border rounded bg-blue-50 hover:bg-blue-100 text-blue-700"
+                                                    title="Ver informações de frequência"
+                                                >
+                                                    !
+                                                </button>
                                                 <button
                                                     onClick={() => editarUsuario(user)}
                                                     className="text-sm px-2 py-1 border rounded"
@@ -453,10 +496,11 @@ export default function CadastroPage() {
                             </div>
                         </div>
 
-
                     </div>
                 </div>
             </div>
+
+            {/* MODAL DE EDIÇÃO */}
             {modalAberto && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-xl w-full max-w-xl p-6">
@@ -528,10 +572,10 @@ export default function CadastroPage() {
                     <label className="text-xs font-semibold">Par</label>
                     
                     <MultiSelectPar
-                            usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
-                            value={parEdicao}
-                            onChange={setParEdicao}
-                            dropUp
+                        usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
+                        value={parEdicao}
+                        onChange={setParEdicao}
+                        dropUp
                     />
                     </div>
                     
@@ -552,7 +596,108 @@ export default function CadastroPage() {
                     </div>
                     </div>
                 </div>
-                )}
+            )}
+
+            {/* MODAL DE INFORMAÇÕES DO USUÁRIO */}
+            {modalInfoAberto && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">
+                                Informações do Profissional
+                            </h2>
+                            <button
+                                onClick={() => setModalInfoAberto(false)}
+                                className="text-gray-500 hover:text-gray-700 text-xl"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        {carregandoInfo ? (
+                            <div className="text-center py-8">
+                                <p className="text-gray-500">Carregando informações...</p>
+                            </div>
+                        ) : infoUsuario ? (
+                            <div className="space-y-4">
+                                {/* Nível */}
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className='text-center w-full'>
+                                            <p className="text-sm text-gray-500">Nível de Experiência</p>
+                                            <p className="text-lg font-semibold">{infoUsuario.nome} - {infoUsuario.nivel}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-2">
+                                        Dias desde o cadastro: <strong>{infoUsuario.dias_desde_criacao} dias</strong>
+                                    </p>
+                                </div>
+
+                                {/* Frequência configurada */}
+                                {infoUsuario.frequencia && (
+                                    <div className="bg-blue-50 rounded-lg p-4">
+                                        <p className="text-sm font-semibold text-blue-800 mb-2">Configuração de Frequência</p>
+                                        <div className="grid grid-cols-4 gap-2 text-center">
+                                            <div className="bg-white rounded p-2">
+                                                <p className="text-xs text-gray-500">Dias</p>
+                                                <p className="font-bold">{infoUsuario.frequencia.dias}</p>
+                                            </div>
+                                            <div className="bg-white rounded p-2">
+                                                <p className="text-xs text-gray-500">Semanas</p>
+                                                <p className="font-bold">{infoUsuario.frequencia.semanas}</p>
+                                            </div>
+                                            <div className="bg-white rounded p-2">
+                                                <p className="text-xs text-gray-500">Meses</p>
+                                                <p className="font-bold">{infoUsuario.frequencia.meses}</p>
+                                            </div>
+                                            <div className="bg-white rounded p-2">
+                                                <p className="text-xs text-gray-500">Anos</p>
+                                                <p className="font-bold">{infoUsuario.frequencia.anos}</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Intervalo mínimo: {infoUsuario.frequencia.dias_minimos} - {infoUsuario.frequencia.dias_maximos} dias
+                                            {!infoUsuario.frequencia.ativo && ' (Inativo)'}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Status da última avaliação */}
+                                {infoUsuario.ultima_avaliacao && (
+                                    <div className={`rounded-lg p-4 ${infoUsuario.pode_avaliar ? 'bg-green-50' : 'bg-yellow-50'}`}>
+                                        <p className="text-sm font-semibold mb-1">Status da Avaliação</p>
+                                        <p className="text-sm">
+                                            Última avaliação: {new Date(infoUsuario.ultima_avaliacao).toLocaleDateString('pt-BR')}
+                                        </p>
+                                        {infoUsuario.proxima_liberacao && (
+                                            <p className="text-sm">
+                                                Próxima liberação: {new Date(infoUsuario.proxima_liberacao).toLocaleDateString('pt-BR')}
+                                            </p>
+                                        )}
+                                        <p className="text-sm font-semibold mt-2">
+                                            {infoUsuario.pode_avaliar ? '✅ Pode ser avaliado' : '⏳ Aguardando liberação'}
+                                        </p>
+                                    </div>
+                                )}
+
+                            </div>
+                        ) : (
+                            <div className="text-center py-8">
+                                <p className="text-gray-500">Erro ao carregar informações</p>
+                            </div>
+                        )}
+
+                        <div className="flex justify-end mt-6">
+                            <button
+                                onClick={() => setModalInfoAberto(false)}
+                                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                            >
+                                Fechar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
