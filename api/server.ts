@@ -34,6 +34,8 @@ app.use(cors({
     "http://192.168.1.10:5173",
     "http://192.168.1.10:8766",
     "http://192.168.1.10:8026",
+    "http://localhost:8765",
+    "http://127.0.0.1:8765",
     "https://avaliacao360.cisbaf.org.br",
   ],
 }));
@@ -41,7 +43,7 @@ app.use(cors({
 const swaggerDoc = parse(
   readFileSync(join(__dirname, "swagger.yaml"), "utf-8")
 );
- app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 
 app.use("/", authRoutes);
