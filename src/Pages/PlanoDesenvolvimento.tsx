@@ -472,7 +472,7 @@ export default function PlanoDesenvolvimento() {
               <label className="text-xs text-gray-500 mb-1">Data Início</label>
               <DatePicker
                 selected={dataInicio}
-                onChange={(date) => setDataInicio(date)}
+                onChange={(date: any) => setDataInicio(date)}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="Selecione..."
                 className="border rounded-md px-3 py-2 text-sm bg-white w-[140px]"
@@ -485,7 +485,7 @@ export default function PlanoDesenvolvimento() {
               <label className="text-xs text-gray-500 mb-1">Data Fim</label>
               <DatePicker
                 selected={dataFim}
-                onChange={(date) => setDataFim(date)}
+                onChange={(date: any) => setDataFim(date)}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="Selecione..."
                 className="border rounded-md px-3 py-2 text-sm bg-white w-[140px]"
@@ -798,7 +798,6 @@ export default function PlanoDesenvolvimento() {
                 const fichasParaComparativo = obterFichasComparativoFiltradas(profModal);
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
-                const evolucaoConsolidada = calcularEvolucaoConsolidada(fichasParaComparativo);
 
                 return (
                   <div>
