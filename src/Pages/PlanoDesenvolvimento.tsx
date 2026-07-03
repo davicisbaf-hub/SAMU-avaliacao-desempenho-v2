@@ -10,6 +10,7 @@ import { ptBR } from 'date-fns/locale';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useAuthFetch } from "../hooks/useAuthFetch";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 type Avaliacao = {
   id: number;
@@ -80,7 +81,6 @@ export default function PlanoDesenvolvimento() {
   const [filtroPendencia, setFiltroPendencia] = useState<'todos' | 'com' | 'sem'>('todos');
   const [filtroTipoComparativo, setFiltroTipoComparativo] = useState<string>('todos');
 
-  // NOVO: estado para o filtro de tipo de ficha dentro do modal comparativo
   const [filtroTipoFichaModal, setFiltroTipoFichaModal] = useState<string>('todos');
 
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
@@ -162,7 +162,7 @@ export default function PlanoDesenvolvimento() {
       funcao: string;
       fichas: FichaProcessada[];
       porTipo: Record<string, FichaProcessada[]>;
-      porTipoFicha: Record<string, FichaProcessada[]>; // NOVO: agrupamento por tipo de ficha
+      porTipoFicha: Record<string, FichaProcessada[]>;
     }> = {};
 
     Object.entries(grupos).forEach(([chave, lista]) => {
@@ -236,11 +236,9 @@ export default function PlanoDesenvolvimento() {
       const porTipoFicha: Record<string, FichaProcessada[]> = {};
       
       fichas.forEach((f) => {
-        // Agrupamento por tipo de avaliação (autoavaliacao, lider_liderado, etc)
         if (!porTipo[f.tipoAvaliacao]) porTipo[f.tipoAvaliacao] = [];
         porTipo[f.tipoAvaliacao].push(f);
         
-        // NOVO: Agrupamento por tipo de ficha (Medico, Condutor, etc)
         if (!porTipoFicha[f.tipoFicha]) porTipoFicha[f.tipoFicha] = [];
         porTipoFicha[f.tipoFicha].push(f);
       });
@@ -250,7 +248,7 @@ export default function PlanoDesenvolvimento() {
         funcao: ordenada[0].avaliado_funcao, 
         fichas, 
         porTipo,
-        porTipoFicha // NOVO
+        porTipoFicha
       };
     });
 
@@ -354,7 +352,6 @@ export default function PlanoDesenvolvimento() {
 
   const fecharModal = () => {
     setModalFicha(null);
-    // Resetar o filtro do modal ao fechar
     setFiltroTipoFichaModal('todos');
   };
 
@@ -373,7 +370,6 @@ export default function PlanoDesenvolvimento() {
     return ultimaFicha ? ultimaFicha.temProblema : false;
   };
 
-  // MODIFICADO: filtra por tipo de ficha (tipoFicha)
   const obterFichasComparativoFiltradas = (prof: { fichas: FichaProcessada[]; porTipoFicha: Record<string, FichaProcessada[]> }) => {
     let fichasParaComparativo = filtroTipoFichaModal === 'todos'
       ? prof.fichas
@@ -389,6 +385,41 @@ export default function PlanoDesenvolvimento() {
     }
 
     return fichasParaComparativo;
+  };
+
+  // Função para preparar os dados do gráfico
+  const prepararDadosGrafico = (fichas: FichaProcessada[]) => {
+    if (fichas.length === 0) return { dadosGrafico: [], categorias: [] };
+    
+    const categoriasMap: Record<string, { nome: string; notas: number[] }> = {};
+    
+    fichas.forEach((ficha) => {
+      ficha.categorias.forEach((cat) => {
+        if (!categoriasMap[cat.nome]) {
+          categoriasMap[cat.nome] = { 
+            nome: cat.nome, 
+            notas: []
+          };
+        }
+        categoriasMap[cat.nome].notas.push(cat.mediaPonderada);
+      });
+    });
+
+    const dadosGrafico = fichas.map((ficha, idx) => {
+      const ponto: any = { 
+        nome: `Ficha ${idx + 1}`,
+        data: formatarData(ficha.criado_em),
+        tipo: ficha.tipoFicha
+      };
+      
+      Object.entries(categoriasMap).forEach(([nomeCat]) => {
+        ponto[nomeCat] = categoriasMap[nomeCat].notas[idx] || 0;
+      });
+      
+      return ponto;
+    });
+
+    return { dadosGrafico, categorias: Object.keys(categoriasMap) };
   };
 
   const baixarPDF = async (elemento: HTMLElement | null, nomeArquivo: string) => {
@@ -451,7 +482,6 @@ export default function PlanoDesenvolvimento() {
           <h2 className="text-2xl font-bold text-left">Plano de Desenvolvimento Individual (PDI)</h2>
           <p className="mb-4 text-left text-[16px] text-gray-700">Planos de ação baseados nas lacunas identificadas nas avaliações 360° e simulações bp-TEAM. Cada PDI deve ser elaborado conjuntamente com o profissional e acompanhado mensalmente.</p>
 
-          {/* FILTROS */}
           <div className="flex flex-wrap gap-3 mb-6 bg-gray-50 border rounded-lg p-3">
             <div className="flex flex-col">
               <label className="text-xs text-gray-500 mb-1">Função</label>
@@ -522,7 +552,6 @@ export default function PlanoDesenvolvimento() {
             <div className="text-center py-10 text-gray-500">Nenhum profissional encontrado com esses filtros.</div>
           ) : (
             <>
-              {/* COMPARATIVO GERAL */}
               <div className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
                 <h3 className="font-bold text-lg mb-4">Comparativo de Evolução</h3>
                 <div className="border rounded-lg overflow-hidden">
@@ -551,7 +580,7 @@ export default function PlanoDesenvolvimento() {
                               <button
                                 onClick={() => {
                                   setFiltroTipoComparativo('todos');
-                                  setFiltroTipoFichaModal('todos'); // Resetar filtro do modal
+                                  setFiltroTipoFichaModal('todos');
                                   setModalFicha({ profKey, fichaId: 'comparativo' });
                                 }}
                                 className="text-xl p-1 hover:bg-gray-100 rounded"
@@ -568,7 +597,6 @@ export default function PlanoDesenvolvimento() {
                 </div>
               </div>
 
-              {/* FICHAS POR PROFISSIONAL → TIPO → FICHAS */}
               {profissionaisFiltrados.map(([profKey, prof]) => (
                 <div key={profKey} className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
                   <h3 className="font-bold text-lg text-left mb-4">{prof.funcao} - {prof.nome}</h3>
@@ -682,10 +710,9 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* MODAL */}
       {modalFicha && profModal && (modoComparativo || fichaModal) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={fecharModal}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto custom-scrollbar" onClick={(e) => e.stopPropagation()}>
             <div className="border-b p-5 flex items-start justify-between sticky top-0 bg-white z-10">
               <div>
                 <p className="text-xs uppercase tracking-wide text-gray-400">
@@ -800,17 +827,19 @@ export default function PlanoDesenvolvimento() {
                 </>
               )}
 
-              {/* MODAL - COMPARATIVO COM SELECT DE FILTRO POR TIPO DE FICHA */}
               {modoComparativo && (() => {
-                // Pega os tipos de ficha disponíveis (ex: Médico, Condutor, etc)
                 const tiposFichaDisponiveis = Object.keys(profModal.porTipoFicha);
                 const fichasParaComparativo = obterFichasComparativoFiltradas(profModal);
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
+                
+                // Preparar dados do gráfico com as fichas filtradas
+                const { dadosGrafico, categorias } = prepararDadosGrafico(fichasParaComparativo);
+                
+                const CORES = ['#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'];
 
                 return (
                   <div>
-                    {/* FILTRO POR TIPO DE FICHA - Select estilizado */}
                     <div className="flex items-center gap-3 mb-4 bg-gray-50 p-3 rounded-lg border">
                       <label className="text-sm font-medium text-gray-700">Filtrar por tipo de ficha:</label>
                       <select
@@ -826,7 +855,6 @@ export default function PlanoDesenvolvimento() {
                         ))}
                       </select>
                       
-                      {/* Indicador de quantas fichas estão sendo mostradas */}
                       <span className="text-sm text-gray-500 ml-auto">
                         {fichasParaComparativo.length} ficha(s) {filtroTipoFichaModal !== 'todos' && `do tipo ${filtroTipoFichaModal}`}
                         {(dataInicio || dataFim) && ' no período selecionado'}
@@ -850,6 +878,55 @@ export default function PlanoDesenvolvimento() {
                       </div>
                     ) : (
                       <>
+                        {/* GRÁFICO - aparece SOMENTE quando um tipo específico de ficha é selecionado */}
+                        {filtroTipoFichaModal !== 'todos' && fichasParaComparativo.length > 1 && dadosGrafico.length > 0 && categorias.length > 0 && (
+                          <div className="mb-6 p-4 bg-white border rounded-lg">
+                            <h4 className="font-semibold text-sm text-gray-700 mb-4">
+                              📈 Evolução por Categoria - {filtroTipoFichaModal}
+                            </h4>
+                            <div className="h-[300px] w-full">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <LineChart
+                                  data={dadosGrafico}
+                                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                                >
+                                  <CartesianGrid strokeDasharray="3 3" />
+                                  <XAxis 
+                                    dataKey="nome" 
+                                    label={{ value: 'Fichas', position: 'insideBottom', offset: -5 }}
+                                  />
+                                  <YAxis 
+                                    domain={[0, 5]} 
+                                    label={{ value: 'Nota', angle: -90, position: 'insideLeft' }}
+                                  />
+                                  <Tooltip 
+                                    formatter={(value: number) => value.toFixed(2)}
+                                    labelFormatter={(label) => {
+                                      const item = dadosGrafico.find(d => d.nome === label);
+                                      return `${label}${item?.data ? ` (${item.data})` : ''}`;
+                                    }}
+                                  />
+                                  <Legend />
+                                  {categorias.map((categoria, index) => (
+                                    <Line
+                                      key={categoria}
+                                      type="monotone"
+                                      dataKey={categoria}
+                                      stroke={CORES[index % CORES.length]}
+                                      strokeWidth={2}
+                                      dot={{ r: 4 }}
+                                      activeDot={{ r: 6 }}
+                                    />
+                                  ))}
+                                </LineChart>
+                              </ResponsiveContainer>
+                            </div>
+                            <div className="mt-2 text-xs text-gray-500 text-center">
+                              Mostrando {fichasParaComparativo.length} ficha(s) do tipo {filtroTipoFichaModal}
+                            </div>
+                          </div>
+                        )}
+
                         {/* Tabela comparativa */}
                         <div className="border rounded-lg overflow-auto">
                           <table className="w-full text-sm">
@@ -889,31 +966,6 @@ export default function PlanoDesenvolvimento() {
                           </table>
                         </div>
 
-                        {/* Bloco de evolução consolidada - aparece apenas quando há mais de uma ficha */}
-                        {fichasParaComparativo.length > 1 && (() => {
-                          const evolucaoConsolidada = calcularEvolucaoConsolidada(fichasParaComparativo);
-                          return (
-                            <div className="mt-4 p-4  border border-blue-gray rounded-lg">
-                              <h4 className="font-semibold text-sm text-blue-800 mb-2">Evolução Consolidada</h4>
-                              <p className="text-xs text-blue-600 mb-3">
-                                Média de todas as fichas exibidas, considerando todos os critérios avaliados.
-                              </p>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                                {evolucaoConsolidada.map((item) => (
-                                  <div key={item.categoria} className="bg-white p-3 rounded border">
-                                    <div className="text-xs font-medium text-gray-600">{item.categoria}</div>
-                                    <div className="flex items-center justify-between mt-1">
-                                      <span className="text-lg font-bold">{item.media}</span>
-                                      <span className={`px-2 py-0.5 rounded text-xs font-semibold ${badgeClasse(item.classificacao)}`}>
-                                        {item.classificacao}
-                                      </span>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })()}
                       </>
                     )}
                   </div>
@@ -924,7 +976,6 @@ export default function PlanoDesenvolvimento() {
         </div>
       )}
 
-      {/* CONTEÚDO PARA IMPRESSÃO DA FICHA (OCULTO) */}
       <div style={{ display: 'none' }}>
         <div ref={fichaPrintRef}>
           {fichaModal && profModal && (
@@ -983,7 +1034,6 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* CONTEÚDO PARA PDF DA FICHA (VISÍVEL APENAS PARA CAPTURA) */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '800px', background: 'white', padding: '30px' }}>
         <div ref={fichaPdfRef}>
           {fichaModal && profModal && (
@@ -1042,7 +1092,6 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      {/* CONTEÚDO PARA PDF DO COMPARATIVO (VISÍVEL APENAS PARA CAPTURA) */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '1000px', background: 'white', padding: '30px' }}>
         <div ref={comparativoPdfRef}>
           {profModal && modoComparativo && (
@@ -1072,7 +1121,6 @@ export default function PlanoDesenvolvimento() {
                       <p style={{ textAlign: 'center', color: '#666' }}>Nenhuma ficha encontrada com os filtros aplicados.</p>
                     ) : (
                       <>
-                        {/* Fichas lado a lado — cada coluna com seu próprio resultado */}
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                           <thead>
                             <tr style={{ backgroundColor: '#f0f0f0' }}>
@@ -1113,7 +1161,6 @@ export default function PlanoDesenvolvimento() {
                           </tbody>
                         </table>
 
-                        {/* Evolução consolidada em bloco separado */}
                         {evolucaoConsolidada.length > 0 && (
                           <div style={{ marginTop: '25px' }}>
                             <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '5px' }}>Evolução Consolidada</h2>
