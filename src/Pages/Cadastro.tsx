@@ -662,24 +662,6 @@ export default function CadastroPage() {
                                     </div>
                                 )}
 
-                                {/* Status da última avaliação */}
-                                {infoUsuario.ultima_avaliacao && (
-                                    <div className={`rounded-lg p-4 ${infoUsuario.pode_avaliar ? 'bg-green-50' : 'bg-yellow-50'}`}>
-                                        <p className="text-sm font-semibold mb-1">Status da Avaliação</p>
-                                        <p className="text-sm">
-                                            Última avaliação: {new Date(infoUsuario.ultima_avaliacao).toLocaleDateString('pt-BR')}
-                                        </p>
-                                        {infoUsuario.proxima_liberacao && (
-                                            <p className="text-sm">
-                                                Próxima liberação: {new Date(infoUsuario.proxima_liberacao).toLocaleDateString('pt-BR')}
-                                            </p>
-                                        )}
-                                        <p className="text-sm font-semibold mt-2">
-                                            {infoUsuario.pode_avaliar ? '✅ Pode ser avaliado' : '⏳ Aguardando liberação'}
-                                        </p>
-                                    </div>
-                                )}
-
                             </div>
                         ) : (
                             <div className="text-center py-8">
