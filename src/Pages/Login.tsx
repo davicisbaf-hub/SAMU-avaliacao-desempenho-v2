@@ -6,7 +6,7 @@ import "../App.css";
 
 
 function App() {
-  
+
 
 
   const navigate = useNavigate();
@@ -31,8 +31,8 @@ function App() {
             senha,
           }),
         }
-        
-        
+
+
       );
 
       const data = await response.json();
@@ -43,7 +43,7 @@ function App() {
         return;
       }
 
-      login(data, data.token); 
+      login(data, data.token);
 
       navigate("/");
     } catch (error) {
@@ -51,7 +51,7 @@ function App() {
       alert("Erro ao conectar ao servidor");
     }
   };
-  
+
   return (
     <div className="login w-[100vw] h-[100vh] bg-[#061c31] text-center flex items-center justify-center p-4">
       <div className="w-full max-w-md">
