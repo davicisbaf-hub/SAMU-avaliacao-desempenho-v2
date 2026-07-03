@@ -104,6 +104,7 @@ export default function FichaAvaliacaoTecEnf() {
 				nota: notas[criterio.criterio],
 				peso: criterio.peso ?? 1,
 				categoria: criterio.categoria,
+				avaliacao: criterio.avaliacao,
 			};
 
 			return acc;
