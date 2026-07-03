@@ -181,13 +181,13 @@ export default function ConfiguracaoPage() {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tipo: tipoSelecionado,
           categoria,
-          codigo,
           criterio,
           peso,
           indicador,
+          
           avaliacao: avaliacaoSelecionada,
+          tipo: tipoSelecionado,
         }),
       });
 

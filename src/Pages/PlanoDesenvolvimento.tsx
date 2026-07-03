@@ -896,30 +896,6 @@ export default function PlanoDesenvolvimento() {
                           </table>
                         </div>
 
-                        {/* NOVO: Evolução consolidada em div separada — soma de
-                            nota*peso de TODAS as fichas filtradas, dividido pela
-                            soma total de pesos. Não é média das médias. */}
-                        {evolucaoConsolidada.length > 0 && (
-                          <div className="mt-6 bg-gray-50 border rounded-lg p-4">
-                            <h4 className="font-bold text-sm text-gray-800 mb-1">Evolução Consolidada</h4>
-                            <p className="text-xs text-gray-500 mb-3">
-                              Soma de todas as notas das fichas exibidas acima, dividida pela quantidade total de critérios avaliados por categoria.
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {evolucaoConsolidada.map((item) => (
-                                <div key={item.categoria} className="bg-white border rounded-lg p-3">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-700">{item.categoria}</span>
-                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${badgeClasse(item.classificacao)}`}>
-                                      {item.media} • {item.classificacao}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs text-gray-500 mt-1">{item.orientacao}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
                       </>
                     )}
                   </div>

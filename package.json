@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "api": "npx tsx ./api/server.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fontsource-variable/geist": "^5.2.9",
+    "@mui/material": "^9.2.0",
+    "@mui/x-charts": "^9.8.0",
     "@tailwindcss/vite": "^4.3.0",
     "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",

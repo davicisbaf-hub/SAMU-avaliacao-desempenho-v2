@@ -14,13 +14,16 @@ import {
 
 const router = Router();
 
+// Rotas GET (ordem importa - coloque as mais específicas primeiro)
 router.get("/criterios-avaliacao/avaliacao", carregarTipoAvaliacao);
+router.get("/tipos-avaliacao", listarTipos);
 router.get("/criterios-avaliacao/:tipo/:avaliacao", listarPorTipoEAvaliacao);
 router.get("/criterios-avaliacao-lider/:tipo", listarLider);
 router.get("/criterios-avaliacao-liderado/:tipo", listarLiderado);
 router.get("/criterios-avaliacao-autoavaliacao/:tipo", listarAutoavaliacao);
 router.get("/criterios-avaliacao-par/:tipo", listarPar);
-router.get("/tipos-avaliacao", listarTipos);
+
+// Rotas POST e PUT
 router.post("/criterios-avaliacao", cadastrar);
 router.put("/criterios-avaliacao/:id", atualizar);
 router.put("/criterios-avaliacao/:id/inativar", inativar);
