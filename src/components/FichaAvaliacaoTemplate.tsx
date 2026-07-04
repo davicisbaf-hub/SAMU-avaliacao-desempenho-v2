@@ -142,7 +142,7 @@ export default function FichaAvaliacaoTemplate({
 							</select>
 						</div>
 						<div>
-							<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliador</label>
+							<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do Avaliado</label>
 							<input
 								disabled
 								className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]'
