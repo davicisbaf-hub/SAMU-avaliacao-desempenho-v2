@@ -65,7 +65,7 @@ const faqData = [
       },
       {
         question: 'Minha avaliação é anonima?',
-        answer: 'Sim, caso você tenha avaliado alguem, seu nome ficara em anonimato, exceto caso tenha se autoavaliado'
+        answer: 'Sim, caso você tenha avaliado alguem, seu nome ficara em anonimato, exceto se tenha avaliado a si mesmo'
       },
       {
         question: 'O sistema é seguro?',
