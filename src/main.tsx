@@ -15,7 +15,7 @@ import FichaAvaliacaoLiderancaLiderado from "./Fichas/FichaAvaliacaoLideranca-li
 import FichaAvaliacaoLideradoLideranca from "./Fichas/FichaAvaliacaoLiderado-lideranca.tsx";
 import FichaAvaliacaoPar from "./Fichas/FichaAvaliacaoPar.tsx";
 import PlanoDesenvolvimento from "./Pages/PlanoDesenvolvimento.tsx";
-
+import Help from "./Pages/Help.tsx";
 
 import CadastroPage from "./Pages/Cadastro.tsx";
 
@@ -160,6 +160,15 @@ ReactDOM.createRoot(root!).render(
           element={
             <PrivateRoute>
               <FichaAvaliacaoPar />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/ajuda"
+          element={
+            <PrivateRoute>
+              <Help/>
             </PrivateRoute>
           }
         />
