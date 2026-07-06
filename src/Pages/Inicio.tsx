@@ -155,7 +155,7 @@ export default function Inicio() {
                 {fichas
                   .filter((ficha) => {
                     // nunca exibe essa ficha
-                    if (ficha.nome === "Liderado > Liderança" || ficha.nome === "Liderança > Liderado") {
+                    if (ficha.nome === "Liderado > Liderança" || ficha.nome === "Liderança > Liderado" || ficha.nome === 'BP-TEAM') {
                       return false;
                     }
 

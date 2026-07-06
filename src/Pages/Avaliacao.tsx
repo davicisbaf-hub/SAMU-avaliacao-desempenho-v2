@@ -213,8 +213,8 @@ export default function AvaliacaoPage() {
 						<div className='space-y-6'>
 
 							{/* titulo */}
-							<h1 className='text-2xl font-bold text-foreground'>Autoavaliação & Simulação bp-TEAM</h1>
-							<p className='[text-#555f69] mt-1 text-sm'>O profissional avalia sua própria performance, ou aplique a ferramenta bp-TEAM validada em cenários de simulação realística</p>
+							<h1 className='text-2xl font-bold text-foreground'>Autoavaliação</h1>
+							<p className='[text-#555f69] mt-1 text-sm'>O profissional avalia sua própria performance</p>
 
 							{/* acesso */}
 							<div className='flex items-center gap-3 bg-[#cd0048]/10 border border-[#cd0048]/30 rounded-xl px-4 py-3'>
@@ -230,20 +230,6 @@ export default function AvaliacaoPage() {
 
 							{/* selecao ficha */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3'>
-								<button
-									onClick={() => setTipoAvaliacao("BP-TEAM")}
-									className={`text-left p-4 rounded-xl border-2 transition-all ${tipoAvaliacao === "BP-TEAM"
-											? "border-[#cd0048] bg-[#cd0048]/10 shadow-sm"
-											: "border-[#d2d8de] bg-[#f6f6f6] hover:border-[#cd0048]/40"
-										}`}
-								>
-									<p className='font-semibold text-sm text-foreground'>
-										Simulação bp-TEAM
-									</p>
-									<p className='text-xs [text-#555f69] mt-1'>
-										Avaliação em cenário simulado - Liderança, Trabalho em Equipe, Gerenciamento de Tarefas e NTS
-									</p>
-								</button>
 
 								<button
 									onClick={() => setTipoAvaliacao(`${user?.funcao}`)}
