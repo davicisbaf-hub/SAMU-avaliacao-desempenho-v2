@@ -14,7 +14,7 @@ export default function StatusCardsKPI({ categoriasBom, categoriasAtenção, cat
 
       <div className='rounded-xl border p-4 text-center bg-yellow-50 border-yellow-200'>
         <p className='text-2xl font-bold text-[#f59e0b]'>{categoriasAtenção}</p>
-        <p className='text-xs font-semibold mt-0.5 text-[#f59e0b]'>Entre 3.0 e 4.0</p>
+        <p className='text-xs font-semibold mt-0.5 text-[#f59e0b]'>Entre 3.0 e 3.9</p>
       </div>
 
       <div className='rounded-xl border p-4 text-center bg-red-50 border-red-200'>
