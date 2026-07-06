@@ -252,6 +252,149 @@ export default function InstrucoesPage() {
                 ))}
               </div>
             </div>
+           
+            {/* Vieses Comuns na Avaliação */}
+            <div className="bg-card border border-border rounded-xl p-6 mb-6">
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold text-foreground">
+                  Vieses Comuns na Avaliação
+                </h2>
+
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+                  A avaliação 360º é um instrumento poderoso, mas pode sofrer influência de
+                  vieses inconscientes. Reconhecê-los ajuda a tornar a avaliação mais justa,
+                  objetiva e útil para o desenvolvimento profissional.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+
+                <div className="rounded-lg border-l-4 border-red-500 bg-red-50/60 p-4">
+                  <h3 className="font-semibold text-red-700">
+                    🎯 Efeito Halo
+                  </h3>
+
+                  <p className="text-sm mt-2">
+                    <strong>O que é:</strong> Uma característica positiva ou negativa acaba
+                    influenciando todas as outras notas.
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Exemplo:</strong> "Ele é muito educado, então merece nota 5 em
+                    tudo."
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Como evitar:</strong> Avalie cada competência separadamente.
+                  </p>
+                </div>
+
+                <div className="rounded-lg border-l-4 border-amber-500 bg-amber-50/60 p-4">
+                  <h3 className="font-semibold text-amber-700">
+                    ⚖️ Tendência Central
+                  </h3>
+
+                  <p className="text-sm mt-2">
+                    <strong>O que é:</strong> Colocar nota 3 em quase tudo para evitar
+                    extremos.
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Como evitar:</strong> Utilize toda a escala. Quem supera o
+                    esperado merece 5; quem apresenta lacunas pode receber 1 ou 2.
+                  </p>
+                </div>
+
+                <div className="rounded-lg border-l-4 border-blue-500 bg-blue-50/60 p-4">
+                  <h3 className="font-semibold text-blue-700">
+                    📏 Leniência / Severidade
+                  </h3>
+
+                  <p className="text-sm mt-2">
+                    <strong>O que é:</strong> Dar notas sempre muito altas ou sempre muito
+                    baixas para todos.
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Como evitar:</strong> Pergunte-se se a nota realmente seria
+                    justa para aquela situação.
+                  </p>
+                </div>
+
+                <div className="rounded-lg border-l-4 border-violet-500 bg-violet-50/60 p-4">
+                  <h3 className="font-semibold text-violet-700">
+                    🔎 Viés de Confirmação
+                  </h3>
+
+                  <p className="text-sm mt-2">
+                    <strong>O que é:</strong> Procurar apenas evidências que confirmem uma
+                    opinião já formada.
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Como evitar:</strong> Baseie-se em fatos observados durante todo
+                    o período avaliado.
+                  </p>
+                </div>
+
+                <div className="rounded-lg border-l-4 border-cyan-500 bg-cyan-50/60 p-4">
+                  <h3 className="font-semibold text-cyan-700">
+                    🕒 Viés de Recência
+                  </h3>
+
+                  <p className="text-sm mt-2">
+                    <strong>O que é:</strong> Considerar apenas acontecimentos recentes,
+                    esquecendo os meses anteriores.
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Como evitar:</strong> Reflita sobre todo o período da avaliação.
+                  </p>
+                </div>
+
+                <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-50/60 p-4">
+                  <h3 className="font-semibold text-emerald-700">
+                    👥 Efeito de Grupo
+                  </h3>
+
+                  <p className="text-sm mt-2">
+                    <strong>O que é:</strong> Deixar a opinião do grupo influenciar sua
+                    avaliação.
+                  </p>
+
+                  <p className="text-sm mt-2">
+                    <strong>Como evitar:</strong> Faça sua avaliação individualmente antes
+                    de discutir com outras pessoas.
+                  </p>
+                </div>
+
+              </div>
+
+              <div className="mt-6 rounded-xl border border-[#cd0048]/20 bg-[#cd0048]/5 p-5">
+                <div className="flex gap-3 items-start">
+                  <span className="text-xl">💡</span>
+
+                  <div>
+                    <p className="font-semibold text-[#cd0048]">
+                      Dica prática
+                    </p>
+
+                    <p className="text-sm mt-2 leading-relaxed">
+                      Antes de responder cada pergunta, pense:
+                    </p>
+
+                    <blockquote className="mt-3 border-l-4 border-[#cd0048] pl-4 italic text-sm">
+                      "Qual comportamento ou situação concreta justifica esta nota?"
+                    </blockquote>
+
+                    <p className="text-sm mt-3 text-muted-foreground">
+                      Se você não consegue lembrar de um exemplo específico, vale a pena
+                      refletir antes de responder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Princípio Norteador */}
             <div className="bg-[#cd0048]/5 border border-[#cd0048]/20 rounded-xl p-4 text-sm">

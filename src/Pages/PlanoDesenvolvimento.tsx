@@ -882,7 +882,7 @@ export default function PlanoDesenvolvimento() {
                         {filtroTipoFichaModal !== 'todos' && fichasParaComparativo.length > 1 && dadosGrafico.length > 0 && categorias.length > 0 && (
                           <div className="mb-6 p-4 bg-white border rounded-lg">
                             <h4 className="font-semibold text-sm text-gray-700 mb-4">
-                              📈 Evolução por Categoria - {filtroTipoFichaModal}
+                              Evolução por Categoria - {filtroTipoFichaModal}
                             </h4>
                             <div className="h-[300px] w-full">
                               <ResponsiveContainer width="100%" height="100%">
@@ -921,6 +921,7 @@ export default function PlanoDesenvolvimento() {
                                 </LineChart>
                               </ResponsiveContainer>
                             </div>
+
                             <div className="mt-2 text-xs text-gray-500 text-center">
                               Mostrando {fichasParaComparativo.length} ficha(s) do tipo {filtroTipoFichaModal}
                             </div>
