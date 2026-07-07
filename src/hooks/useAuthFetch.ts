@@ -5,7 +5,15 @@ export function useAuthFetch() {
   const { token, logout } = useUserSession();
   const navigate = useNavigate();
 
-  async function authFetch(input: string, init?: RequestInit): Promise<Response> {
+  async function authFetch(
+    input: string,
+    init?: RequestInit
+  ): Promise<Response> {
+    if (!token) {
+      navigate("/login");
+      throw new Error("Token não disponível");
+    }
+
     const res = await fetch(input, {
       ...init,
       headers: {
@@ -15,9 +23,11 @@ export function useAuthFetch() {
       },
     });
 
+    // Se o token expirou ou é inválido
     if (res.status === 401) {
       logout();
       navigate("/login");
+      throw new Error("Token inválido ou expirado");
     }
 
     return res;

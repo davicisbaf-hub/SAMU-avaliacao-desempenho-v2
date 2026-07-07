@@ -6,14 +6,16 @@ import "../App.css";
 
 
 function App() {
-
-
-
   const navigate = useNavigate();
-  const { login } = useUserSession();
+  const { login, user, isLoading } = useUserSession();
 
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
+
+  if (user && !isLoading) {
+    navigate("/");
+    return null;
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +33,9 @@ function App() {
             cpf,
           }),
         }
-
-
       );
 
       const data = await response.json();
-
 
       if (!response.ok) {
         alert(data.erro);

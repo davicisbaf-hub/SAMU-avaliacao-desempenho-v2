@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import pool from "../pool";
 import validarCpf from "validar-cpf";
-import { error } from "console";
 
 
 export async function listar(req: Request, res: Response) {
@@ -88,5 +87,38 @@ export async function inativar(req: Request, res: Response) {
     res.json(rows[0]);
   } catch (error: any) {
     res.status(500).json({ erro: error.message });
+  }
+}
+
+export async function getMe(req: Request, res: Response) {
+  try {
+  
+    const usuarioId = (req as any).usuario.id;
+
+    const result = await pool.query(
+      "SELECT id, nome, email, funcao, perfil, base, ativo, criado_em, par FROM usuarios WHERE id = $1",
+      [usuarioId]
+    );
+
+    const usuario = result.rows[0];
+
+    if (!usuario) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    res.json({
+      id: usuario.id,
+      nome: usuario.nome,
+      email: usuario.email,
+      funcao: usuario.funcao,
+      perfil: usuario.perfil,
+      base: usuario.base,
+      ativo: usuario.ativo,
+      criadoEm: usuario.criado_em,
+      par: usuario.par ?? [],
+    });
+  } catch (error) {
+    console.error("Erro ao buscar dados do usuário:", error);
+    res.status(500).json({ erro: "Erro interno do servidor" });
   }
 }
