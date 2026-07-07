@@ -1,5 +1,8 @@
 import type { Request, Response } from "express";
 import pool from "../pool";
+import validarCpf from "validar-cpf";
+import { error } from "console";
+
 
 export async function listar(req: Request, res: Response) {
   try {
@@ -31,15 +34,22 @@ export async function listarPorBase(req: Request, res: Response) {
 
 export async function cadastrar(req: Request, res: Response) {
   try {
-    const { nome, email, senha, funcao, perfil, base, par } = req.body;
+    const { nome, email, cpf, funcao, perfil, base, par } = req.body;
+  
+    
+    if (!validarCpf(cpf)) {
+      return res.status(400).json({
+        erro: "CPF inválido"
+      });
+    }
 
     const parValue = Array.isArray(par) && par.length > 0 ? par : null;
 
     const { rows } = await pool.query(
-      `INSERT INTO usuarios (nome, email, senha, funcao, perfil, base, par)
+      `INSERT INTO usuarios (nome, email, cpf, funcao, perfil, base, par)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [nome, email, senha, funcao, perfil, base, JSON.stringify(parValue)]
+      [nome, email, cpf, funcao, perfil, base, JSON.stringify(parValue)]
     );
 
     res.status(201).json(rows[0]);
@@ -50,14 +60,14 @@ export async function cadastrar(req: Request, res: Response) {
 
 export async function atualizar(req: Request, res: Response) {
   const { id } = req.params;
-  const { nome, email, senha, funcao, perfil, base, par } = req.body;
+  const { nome, email, cpf, funcao, perfil, base, par } = req.body;
 
   const parValue = Array.isArray(par) && par.length > 0 ? par : null;
 
   await pool.query(
-    `UPDATE usuarios SET nome=$1, email=$2, senha=$3, funcao=$4, perfil=$5, base=$6, par=$7
+    `UPDATE usuarios SET nome=$1, email=$2, cpf=$3, funcao=$4, perfil=$5, base=$6, par=$7
      WHERE id=$8`,
-    [nome, email, senha, funcao, perfil, base, JSON.stringify(parValue), id]
+    [nome, email, cpf, funcao, perfil, base, JSON.stringify(parValue), id]
   );
 
   res.json({ ok: true });

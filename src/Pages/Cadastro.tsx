@@ -17,7 +17,7 @@ type Usuario = {
   id: number;
   nome: string;
   email: string;
-  senha: string;
+  cpf: string;
   funcao: string;
   base: string;
   perfil: string;
@@ -66,7 +66,7 @@ export default function CadastroPage() {
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [base, setBase] = useState("");
-    const [senha, setSenha] = useState("");
+    const [cpf, setCpf] = useState("");
     const [funcao, setFuncao] = useState("");
     const [perfil, setPerfil] = useState("");
     const [par, setPar] = useState<ParItem[]>([]);
@@ -95,7 +95,7 @@ export default function CadastroPage() {
         await authFetch(`/api/usuarios/${usuarioEditando.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nome, email, senha, funcao, base, perfil, par: parEdicao }),
+            body: JSON.stringify({ nome, email, cpf, funcao, base, perfil, par: parEdicao }),
         });
 
         setModalAberto(false);
@@ -143,7 +143,7 @@ export default function CadastroPage() {
                     body: JSON.stringify({
                         nome,
                         email,
-                        senha,
+                        cpf,
                         funcao,
                         base,
                         perfil,
@@ -152,15 +152,18 @@ export default function CadastroPage() {
                 }
             );
 
+            const data = await response.json();
             if (!response.ok) {
+                alert(data.erro);
                 return;
             }
+
 
             alert("Usuário cadastrado com sucesso!");
 
             setNome("");
             setEmail("");
-            setSenha("");
+            setCpf("");
             setFuncao("");
             setPerfil("");
             setBase("");
@@ -211,7 +214,7 @@ export default function CadastroPage() {
         setFuncao(usuario.funcao);
         setPerfil(usuario.perfil);
         setBase(usuario.base);
-        setSenha(usuario.senha);
+        setCpf(usuario.cpf);
         setParEdicao(Array.isArray(usuario.par) ? usuario.par : (usuario.par ? JSON.parse(usuario.par) : []));
         setModalAberto(true);
     }
@@ -343,12 +346,12 @@ export default function CadastroPage() {
                                             />
                                         </div>
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold">Senha</label>
+                                            <label className="text-xs font-semibold">CPF</label>
                                             <input
                                                 type="password"
-                                                value={senha}
-                                                onChange={(e) => setSenha(e.target.value)}
-                                                placeholder="Senha do profissional"
+                                                value={cpf}
+                                                onChange={(e) => setCpf(e.target.value)}
+                                                placeholder="CPF do profissional"
                                                 required
                                                 className="w-full border rounded-lg px-3 py-2 text-sm"
                                             />
@@ -521,10 +524,10 @@ export default function CadastroPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
-                        <label className="text-xs font-semibold">Senha</label>  
+                        <label className="text-xs font-semibold">CPF</label>  
                             <input
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
+                            value={cpf}
+                            onChange={(e) => setCpf(e.target.value)}
                             className="w-full border rounded-lg px-3 py-2"
                         />
                         <label className="text-xs font-semibold">Base</label>

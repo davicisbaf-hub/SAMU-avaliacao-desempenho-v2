@@ -49,13 +49,13 @@ components:
     # --- Auth ---------------------------------------------------------------
     LoginRequest:
       type: object
-      required: [email, senha]
+      required: [email, cpf]
       properties:
         email:
           type: string
           format: email
           example: joao.silva@samu.com.br
-        senha:
+        CPF:
           type: string
           example: "senha123"
 

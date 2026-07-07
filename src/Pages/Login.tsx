@@ -13,7 +13,7 @@ function App() {
   const { login } = useUserSession();
 
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [cpf, setCpf] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ function App() {
           },
           body: JSON.stringify({
             email,
-            senha,
+            cpf,
           }),
         }
 
@@ -118,14 +118,14 @@ function App() {
 
             <div className="space-y-2 text-left">
               <label className="text-sm font-semibold text-black">
-                Senha
+                CPF
               </label>
 
               <input
                 type="password"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                placeholder="Digite sua senha..."
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+                placeholder="Digite sua cpf..."
                 className="w-full border border-input bg-[#fcfcfc] rounded-lg px-3 py-2.5 text-sm"
               />
             </div>
