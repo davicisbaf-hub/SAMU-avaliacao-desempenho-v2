@@ -30,7 +30,6 @@ function App() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email,
             cpf,
           }),
         }
@@ -101,20 +100,6 @@ function App() {
           </div>
 
           <form onSubmit={handleLogin} className="p-6 space-y-4" >
-
-            <div className="space-y-2 text-left">
-              <label className="text-sm font-semibold text-black">
-                E-mail
-              </label>
-
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Digite seu e-mail..."
-                className="w-full border border-input bg-[#fcfcfc] rounded-lg px-3 py-2.5 text-sm"
-              />
-            </div>
 
             <div className="space-y-2 text-left">
               <label className="text-sm font-semibold text-black">

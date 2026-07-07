@@ -5,16 +5,16 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "samu-secret-key";
 
 export async function login(req: Request, res: Response) {
-  const { email, cpf } = req.body;
+  const { cpf } = req.body;
 
   const result = await pool.query(
-    "SELECT * FROM usuarios WHERE email = $1",
-    [email]
+    "SELECT * FROM usuarios WHERE cpf = $1",
+    [cpf]
   );
 
   const usuario = result.rows[0];
 
-  if (!usuario || usuario.cpf !== cpf) {
+  if (usuario.cpf !== cpf) {
     return res.status(401).json({ erro: "Credenciais inválidas" });
   }
 
