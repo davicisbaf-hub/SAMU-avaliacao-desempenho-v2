@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Nav from '../components/Nav';
-import { ChevronDown, Search, Mail, Phone, HelpCircle } from 'lucide-react';
+import { ChevronDown, Search, Globe, MessageCircleMore, HelpCircle } from 'lucide-react';
 
 const faqData = [
   {
@@ -196,30 +196,32 @@ export default function Help() {
             <div className="bg-gradient-to-br from-[#cd0048]/5 to-[#cd0048]/10 rounded-xl p-6 border border-[#cd0048]/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-[#cd0048]/20 rounded-lg">
-                  <Mail size={20} className="text-[#cd0048]" />
+                  <Globe size={20} className="text-[#cd0048]" />
                 </div>
-                <h2 className="font-semibold text-[#1a1a1a]">E-mail</h2>
+                <h2 className="font-semibold text-[#1a1a1a]">Suporte</h2>
               </div>
               <a
-                href="mailto:suporte@sistema.com.br"
+                href="https://chamadosti.cisbaf.org.br/"
+                target="_blank"
                 className="text-[#cd0048] hover:text-[#a50038] transition-colors font-medium"
               >
-                suporte@sistema.com.br
+                chamadosti.cisbaf.org.br
               </a>
             </div>
 
             <div className="bg-gradient-to-br from-[#cd0048]/5 to-[#cd0048]/10 rounded-xl p-6 border border-[#cd0048]/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-[#cd0048]/20 rounded-lg">
-                  <Phone size={20} className="text-[#cd0048]" />
+                  <MessageCircleMore size={20} className="text-[#cd0048]" />
                 </div>
-                <h2 className="font-semibold text-[#1a1a1a]">Telefone</h2>
+                <h2 className="font-semibold text-[#1a1a1a]">WhatsApp</h2>
               </div>
               <a
-                href="tel:+5521999999999"
+                href="https://api.whatsapp.com/send/?phone=5521973147367&text&type=phone_number&app_absent=0"
+                target="_blank"
                 className="text-[#cd0048] hover:text-[#a50038] transition-colors font-medium"
               >
-                (21) 99999-9999
+                (21) 97314-7367
               </a>
             </div>
           </div>
@@ -287,7 +289,8 @@ export default function Help() {
                   Não encontrou o que procura?
                 </p>
                 <a
-                  href="mailto:suporte@sistema.com.br"
+                  href="https://api.whatsapp.com/send/?phone=5521973147367&text&type=phone_number&app_absent=0"
+                  target="_blank"
                   className="inline-block px-6 py-3 bg-[#cd0048] text-white rounded-lg font-medium hover:bg-[#a50038] transition-colors"
                 >
                   Entrar em Contato com Suporte
