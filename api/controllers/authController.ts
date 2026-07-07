@@ -5,17 +5,57 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "samu-secret-key";
 
 export async function login(req: Request, res: Response) {
-  const { cpf } = req.body;
+  let { cpf, base } = req.body;
 
-  const result = await pool.query(
-    "SELECT * FROM usuarios WHERE cpf = $1",
+  // Busca todos os usuários com o CPF informado
+  const usuarios = await pool.query(
+    `SELECT id, nome, email, funcao, perfil, base, ativo, criado_em, par
+     FROM usuarios
+     WHERE cpf = $1`,
     [cpf]
   );
 
-  const usuario = result.rows[0];
+  if (usuarios.rows.length === 0) {
+    return res.status(401).json({
+      erro: "Credenciais inválidas",
+    });
+  }
 
-  if (usuario.cpf !== cpf) {
-    return res.status(401).json({ erro: "Credenciais inválidas" });
+  // Se houver mais de um usuário e nenhuma base foi escolhida,
+  // retorna a lista para o frontend abrir o modal.
+  if (usuarios.rows.length > 1 && !base) {
+    return res.json({
+      escolherBase: true,
+      usuarios: usuarios.rows.map((u) => ({
+        id: u.id,
+        nome: u.nome,
+        funcao: u.funcao,
+        perfil: u.perfil,
+        base: u.base,
+      })),
+    });
+  }
+
+  let usuario;
+
+  if (base) {
+    const result = await pool.query(
+      `SELECT *
+       FROM usuarios
+       WHERE cpf = $1
+       AND base = $2`,
+      [cpf, base]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        erro: "Base inválida.",
+      });
+    }
+
+    usuario = result.rows[0];
+  } else {
+    usuario = usuarios.rows[0];
   }
 
   const token = jwt.sign(
@@ -28,10 +68,12 @@ export async function login(req: Request, res: Response) {
       base: usuario.base,
     },
     JWT_SECRET,
-    { expiresIn: "8h" }
+    {
+      expiresIn: "8h",
+    }
   );
 
-  res.json({
+  return res.json({
     token,
     id: usuario.id,
     nome: usuario.nome,

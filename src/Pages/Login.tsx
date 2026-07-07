@@ -1,15 +1,16 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useUserSession } from "../contexts/UserSession";
 
 import "../App.css";
 
-
 function App() {
   const navigate = useNavigate();
   const { login, user, isLoading } = useUserSession();
+  const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [modalAberto, setModalAberto] = useState(false);
 
-  const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
 
   // Se já está logado, redireciona para home
@@ -22,18 +23,15 @@ function App() {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        "/api/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cpf,
-          }),
-        }
-      );
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cpf,
+        }),
+      });
 
       const data = await response.json();
 
@@ -42,13 +40,42 @@ function App() {
         return;
       }
 
-      login(data, data.token);
+      if (data.escolherBase) {
+        setUsuarios(data.usuarios);
+        setModalAberto(true);
+        return;
+      }
 
+      login(data, data.token);
       navigate("/");
+
     } catch (error) {
       console.error(error);
       alert("Erro ao conectar ao servidor");
     }
+  };
+
+  const entrarNaBase = async (base: string) => {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cpf,
+        base,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.erro);
+      return;
+    }
+
+    login(data, data.token);
+    navigate("/");
   };
 
   return (
@@ -99,8 +126,7 @@ function App() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="p-6 space-y-4" >
-
+          <form onSubmit={handleLogin} className="p-6 space-y-4">
             <div className="space-y-2 text-left">
               <label className="text-sm font-semibold text-black">
                 CPF
@@ -110,7 +136,7 @@ function App() {
                 type="password"
                 value={cpf}
                 onChange={(e) => setCpf(e.target.value)}
-                placeholder="Digite sua cpf..."
+                placeholder="Digite seu CPF..."
                 className="w-full border border-input bg-[#fcfcfc] rounded-lg px-3 py-2.5 text-sm"
               />
             </div>
@@ -144,8 +170,38 @@ function App() {
           SAMU 192 · CRUR-BF · CISBAF · Baixada Fluminense – RJ
         </p>
       </div>
+      {modalAberto && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl w-[450px] p-6">
+      <h2 className="text-xl font-bold mb-2">
+        Escolha a base
+      </h2>
+
+      <p className="text-gray-500 mb-4">
+        Seu CPF está vinculado a mais de uma base.
+      </p>
+
+      {usuarios.map((u) => (
+        <button
+          key={u.id}
+          onClick={() => entrarNaBase(u.base)}
+          className="w-full border rounded-lg p-4 mb-3 text-left hover:bg-gray-100 transition"
+        >
+          <div className="font-semibold">
+            {u.base}
+          </div>
+
+          <div className="text-sm text-gray-500">
+            {u.funcao}
+          </div>
+        </button>
+      ))}
+    </div>
+  </div>
+)}
     </div>
   );
 }
 
 export default App;
+
