@@ -12,6 +12,7 @@ function App() {
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
 
+  // Se já está logado, redireciona para home
   if (user && !isLoading) {
     navigate("/");
     return null;
