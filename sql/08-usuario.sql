@@ -1,7 +1,7 @@
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL,
     cpf VARCHAR(255) NOT NULL,
     funcao VARCHAR(255) NOT NULL,
     perfil VARCHAR(100) NOT NULL,
