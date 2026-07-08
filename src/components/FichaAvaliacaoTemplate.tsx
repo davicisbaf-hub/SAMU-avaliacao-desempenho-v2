@@ -5,7 +5,7 @@ import Assinatura from './Assinatura';
 
 type Criterios = {
 	categoria: string;
-	codigo: string;
+	codigo: number;
 	criterio: string;
 	peso: number;
 	id: string | number;

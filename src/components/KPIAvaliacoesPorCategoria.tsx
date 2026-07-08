@@ -43,26 +43,60 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set([`${user?.funcao}`, "Avaliação Par"]));
   const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases";
 
+  const [bases, setBases] = useState<string[]>([]);
+  const [filtroBase, setFiltroBase] = useState(
+    isAdminGlobal ? "" : (user?.base ?? "")
+  );
+
+  useEffect(() => {
+    async function carregarBases() {
+      try {
+        const res = await authFetch("/api/bases");
+        const data = await res.json();
+
+        setBases(data.map((b: any) => b.nome));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    if (isAdminGlobal) {
+      carregarBases();
+    }
+  }, []);
+
   useEffect(() => {
     async function carregarKPIs() {
       try {
         setCarregando(true);
-        const url = isAdminGlobal
-          ? "/api/kpis/avaliacoes-por-categoria"
-          : `/api/kpis/avaliacoes-por-categoria?base=${encodeURIComponent(user?.base ?? "")}`;
+
+        const base = isAdminGlobal ? filtroBase : user?.base;
+
+        const url = base
+          ? `/api/kpis/avaliacoes-por-categoria?base=${encodeURIComponent(base)}`
+          : "/api/kpis/avaliacoes-por-categoria";
+
         const res = await authFetch(url);
         const dados = await res.json();
-        const parsed = Array.isArray(dados) ? dados.map((k: any) => ({
-          categoria: k.categoria,
-          tipo_avaliacao: k.tipo_avaliacao,
-          total_avaliacoes: k.total_avaliacoes != null ? Number(k.total_avaliacoes) : 0,
-          profissionais_avaliados: k.profissionais_avaliados != null ? Number(k.profissionais_avaliados) : 0,
-          media_ponderada: k.media_ponderada != null && k.media_ponderada !== '' ? Number(k.media_ponderada) : null,
-          nota_maxima: k.nota_maxima != null ? Number(k.nota_maxima) : null,
-          nota_minima: k.nota_minima != null ? Number(k.nota_minima) : null,
-          soma_pesos: k.soma_pesos != null ? Number(k.soma_pesos) : 0,
-        })) : [];
+
+        const parsed = Array.isArray(dados)
+          ? dados.map((k: any) => ({
+              categoria: k.categoria,
+              tipo_avaliacao: k.tipo_avaliacao,
+              total_avaliacoes: Number(k.total_avaliacoes ?? 0),
+              profissionais_avaliados: Number(k.profissionais_avaliados ?? 0),
+              media_ponderada:
+                k.media_ponderada !== null
+                  ? Number(k.media_ponderada)
+                  : 0,
+              nota_maxima: Number(k.nota_maxima ?? 0),
+              nota_minima: Number(k.nota_minima ?? 0),
+              soma_pesos: Number(k.soma_pesos ?? 0),
+            }))
+          : [];
+
         setKpis(parsed);
+
       } catch (err) {
         console.error(err);
         setKpis([]);
@@ -70,24 +104,29 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
         setCarregando(false);
       }
     }
+
     carregarKPIs();
-  }, []);
+
+  }, [filtroBase, user?.base]);
 
   useEffect(() => {
     async function carregarAvaliacoes() {
       try {
         const url = isAdminGlobal
-          ? "/api/avaliacoes"
-          : `/api/avaliacoes?base=${encodeURIComponent(user?.base ?? "")}`;
+        ? filtroBase
+          ? `/api/avaliacoes?base=${encodeURIComponent(filtroBase)}`
+          : "/api/avaliacoes"
+        : `/api/avaliacoes?base=${encodeURIComponent(user?.base ?? "")}`;
         const res = await authFetch(url);
         const data = await res.json();
         setAvaliacoesFull(Array.isArray(data) ? data : []);
-      } catch {
+      } catch (err) {
+        
         setAvaliacoesFull([]);
       }
     }
     carregarAvaliacoes();
-  }, []);
+  }, [filtroBase]);
 
   const tiposDisponiveis = isAdminGlobal
   ? Array.from(new Set(kpis.map(k => k.tipo_avaliacao)))
@@ -211,7 +250,27 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
             <div className="h-6 w-px bg-gray-300" />
           </>
         )}
+        {isAdminGlobal && (
+          <>
+            <select
+              value={filtroBase}
+              onChange={(e) => setFiltroBase(e.target.value)}
+              className="px-2 py-1 rounded-lg font-medium transition-all bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer outline-none"
+            >
+              <option value="">
+                Todas as Bases
+              </option>
 
+              {bases.map((base) => (
+                <option key={base} value={base}>
+                  {base}
+                </option>
+              ))}
+            </select>
+
+            <div className="h-6 w-px bg-gray-300" />
+          </>
+        )}
         {tiposDisponiveis.map((tipo) => (
           <button
             key={tipo}

@@ -14,7 +14,7 @@ type Peso = {
 };
 
 type Props = {
-  codigo: string;
+  codigo: number | string;
   criterio: string;
   peso: number;
   indicador: string;
