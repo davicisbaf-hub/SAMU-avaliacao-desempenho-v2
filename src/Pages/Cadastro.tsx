@@ -62,7 +62,7 @@ export default function CadastroPage() {
     const { user } = useUserSession();
 
     const [bases, setBases] = useState<Base[]>([]);
-    const [baseSelecionada, setBaseSelecionada] = useState<Base | null>("null");
+    const [baseSelecionada, setBaseSelecionada] = useState<Base | null>(null);
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [base, setBase] = useState("");
