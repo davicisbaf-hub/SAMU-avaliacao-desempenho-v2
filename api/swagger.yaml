@@ -24,6 +24,8 @@ tags:
     description: Gestão de usuários
   - name: Avaliações
     description: Registro e consulta de avaliações
+  - name: Frequência
+    description: Configuração do intervalo mínimo entre avaliações, por nível de experiência do usuário avaliado
   - name: Critérios
     description: Critérios e tipos de avaliação
   - name: KPIs
@@ -49,17 +51,32 @@ components:
     # --- Auth ---------------------------------------------------------------
     LoginRequest:
       type: object
-      required: [email, cpf]
+      required: [cpf]
       properties:
-        email:
+        cpf:
           type: string
-          format: email
-          example: joao.silva@samu.com.br
-        CPF:
+          description: CPF do usuário (sem máscara), usado como credencial de login.
+          example: "12345678900"
+        base:
           type: string
-          example: "senha123"
+          nullable: true
+          description: |
+            Opcional. Necessário apenas quando o CPF informado está vinculado a mais de
+            uma base simultaneamente — nesse caso, uma primeira chamada sem `base` retorna
+            `LoginEscolherBase` para que o usuário escolha, e uma segunda chamada deve
+            reenviar o `cpf` junto com a `base` escolhida.
+          example: "Base Central"
 
     LoginResponse:
+      description: |
+        Retorno do login. Pode ser um login bem-sucedido (`LoginSucesso`) ou, quando o CPF
+        pertence a mais de uma base e nenhuma `base` foi informada, um pedido para o
+        frontend exibir um seletor de base (`LoginEscolherBase`).
+      oneOf:
+        - $ref: '#/components/schemas/LoginSucesso'
+        - $ref: '#/components/schemas/LoginEscolherBase'
+
+    LoginSucesso:
       type: object
       properties:
         token:
@@ -98,6 +115,34 @@ components:
           example: [2, 5]
           nullable: true
 
+    LoginEscolherBase:
+      type: object
+      properties:
+        escolherBase:
+          type: boolean
+          example: true
+        usuarios:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              nome:
+                type: string
+                example: "João Silva"
+              funcao:
+                type: string
+                example: "Médico Regulador"
+              perfil:
+                type: string
+                enum: [admin, gestor, avaliador, avaliado]
+                example: "gestor"
+              base:
+                type: string
+                example: "Base Central"
+
     # --- Usuário ------------------------------------------------------------
     Usuario:
       type: object
@@ -112,6 +157,10 @@ components:
           type: string
           format: email
           example: joao.silva@samu.com.br
+        cpf:
+          type: string
+          description: CPF do usuário (sem máscara).
+          example: "12345678900"
         funcao:
           type: string
           example: "Médico Regulador"
@@ -152,7 +201,7 @@ components:
 
     UsuarioRequest:
       type: object
-      required: [nome, email, senha, funcao, perfil, base]
+      required: [nome, email, cpf, funcao, perfil, base]
       properties:
         nome:
           type: string
@@ -161,9 +210,12 @@ components:
           type: string
           format: email
           example: joao.silva@samu.com.br
-        senha:
+        cpf:
           type: string
-          example: "senha123"
+          description: |
+            CPF do usuário (sem máscara). Validado no backend (biblioteca `validar-cpf`);
+            requisições com CPF inválido retornam `400`. É também a credencial usada no login.
+          example: "12345678900"
         funcao:
           type: string
           example: "Médico Regulador"
@@ -206,7 +258,7 @@ components:
 
     AvaliacaoRequest:
       type: object
-      required: [avaliadorId, avaliadoId, tipoAvaliacao, resultado]
+      required: [avaliadorId, avaliadoId, modalidade, tipoAvaliacao, resultado]
       properties:
         avaliadorId:
           type: integer
@@ -214,6 +266,13 @@ components:
         avaliadoId:
           type: integer
           example: 3
+        modalidade:
+          type: string
+          description: |
+            Direção/modalidade da avaliação. Usada, junto com `tipoAvaliacao`, para checar a
+            regra de frequência mínima entre avaliações (ver `/frequencia-avaliacoes`).
+            Segue tipicamente os mesmos valores usados em `avaliacao` de Critérios.
+          example: "autoavaliacao"
         tipoAvaliacao:
           type: string
           example: "Médico"
@@ -250,6 +309,9 @@ components:
         avaliado_funcao:
           type: string
           example: "Técnica de Enfermagem"
+        modalidade:
+          type: string
+          example: "autoavaliacao"
         tipo_avaliacao:
           type: string
           example: "Médico"
@@ -268,6 +330,162 @@ components:
           type: string
           format: date-time
           example: "2024-06-01T14:00:00Z"
+
+    AvaliacaoCriada:
+      description: Retorno do POST /avaliacoes — a avaliação criada, acrescida do nível calculado para o avaliado.
+      allOf:
+        - $ref: '#/components/schemas/Avaliacao'
+        - type: object
+          properties:
+            nivel:
+              type: string
+              description: |
+                Nível de experiência do avaliado, calculado a partir de `dias_desde_criacao`
+                do usuário e das faixas configuradas em `/frequencia-avaliacoes`.
+              example: "iniciante"
+
+    # --- Frequência de Avaliação ---------------------------------------------
+    FrequenciaNivel:
+      type: object
+      description: |
+        Configuração de intervalo mínimo entre avaliações para usuários em um nível de
+        experiência. `dias_minimos`/`dias_maximos` definem a faixa (em dias desde a criação
+        do usuário) que caracteriza o nível; `dias`/`semanas`/`meses`/`anos` somados definem
+        o intervalo mínimo entre avaliações do mesmo avaliador ao mesmo avaliado, com a
+        mesma `modalidade` e `tipoAvaliacao`. Quando todos esses quatro campos são zero,
+        não há restrição de frequência para o nível.
+      properties:
+        id:
+          type: integer
+          example: 1
+        nivel:
+          type: string
+          example: "iniciante"
+        dias_minimos:
+          type: integer
+          description: Dias mínimos (desde a criação do usuário) para se enquadrar neste nível.
+          example: 0
+        dias_maximos:
+          type: integer
+          description: Dias máximos (desde a criação do usuário) para se enquadrar neste nível.
+          example: 90
+        dias:
+          type: integer
+          example: 0
+        semanas:
+          type: integer
+          example: 0
+        meses:
+          type: integer
+          example: 1
+        anos:
+          type: integer
+          example: 0
+        ativo:
+          type: boolean
+          example: true
+        atualizado_em:
+          type: string
+          format: date-time
+          example: "2024-06-01T14:00:00Z"
+
+    FrequenciaNivelRequest:
+      type: object
+      required: [nivel, dias_minimos, dias_maximos, dias, semanas, meses, anos, ativo]
+      properties:
+        nivel:
+          type: string
+          example: "iniciante"
+        dias_minimos:
+          type: integer
+          example: 0
+        dias_maximos:
+          type: integer
+          example: 90
+        dias:
+          type: integer
+          example: 0
+        semanas:
+          type: integer
+          example: 0
+        meses:
+          type: integer
+          example: 1
+        anos:
+          type: integer
+          example: 0
+        ativo:
+          type: boolean
+          example: true
+
+    InfoUsuarioAvaliacao:
+      type: object
+      description: Resposta de `/avaliacoes/info` com o nível calculado do usuário e, opcionalmente, se ele já pode ser reavaliado.
+      properties:
+        usuarioId:
+          type: string
+          example: "3"
+        nome:
+          type: string
+          example: "Maria Souza"
+        nivel:
+          type: string
+          example: "iniciante"
+        dias_desde_criacao:
+          type: integer
+          example: 42
+        frequencia:
+          $ref: '#/components/schemas/FrequenciaNivel'
+        niveis_disponiveis:
+          type: array
+          items:
+            type: object
+            properties:
+              nivel:
+                type: string
+                example: "iniciante"
+              dias_minimos:
+                type: integer
+                example: 0
+              dias_maximos:
+                type: integer
+                example: 90
+        ultima_avaliacao:
+          type: string
+          format: date-time
+          nullable: true
+          description: Só presente quando `avaliadorId`, `modalidade` e `tipoAvaliacao` foram informados na query.
+        proxima_liberacao:
+          type: string
+          format: date-time
+          nullable: true
+          description: Data/hora a partir da qual uma nova avaliação com os mesmos parâmetros é permitida.
+        pode_avaliar:
+          type: boolean
+          nullable: true
+        modalidade_verificada:
+          type: string
+          nullable: true
+        tipo_avaliacao_verificado:
+          type: string
+          nullable: true
+        avaliacoes_por_modalidade_tipo:
+          type: array
+          items:
+            type: object
+            properties:
+              modalidade:
+                type: string
+                example: "autoavaliacao"
+              tipo_avaliacao:
+                type: string
+                example: "Médico"
+              total:
+                type: integer
+                example: 3
+              ultima:
+                type: string
+                format: date-time
 
     # --- Critério -----------------------------------------------------------
     CriterioRequest:
@@ -468,7 +686,12 @@ paths:
     post:
       tags: [Auth]
       summary: Autenticar usuário
-      description: Valida email e senha e retorna um token JWT válido por 8 horas.
+      description: |
+        Autentica pelo `cpf`. Retorna um token JWT válido por 8 horas.
+
+        Se o CPF pertencer a mais de um usuário/base e nenhuma `base` for informada,
+        retorna `LoginEscolherBase` (200) com a lista de opções em vez do token — o
+        frontend deve reenviar o login informando `cpf` + `base` escolhida.
       requestBody:
         required: true
         content:
@@ -477,13 +700,15 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Login realizado com sucesso
+          description: |
+            Login realizado com sucesso (`LoginSucesso`) ou necessidade de escolher a base
+            (`LoginEscolherBase`) quando o CPF está vinculado a mais de uma base.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
         '401':
-          description: Credenciais inválidas
+          description: CPF (e/ou base) inválidos
           content:
             application/json:
               schema:
@@ -534,6 +759,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Usuario'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /me:
+    get:
+      tags: [Usuários]
+      summary: Obter dados do usuário autenticado
+      description: Retorna os dados do usuário correspondente ao token JWT enviado no header `Authorization`.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados do usuário autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
         '500':
           description: Erro interno
           content:
@@ -662,7 +914,13 @@ paths:
       description: |
         Registra uma avaliação de desempenho.
 
-        **Regra de negócio:** Um avaliador não pode avaliar o mesmo avaliado com o mesmo tipo de avaliação mais de uma vez por dia. Se tentar, retorna `409 Conflict`.
+        **Regra de negócio:** o nível de experiência do avaliado é calculado com base em
+        há quantos dias sua conta foi criada (ver `/frequencia-avaliacoes`). Cada nível
+        define um intervalo mínimo (dias/semanas/meses/anos) entre avaliações do mesmo
+        avaliador para o mesmo avaliado, com a mesma `modalidade` e `tipoAvaliacao`. Se
+        esse intervalo ainda não tiver passado, retorna `409 Conflict` informando quando
+        a próxima avaliação será liberada. Níveis sem restrição configurada (todos os
+        campos de intervalo zerados) não bloqueiam novas avaliações.
       security:
         - bearerAuth: []
       requestBody:
@@ -674,6 +932,7 @@ paths:
             example:
               avaliadorId: 1
               avaliadoId: 3
+              modalidade: "autoavaliacao"
               tipoAvaliacao: "Médico"
               resultado:
                 criterio_01:
@@ -691,15 +950,238 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Avaliacao'
+                $ref: '#/components/schemas/AvaliacaoCriada'
+        '400':
+          description: Campo obrigatório ausente (`modalidade` ou `tipoAvaliacao`)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Usuário avaliado não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
         '409':
-          description: Avaliação já realizada hoje para este avaliado e tipo
+          description: Avaliação bloqueada pela regra de frequência do nível do avaliado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erro:
+                    type: string
+                    example: 'Você já avaliou este usuário como "Médico" na modalidade "autoavaliacao" recentemente. Próxima avaliação liberada em 15/07/2026 às 10:00:00.'
+                  nivel:
+                    type: string
+                    example: "iniciante"
+                  modalidade:
+                    type: string
+                    example: "autoavaliacao"
+                  tipoAvaliacao:
+                    type: string
+                    example: "Médico"
+                  liberaEm:
+                    type: string
+                    format: date-time
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /avaliacoes/info:
+    get:
+      tags: [Avaliações]
+      summary: Consultar nível e liberação de avaliação de um usuário
+      description: |
+        Retorna o nível de experiência calculado para o usuário e, se `avaliadorId`,
+        `modalidade` e `tipoAvaliacao` forem informados, também verifica se uma nova
+        avaliação com esses parâmetros já pode ser feita (`pode_avaliar`).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: usuarioId
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "3"
+        - name: avaliadorId
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "1"
+        - name: modalidade
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "autoavaliacao"
+        - name: tipoAvaliacao
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "Médico"
+      responses:
+        '200':
+          description: Informações de nível e frequência do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfoUsuarioAvaliacao'
+        '400':
+          description: Parâmetro `usuarioId` ausente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  # ==========================================================================
+  # FREQUÊNCIA DE AVALIAÇÃO (por nível de experiência)
+  # ==========================================================================
+  /frequencia-avaliacoes:
+    get:
+      tags: [Frequência]
+      summary: Listar configurações de frequência por nível
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de configurações ordenadas por `dias_minimos`
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FrequenciaNivel'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+    post:
+      tags: [Frequência]
+      summary: Criar novo nível de frequência
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FrequenciaNivelRequest'
+      responses:
+        '201':
+          description: Nível criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrequenciaNivel'
+        '409':
+          description: Nível já existe (usar PUT para atualizar)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Erro'
               example:
-                erro: "Você já preencheu esta ficha hoje. Tente novamente amanhã."
+                erro: "Nível 'iniciante' já existe. Use PUT para atualizar."
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /frequencia-avaliacoes/{id}:
+    put:
+      tags: [Frequência]
+      summary: Atualizar configuração de frequência
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FrequenciaNivelRequest'
+      responses:
+        '200':
+          description: Configuração atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrequenciaNivel'
+        '404':
+          description: Registro não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+    delete:
+      tags: [Frequência]
+      summary: Remover (inativar) nível de frequência
+      description: Não é uma exclusão física — apenas define `ativo = false`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Nível desativado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Nível desativado com sucesso."
+                  nivel:
+                    $ref: '#/components/schemas/FrequenciaNivel'
+        '404':
+          description: Registro não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
         '500':
           description: Erro interno
           content:
