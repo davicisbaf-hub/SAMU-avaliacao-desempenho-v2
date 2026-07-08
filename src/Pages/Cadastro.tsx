@@ -14,55 +14,55 @@ type Base = {
 type ParItem = { id: number; nome: string; funcao: string };
 
 type Usuario = {
-  id: number;
-  nome: string;
-  email: string;
-  cpf: string;
-  funcao: string;
-  base: string;
-  perfil: string;
-  quantidade: number;
+    id: number;
+    nome: string;
+    email: string;
+    cpf: string;
+    funcao: string;
+    base: string;
+    perfil: string;
+    quantidade: number;
 };
 
 type Ficha = {
-  id: number;
-  icon: string;
-  nome: string;
-  descricao: string;
-  criterios: number;
-  tags: string[];
-  ordem: number;
-  link: string;
-  ativo: boolean;
-  created_at: string;
+    id: number;
+    icon: string;
+    nome: string;
+    descricao: string;
+    criterios: number;
+    tags: string[];
+    ordem: number;
+    link: string;
+    ativo: boolean;
+    created_at: string;
 };
 
 type InfoUsuario = {
-  usuarioId: number;
-  nome: string;
-  nivel: string;
-  dias_desde_criacao: number;
-  frequencia: {
-    id: number;
+    usuarioId: number;
+    nome: string;
     nivel: string;
-    dias_minimos: number;
-    dias_maximos: number;
-    dias: number;
-    semanas: number;
-    meses: number;
-    anos: number;
-    ativo: boolean;
-  } | null;
-  ultima_avaliacao?: Date;
-  proxima_liberacao?: Date;
-  pode_avaliar?: boolean;
+    dias_desde_criacao: number;
+    frequencia: {
+        id: number;
+        nivel: string;
+        dias_minimos: number;
+        dias_maximos: number;
+        dias: number;
+        semanas: number;
+        meses: number;
+        anos: number;
+        ativo: boolean;
+    } | null;
+    ultima_avaliacao?: Date;
+    proxima_liberacao?: Date;
+    pode_avaliar?: boolean;
 };
 
 export default function CadastroPage() {
     const { user } = useUserSession();
 
     const [bases, setBases] = useState<Base[]>([]);
-    const [baseSelecionada, setBaseSelecionada] = useState<Base | null>(null);
+    const [baseSelecionada, setBaseSelecionada] = useState<Base | null>("null");
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [base, setBase] = useState("");
@@ -73,19 +73,29 @@ export default function CadastroPage() {
     const [parEdicao, setParEdicao] = useState<ParItem[]>([]);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
-    const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);   
+    const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);
     const [busca, setBusca] = useState("");
     const [modalInfoAberto, setModalInfoAberto] = useState(false);
     const [infoUsuario, setInfoUsuario] = useState<InfoUsuario | null>(null);
     const [carregandoInfo, setCarregandoInfo] = useState(false);
+    const [funcaoSelecionada, setFuncaoSelecionada] = useState<string | null>(null);
 
-    const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases"; 
-    
-    const usuariosFiltrados = (isAdminGlobal ? usuarios : usuarios.filter((u) => u.base === user?.base))
-    .filter((u) =>
-        u.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        String(u.id).includes(busca)
-    );
+    const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases";
+
+    const usuariosFiltrados = usuarios
+        .filter((u) =>
+            isAdminGlobal ? true : u.base === user?.base
+        )
+        .filter((u) =>
+            baseSelecionada ? u.base === baseSelecionada.nome : true
+        )
+        .filter((u) =>
+            funcaoSelecionada ? u.funcao === funcaoSelecionada : true
+        )
+        .filter((u) =>
+            u.nome.toLowerCase().includes(busca.toLowerCase()) ||
+            String(u.id).includes(busca)
+        );
     const basesVisiveis = isAdminGlobal ? bases : bases.filter((base) => base.nome === user?.base);
     const { authFetch } = useAuthFetch();
 
@@ -105,9 +115,9 @@ export default function CadastroPage() {
 
     useEffect(() => {
         carregarUsuarios();
-        }, []);
+    }, []);
 
-        async function carregarUsuarios() {
+    async function carregarUsuarios() {
         try {
             const res = await authFetch("/api/usuarios");
             const data = await res.json();
@@ -117,7 +127,7 @@ export default function CadastroPage() {
             console.error("Erro ao carregar usuários:", err);
             setUsuarios([]);
         }
-        }
+    }
 
     useEffect(() => {
         async function carregarBases() {
@@ -125,10 +135,20 @@ export default function CadastroPage() {
             const data = await res.json();
 
             setBases(data);
-            setBaseSelecionada(data[0]);
+
+            if (!isAdminGlobal && user?.base) {
+                const baseUsuario = data.find(
+                    (b: Base) => b.nome === user.base
+                );
+
+                setBaseSelecionada(baseUsuario || null);
+            } else {
+                setBaseSelecionada(null);
+            }
         }
+
         carregarBases();
-    }, []);
+    }, [user]);
 
     const cadastrarUsuario = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -168,7 +188,7 @@ export default function CadastroPage() {
             setPerfil("");
             setBase("");
             setPar([]);
-            
+
             carregarUsuarios();
         } catch (error) {
             console.error(error);
@@ -177,14 +197,14 @@ export default function CadastroPage() {
     };
 
     const [fichas, setFichas] = useState<Ficha[]>([]);
-  
+
     const carregar = async (url: string, setter: Function) => {
         try {
-          const res = await authFetch(url);
-          const data = await res.json();
-          setter(data);
+            const res = await authFetch(url);
+            const data = await res.json();
+            setter(data);
         } catch (err) {
-          console.error(err);
+            console.error(err);
         }
     };
 
@@ -200,7 +220,7 @@ export default function CadastroPage() {
         await authFetch(
             `/api/usuarios/${id}/inativar`,
             {
-            method: "PUT",
+                method: "PUT",
             }
         );
 
@@ -219,12 +239,11 @@ export default function CadastroPage() {
         setModalAberto(true);
     }
 
-    // NOVA FUNÇÃO: Buscar informações do usuário
     async function verInfoUsuario(usuarioId: number) {
         setCarregandoInfo(true);
         setModalInfoAberto(true);
         setInfoUsuario(null);
-        
+
         try {
             const res = await authFetch(`/api/avaliacoes/info?usuarioId=${usuarioId}`);
             const data = await res.json();
@@ -268,10 +287,10 @@ export default function CadastroPage() {
                                     {basesVisiveis.map((base) => (
                                         <button
                                             key={base.id}
-                                            onClick={() => setBaseSelecionada(base)}
+                                            onClick={() => setBaseSelecionada(baseSelecionada?.id === base.id ? null : base)}
                                             className={`flex items-center gap-2 px-3 py-1 rounded-lg border text-sm transition
                                             ${baseSelecionada?.id === base.id
-                                                    ? "bg-[#cd0048] text-[#fcfcfc]"
+                                                    ? "bg-[#cd0048] text-white"
                                                     : "hover:bg-[#e5ecf1]"
                                                 }`}
                                         >
@@ -290,25 +309,36 @@ export default function CadastroPage() {
                                 {fichas.map((ficha) => (
                                     <button
                                         key={ficha.id}
-                                        className="flex flex-col items-center gap-1 p-3 rounded-xl border"
+                                        onClick={() =>
+                                            setFuncaoSelecionada(
+                                                funcaoSelecionada === ficha.nome
+                                                    ? null
+                                                    : ficha.nome
+                                            )
+                                        }
+                                        className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition
+    ${funcaoSelecionada === ficha.nome
+                                                ? "bg-[#cd0048] text-white"
+                                                : "hover:bg-[#e5ecf1]"
+                                            }`}
                                     >
                                         <span >
-                                        {ficha.icon}
+                                            {ficha.icon}
                                         </span>
 
                                         <span className="text-[16px]">
-                                        {ficha.nome}
+                                            {ficha.nome}
                                         </span>
 
                                         <p className="font-black">
                                             {
                                                 usuariosFiltrados.filter(
-                                                (u) => u.funcao === ficha.nome
+                                                    (u) => u.funcao === ficha.nome
                                                 ).length
                                             }
                                         </p>
                                     </button>
-                                    ))}
+                                ))}
                             </div>
 
                             {/* Formulário */}
@@ -396,7 +426,7 @@ export default function CadastroPage() {
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-xs font-semibold">Base</label>
-                                           <select
+                                            <select
                                                 className="w-full border rounded-lg px-3 py-2 text-sm"
                                                 value={base}
                                                 onChange={(e) => setBase(e.target.value)}
@@ -419,7 +449,7 @@ export default function CadastroPage() {
                                         </div>
                                         <div className="space-y-1">
                                             <label className="text-xs font-semibold">Par</label>
-                                           <MultiSelectPar
+                                            <MultiSelectPar
                                                 usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
                                                 value={par}
                                                 onChange={setPar}
@@ -446,11 +476,11 @@ export default function CadastroPage() {
                                         Profissionais Cadastrados
                                     </h2>
                                     <input
-                                    type="text"
-                                    placeholder="Buscar por nome ou ID..."
-                                    value={busca}
-                                    onChange={(e) => setBusca(e.target.value)}
-                                    className="border rounded-lg px-3 py-1.5 text-sm w-56"
+                                        type="text"
+                                        placeholder="Buscar por nome ou ID..."
+                                        value={busca}
+                                        onChange={(e) => setBusca(e.target.value)}
+                                        className="border rounded-lg px-3 py-1.5 text-sm w-56"
                                     />
                                 </div>
 
@@ -460,7 +490,7 @@ export default function CadastroPage() {
                                         <div className="flex items-center justify-between px-5 py-3">
                                             <div className="text-left gap-3">
                                                 <p className="text-sm font-semibold">{user.nome}</p>
-                                                
+
                                                 <p className="text-xs [text-#555f69]">
                                                     Matrícula: {user.matricula || '-'}
                                                 </p>
@@ -483,15 +513,15 @@ export default function CadastroPage() {
                                                 <button
                                                     onClick={() => editarUsuario(user)}
                                                     className="text-sm px-2 py-1 border rounded"
-                                                    >
+                                                >
                                                     Editar
                                                 </button>
                                                 <button
                                                     onClick={() => removerUsuario(user.id)}
                                                     className="text-sm px-2 py-1 border rounded text-red-500"
-                                                    >
+                                                >
                                                     Remover
-                                                    </button>
+                                                </button>
                                             </div>
                                         </div>
                                     ))}
@@ -507,96 +537,96 @@ export default function CadastroPage() {
             {modalAberto && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-xl w-full max-w-xl p-6">
-                    <h2 className="text-lg font-bold mb-4">
-                        Editar Profissional
-                    </h2>
+                        <h2 className="text-lg font-bold mb-4">
+                            Editar Profissional
+                        </h2>
 
-                    <div className="space-y-3 text-left">
-                        <label className="text-xs font-semibold">Nome</label>
-                        <input
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
-                        className="w-full border rounded-lg px-3 py-2"
-                        />
-                        <label className="text-xs font-semibold">Email</label>
-                        <input
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border rounded-lg px-3 py-2"
-                        />
-                        <label className="text-xs font-semibold">CPF</label>  
+                        <div className="space-y-3 text-left">
+                            <label className="text-xs font-semibold">Nome</label>
                             <input
-                            value={cpf}
-                            onChange={(e) => setCpf(e.target.value)}
-                            className="w-full border rounded-lg px-3 py-2"
-                        />
-                        <label className="text-xs font-semibold">Base</label>
-                        <select
-                            className="w-full border rounded-lg px-3 py-2 text-sm"
-                            value={base}
-                            onChange={(e) => setBase(e.target.value)}
-                            disabled={!isAdminGlobal}
-                            required
+                                value={nome}
+                                onChange={(e) => setNome(e.target.value)}
+                                className="w-full border rounded-lg px-3 py-2"
+                            />
+                            <label className="text-xs font-semibold">Email</label>
+                            <input
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full border rounded-lg px-3 py-2"
+                            />
+                            <label className="text-xs font-semibold">CPF</label>
+                            <input
+                                value={cpf}
+                                onChange={(e) => setCpf(e.target.value)}
+                                className="w-full border rounded-lg px-3 py-2"
+                            />
+                            <label className="text-xs font-semibold">Base</label>
+                            <select
+                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                                value={base}
+                                onChange={(e) => setBase(e.target.value)}
+                                disabled={!isAdminGlobal}
+                                required
                             >
-                            {basesVisiveis.map((b) => (
-                                <option
-                                    key={b.id}
-                                    value={b.nome}
-                                    className="text-black"
-                                >
-                                    {b.nome}
-                                </option>
+                                {basesVisiveis.map((b) => (
+                                    <option
+                                        key={b.id}
+                                        value={b.nome}
+                                        className="text-black"
+                                    >
+                                        {b.nome}
+                                    </option>
                                 ))}
-                        </select>
-                        
-                        <label className="text-xs font-semibold">Função</label>
-                        <select
-                            value={funcao}
-                            onChange={(e) => setFuncao(e.target.value)}
-                            className="w-full border rounded-lg px-3 py-2 text-sm"
-                            required
-                        >
-                            <option value="">Selecione</option>
-                            <option value="Condutor">Condutor</option>
-                            <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
-                            <option value="Enfermeiro">Enfermeiro</option>
-                            <option value="Médico">Médico</option>
-                        </select>
+                            </select>
 
-                        <label className="text-xs font-semibold">Perfil</label>
-                        <select
+                            <label className="text-xs font-semibold">Função</label>
+                            <select
+                                value={funcao}
+                                onChange={(e) => setFuncao(e.target.value)}
+                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                                required
+                            >
+                                <option value="">Selecione</option>
+                                <option value="Condutor">Condutor</option>
+                                <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
+                                <option value="Enfermeiro">Enfermeiro</option>
+                                <option value="Médico">Médico</option>
+                            </select>
+
+                            <label className="text-xs font-semibold">Perfil</label>
+                            <select
                                 value={perfil}
                                 onChange={(e) => setPerfil(e.target.value)}
                                 className="w-full border rounded-lg px-3 py-2"
                             >
-                            <option value="Administrador">Administrador</option>
-                            <option value="Usuario">Usuário</option>
-                        </select>
-                    <label className="text-xs font-semibold">Par</label>
-                    
-                    <MultiSelectPar
-                        usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
-                        value={parEdicao}
-                        onChange={setParEdicao}
-                        dropUp
-                    />
-                    </div>
-                    
-                    <div className="flex justify-end gap-2 mt-5">
-                        <button
-                        onClick={() => setModalAberto(false)}
-                        className="px-4 py-2 border rounded-lg"
-                        >
-                        Cancelar
-                        </button>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Usuario">Usuário</option>
+                            </select>
+                            <label className="text-xs font-semibold">Par</label>
 
-                        <button
-                        onClick={salvarEdicao}
-                        className="px-4 py-2 bg-black text-white rounded-lg"
-                        >
-                        Salvar
-                        </button>
-                    </div>
+                            <MultiSelectPar
+                                usuarios={usuarios.map(({ id, nome, funcao }) => ({ id, nome, funcao }))}
+                                value={parEdicao}
+                                onChange={setParEdicao}
+                                dropUp
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-2 mt-5">
+                            <button
+                                onClick={() => setModalAberto(false)}
+                                className="px-4 py-2 border rounded-lg"
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                onClick={salvarEdicao}
+                                className="px-4 py-2 bg-black text-white rounded-lg"
+                            >
+                                Salvar
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
