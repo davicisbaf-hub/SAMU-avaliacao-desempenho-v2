@@ -83,6 +83,8 @@ export default function PlanoDesenvolvimento() {
 
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [dataFim, setDataFim] = useState<Date | null>(null);
+  const { user } = useUserSession();
+
 
   // Refs para impressão
   const fichaPrintRef = useRef<HTMLDivElement>(null);
@@ -90,11 +92,37 @@ export default function PlanoDesenvolvimento() {
   
   const { authFetch } = useAuthFetch();
 
+  
+  const [filtroBase, setFiltroBase] = useState(user?.perfil === '🔑 Administrador - Todas as bases' ? '' : user?.base);
+
+
+  const [bases, setBases] = useState<string[]>([]);
+  
+  useEffect(() => {
+    async function carregarBases() {
+      try {
+        const res = await authFetch("/api/bases");
+        const dados = await res.json();
+
+        setBases(dados.map((b: any) => b.nome));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    carregarBases();
+  }, []);
+
   useEffect(() => {
     async function carregar() {
       try {
         setCarregando(true);
-        const res = await authFetch('/api/avaliacoes');
+
+        const url = filtroBase
+          ? `/api/avaliacoes?base=${encodeURIComponent(filtroBase)}`
+          : "/api/avaliacoes";
+
+        const res = await authFetch(url);
         const dados = await res.json();
         setAvaliacoes(dados);
       } catch (err) {
@@ -103,8 +131,9 @@ export default function PlanoDesenvolvimento() {
         setCarregando(false);
       }
     }
+
     carregar();
-  }, []);
+  }, [filtroBase]);
 
   const extrairItens = (
     obj: any,
@@ -478,6 +507,24 @@ export default function PlanoDesenvolvimento() {
               <select value={filtroFuncao} onChange={(e) => setFiltroFuncao(e.target.value)} className="border rounded-md px-3 py-2 text-sm bg-white">
                 <option value="Todas">Todas</option>
                 {funcoesUnicas.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-xs text-gray-500 mb-1">Base</label>
+              <select
+                disabled={user?.perfil !== '🔑 Administrador - Todas as bases'}
+                value={filtroBase}
+                onChange={(e) => setFiltroBase(e.target.value)}
+                className="border rounded-md px-3 py-2 text-sm bg-white"
+              >
+                <option value="">Todas</option>
+
+                {bases.map((base) => (
+                  <option key={base} value={base}>
+                    {base}
+                  </option>
+                ))}
               </select>
             </div>
 

@@ -44,8 +44,10 @@ export async function listar(req: Request, res: Response) {
     const { rows } = await pool.query(`
       SELECT
         a.id,
+        avaliador.id AS avaliador_id,
         avaliador.nome AS avaliador_nome,
         avaliador.funcao AS avaliador_funcao,
+        avaliado.id AS avaliado_id,
         avaliado.nome AS avaliado_nome,
         avaliado.funcao AS avaliado_funcao,
         a.modalidade,
