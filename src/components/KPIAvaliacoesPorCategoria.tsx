@@ -40,7 +40,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   const [kpis, setKpis] = useState<KPIData[]>([]);
   const [avaliacoesFull, setAvaliacoesFull] = useState<any[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set([`${user?.funcao}`]));
+  const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set([`${user?.funcao}`, "Avaliação Par"]));
   const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases";
 
   useEffect(() => {
@@ -89,7 +89,19 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
     carregarAvaliacoes();
   }, []);
 
-  const tiposDisponiveis = Array.from(new Set(kpis.map(k => k.tipo_avaliacao)));
+  const tiposDisponiveis = isAdminGlobal
+  ? Array.from(new Set(kpis.map(k => k.tipo_avaliacao)))
+  : Array.from(
+      new Set(
+        kpis
+          .map(k => k.tipo_avaliacao)
+          .filter(
+            tipo =>
+              tipo === user?.funcao ||
+              tipo === "Avaliação Par"
+          )
+      )
+    );
   const kpisFiltrados = kpis.filter(k => tiposFiltrados.has(k.tipo_avaliacao));
 
   const handleToggleTipo = (tipo: string) => {
@@ -178,34 +190,42 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
 
   return (
     <div className="space-y-6">
-      {isAdminGlobal && (
-        <div className="flex gap-2 flex-wrap items-center">
-          <button
-            onClick={handleSelecionarTodos}
-            className={`px-2 py-1 rounded-lg font-medium transition-all ${tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0
-              ? "bg-[#1f2937] text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-          >
-            {tiposFiltrados.size === tiposDisponiveis.length && tiposDisponiveis.length > 0 ? "Desselecionar Todos" : "Selecionar Todos"}
-          </button>
-
-          <div className="h-6 w-px bg-gray-300"></div>
-
-          {tiposDisponiveis.map(tipo => (
+      <div className="flex gap-2 flex-wrap items-center">
+        {isAdminGlobal && (
+          <>
             <button
-              key={tipo}
-              onClick={() => handleToggleTipo(tipo)}
-              className={`px-2 py-1 rounded-lg font-medium transition-all ${tiposFiltrados.has(tipo)
+              onClick={handleSelecionarTodos}
+              className={`px-2 py-1 rounded-lg font-medium transition-all ${
+                tiposFiltrados.size === tiposDisponiveis.length &&
+                tiposDisponiveis.length > 0
+                  ? "bg-[#1f2937] text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {tiposFiltrados.size === tiposDisponiveis.length &&
+              tiposDisponiveis.length > 0
+                ? "Desselecionar Todos"
+                : "Selecionar Todos"}
+            </button>
+
+            <div className="h-6 w-px bg-gray-300" />
+          </>
+        )}
+
+        {tiposDisponiveis.map((tipo) => (
+          <button
+            key={tipo}
+            onClick={() => handleToggleTipo(tipo)}
+            className={`px-2 py-1 rounded-lg font-medium transition-all ${
+              tiposFiltrados.has(tipo)
                 ? "bg-[#cd0048] text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-            >
-              {tipo}
-            </button>
-          ))}
-        </div>
-      )}
+            }`}
+          >
+            {tipo}
+          </button>
+        ))}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
