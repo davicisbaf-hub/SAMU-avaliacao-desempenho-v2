@@ -7,8 +7,6 @@ import { useReactToPrint } from 'react-to-print';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ptBR } from 'date-fns/locale';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { useAuthFetch } from "../hooks/useAuthFetch";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -86,10 +84,10 @@ export default function PlanoDesenvolvimento() {
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [dataFim, setDataFim] = useState<Date | null>(null);
 
+  // Refs para impressão
   const fichaPrintRef = useRef<HTMLDivElement>(null);
   const comparativoPrintRef = useRef<HTMLDivElement>(null);
-  const fichaPdfRef = useRef<HTMLDivElement>(null);
-  const comparativoPdfRef = useRef<HTMLDivElement>(null);
+  
   const { authFetch } = useAuthFetch();
 
   useEffect(() => {
@@ -308,34 +306,82 @@ export default function PlanoDesenvolvimento() {
     return Array.from(set).sort();
   }, [porProfissional]);
 
+  // Função para verificar se uma ficha está no período selecionado
+  const fichaNoPeriodo = (ficha: FichaProcessada) => {
+    if (!dataInicio && !dataFim) return true;
+    
+    const dataFicha = new Date(ficha.criado_em);
+    // Normaliza a data da ficha para comparar apenas a data (sem hora)
+    const dataFichaNormalizada = new Date(dataFicha.getFullYear(), dataFicha.getMonth(), dataFicha.getDate());
+    
+    if (dataInicio) {
+      const dataInicioNormalizada = new Date(dataInicio.getFullYear(), dataInicio.getMonth(), dataInicio.getDate());
+      if (dataFichaNormalizada < dataInicioNormalizada) return false;
+    }
+    
+    if (dataFim) {
+      const dataFimNormalizada = new Date(dataFim.getFullYear(), dataFim.getMonth(), dataFim.getDate());
+      if (dataFichaNormalizada > dataFimNormalizada) return false;
+    }
+    
+    return true;
+  };
+
+  // Função para filtrar fichas por período
+  const filtrarFichasPorPeriodo = (fichas: FichaProcessada[]) => {
+    return fichas.filter(ficha => fichaNoPeriodo(ficha));
+  };
+
   const profissionaisFiltrados = useMemo(() => {
-    return Object.entries(porProfissional).filter(([, prof]) => {
-      if (filtroFuncao !== 'Todas' && prof.funcao !== filtroFuncao) return false;
-
-      if (buscaTexto.trim()) {
-        const termo = buscaTexto.trim().toLowerCase();
-        if (!prof.nome.toLowerCase().includes(termo)) return false;
-      }
-
-      if (filtroPendencia !== 'todos') {
-        const ultimaFicha = prof.fichas[prof.fichas.length - 1];
-        const temPendenciaAtual = ultimaFicha ? ultimaFicha.temProblema : false;
-        if (filtroPendencia === 'com' && !temPendenciaAtual) return false;
-        if (filtroPendencia === 'sem' && temPendenciaAtual) return false;
-      }
-
-      if (dataInicio || dataFim) {
-        const temFichaNoPeriodo = prof.fichas.some(ficha => {
-          const dataFicha = new Date(ficha.criado_em);
-          if (dataInicio && dataFicha < dataInicio) return false;
-          if (dataFim && dataFicha > dataFim) return false;
-          return true;
+    return Object.entries(porProfissional)
+      .map(([key, prof]) => {
+        // Filtra as fichas do profissional pelo período
+        const fichasFiltradas = filtrarFichasPorPeriodo(prof.fichas);
+        
+        // Se não houver fichas no período, não mostra o profissional
+        if (fichasFiltradas.length === 0) return null;
+        
+        // Recria as estruturas porTipo e porTipoFicha com as fichas filtradas
+        const porTipo: Record<string, FichaProcessada[]> = {};
+        const porTipoFicha: Record<string, FichaProcessada[]> = {};
+        
+        fichasFiltradas.forEach((f) => {
+          if (!porTipo[f.tipoAvaliacao]) porTipo[f.tipoAvaliacao] = [];
+          porTipo[f.tipoAvaliacao].push(f);
+          
+          if (!porTipoFicha[f.tipoFicha]) porTipoFicha[f.tipoFicha] = [];
+          porTipoFicha[f.tipoFicha].push(f);
         });
-        if (!temFichaNoPeriodo) return false;
-      }
 
-      return true;
-    });
+        return {
+          key,
+          prof: {
+            ...prof,
+            fichas: fichasFiltradas,
+            porTipo,
+            porTipoFicha
+          }
+        };
+      })
+      .filter((item): item is { key: string; prof: any } => item !== null)
+      .filter(({ prof }) => {
+        // Aplica os outros filtros
+        if (filtroFuncao !== 'Todas' && prof.funcao !== filtroFuncao) return false;
+
+        if (buscaTexto.trim()) {
+          const termo = buscaTexto.trim().toLowerCase();
+          if (!prof.nome.toLowerCase().includes(termo)) return false;
+        }
+
+        if (filtroPendencia !== 'todos') {
+          const ultimaFicha = prof.fichas[prof.fichas.length - 1];
+          const temPendenciaAtual = ultimaFicha ? ultimaFicha.temProblema : false;
+          if (filtroPendencia === 'com' && !temPendenciaAtual) return false;
+          if (filtroPendencia === 'sem' && temPendenciaAtual) return false;
+        }
+
+        return true;
+      });
   }, [porProfissional, filtroFuncao, buscaTexto, filtroPendencia, dataInicio, dataFim]);
 
   const profModal = modalFicha ? porProfissional[modalFicha.profKey] : null;
@@ -375,19 +421,14 @@ export default function PlanoDesenvolvimento() {
       ? prof.fichas
       : (prof.porTipoFicha[filtroTipoFichaModal] ?? []);
 
+    // As fichas já estão filtradas pelo período, mas aplicamos novamente por segurança
     if (dataInicio || dataFim) {
-      fichasParaComparativo = fichasParaComparativo.filter(ficha => {
-        const dataFicha = new Date(ficha.criado_em);
-        if (dataInicio && dataFicha < dataInicio) return false;
-        if (dataFim && dataFicha > dataFim) return false;
-        return true;
-      });
+      fichasParaComparativo = fichasParaComparativo.filter(ficha => fichaNoPeriodo(ficha));
     }
 
     return fichasParaComparativo;
   };
 
-  // Função para preparar os dados do gráfico
   const prepararDadosGrafico = (fichas: FichaProcessada[]) => {
     if (fichas.length === 0) return { dadosGrafico: [], categorias: [] };
     
@@ -420,57 +461,6 @@ export default function PlanoDesenvolvimento() {
     });
 
     return { dadosGrafico, categorias: Object.keys(categoriasMap) };
-  };
-
-  const baixarPDF = async (elemento: HTMLElement | null, nomeArquivo: string) => {
-    if (!elemento) return;
-
-    try {
-      const canvas = await html2canvas(elemento, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      let heightLeft = pdfHeight;
-      let position = 0;
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
-      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        position = heightLeft - pdfHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-        heightLeft -= pageHeight;
-      }
-
-      pdf.save(`${nomeArquivo}.pdf`);
-    } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
-      alert('Erro ao gerar o PDF. Tente novamente.');
-    }
-  };
-
-  const baixarFichaPDF = () => {
-    if (fichaPdfRef.current) {
-      const nome = `Ficha-${profModal?.nome}-${fichaModal?.id}`;
-      baixarPDF(fichaPdfRef.current, nome);
-    }
-  };
-
-  const baixarComparativoPDF = () => {
-    if (comparativoPdfRef.current) {
-      const nome = `Comparativo-${profModal?.nome}`;
-      baixarPDF(comparativoPdfRef.current, nome);
-    }
   };
 
   return (
@@ -549,7 +539,9 @@ export default function PlanoDesenvolvimento() {
           {carregando ? (
             <div className="text-center py-10 font-medium">Carregando avaliações...</div>
           ) : profissionaisFiltrados.length === 0 ? (
-            <div className="text-center py-10 text-gray-500">Nenhum profissional encontrado com esses filtros.</div>
+            <div className="text-center py-10 text-gray-500">
+              {dataInicio || dataFim ? 'Nenhum profissional encontrado no período selecionado.' : 'Nenhum profissional encontrado com esses filtros.'}
+            </div>
           ) : (
             <>
               <div className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
@@ -565,7 +557,7 @@ export default function PlanoDesenvolvimento() {
                       </tr>
                     </thead>
                     <tbody>
-                      {profissionaisFiltrados.map(([profKey, prof]) => {
+                      {profissionaisFiltrados.map(({ key: profKey, prof }) => {
                         const temPendencia = profissionalTemPendencia(prof);
                         return (
                           <tr key={profKey} className="border-t">
@@ -597,7 +589,7 @@ export default function PlanoDesenvolvimento() {
                 </div>
               </div>
 
-              {profissionaisFiltrados.map(([profKey, prof]) => (
+              {profissionaisFiltrados.map(({ key: profKey, prof }) => (
                 <div key={profKey} className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
                   <h3 className="font-bold text-lg text-left mb-4">{prof.funcao} - {prof.nome}</h3>
 
@@ -675,23 +667,6 @@ export default function PlanoDesenvolvimento() {
                                         >
                                           🖨️
                                         </button>
-
-                                        <button
-                                          onClick={() => {
-                                            setModalFicha({
-                                              profKey,
-                                              fichaId: ficha.id,
-                                              tipoAvaliacao: tipo,
-                                            });
-                                            setTimeout(() => {
-                                              baixarFichaPDF();
-                                            }, 300);
-                                          }}
-                                          className="text-xl p-1 hover:bg-gray-100 rounded"
-                                          title="Baixar PDF"
-                                        >
-                                          <FileDown size={18} />
-                                        </button>
                                       </div>
                                     </td>
                                   </tr>
@@ -733,31 +708,26 @@ export default function PlanoDesenvolvimento() {
               </div>
               <div className="flex items-center gap-2">
                 {modoComparativo && (
-                  <>
-                    <button
-                      onClick={() => imprimirComparativo()}
-                      className="px-3 py-2 hover:bg-gray-100 rounded"
-                      title="Imprimir"
-                    >
-                      🖨️
-                    </button>
-                    <button
-                      onClick={() => baixarComparativoPDF()}
-                      className="px-3 py-2 hover:bg-gray-100 rounded"
-                      title="Baixar PDF"
-                    >
-                      <FileDown size={20} />
-                    </button>
-                  </>
+                  <button
+                    onClick={() => {
+                      imprimirComparativo();
+                    }}
+                    className="px-3 py-2 hover:bg-gray-100 rounded"
+                    title="Imprimir"
+                  >
+                    🖨️
+                  </button>
                 )}
 
                 {!modoComparativo && fichaModal && (
                   <button
-                    onClick={() => baixarFichaPDF()}
+                    onClick={() => {
+                      imprimirFicha();
+                    }}
                     className="px-3 py-2 hover:bg-gray-100 rounded"
-                    title="Baixar PDF"
+                    title="Imprimir"
                   >
-                    <FileDown size={20} />
+                    🖨️
                   </button>
                 )}
 
@@ -833,7 +803,6 @@ export default function PlanoDesenvolvimento() {
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
                 
-                // Preparar dados do gráfico com as fichas filtradas
                 const { dadosGrafico, categorias } = prepararDadosGrafico(fichasParaComparativo);
                 
                 const CORES = ['#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'];
@@ -878,7 +847,6 @@ export default function PlanoDesenvolvimento() {
                       </div>
                     ) : (
                       <>
-                        {/* GRÁFICO - aparece SOMENTE quando um tipo específico de ficha é selecionado */}
                         {filtroTipoFichaModal !== 'todos' && fichasParaComparativo.length > 1 && dadosGrafico.length > 0 && categorias.length > 0 && (
                           <div className="mb-6 p-4 bg-white border rounded-lg">
                             <h4 className="font-semibold text-sm text-gray-700 mb-4">
@@ -928,7 +896,6 @@ export default function PlanoDesenvolvimento() {
                           </div>
                         )}
 
-                        {/* Tabela comparativa */}
                         <div className="border rounded-lg overflow-auto">
                           <table className="w-full text-sm">
                             <thead className="bg-gray-50">
@@ -977,6 +944,7 @@ export default function PlanoDesenvolvimento() {
         </div>
       )}
 
+      {/* Elemento oculto para impressão - Ficha */}
       <div style={{ display: 'none' }}>
         <div ref={fichaPrintRef}>
           {fichaModal && profModal && (
@@ -1035,68 +1003,11 @@ export default function PlanoDesenvolvimento() {
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '800px', background: 'white', padding: '30px' }}>
-        <div ref={fichaPdfRef}>
-          {fichaModal && profModal && (
-            <div style={{ fontFamily: 'Arial, sans-serif' }}>
-              <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
-                Ficha de Avaliação
-              </h1>
-
-              <div style={{ marginBottom: '20px' }}>
-                <p><strong>Profissional:</strong> {profModal.nome}</p>
-                <p><strong>Função:</strong> {profModal.funcao}</p>
-                <p><strong>Tipo de Avaliação:</strong> {tipoLabel(fichaModal.tipoAvaliacao)}</p>
-                <p><strong>Ficha:</strong> {fichaModal.tipoFicha}</p>
-                <p><strong>Data:</strong> {formatarData(fichaModal.criado_em)}</p>
-                <p><strong>Status:</strong> {fichaModal.temProblema ? '⚠️ Com pendências' : '✅ Sem pendências'}</p>
-              </div>
-
-              <hr style={{ marginBottom: '20px' }} />
-
-              {fichaModal.categorias.map((cat) => (
-                <div key={cat.nome} style={{ marginBottom: '25px' }}>
-                  <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>{cat.nome}</h3>
-
-                  <div style={{ marginBottom: '10px' }}>
-                    <p><strong>Nota:</strong> {cat.mediaPonderada}</p>
-                    <p><strong>Classificação:</strong> {cat.classificacaoAtual}</p>
-                    <p><strong>Orientação:</strong> {cat.orientacao}</p>
-                  </div>
-
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: '#f0f0f0' }}>
-                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Critério</th>
-                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '80px' }}>Nota</th>
-                        <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', width: '80px' }}>Peso</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cat.itens.map((item) => (
-                        <tr key={item.criterio}>
-                          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{item.criterio}</td>
-                          <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item.nota}</td>
-                          <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{item.peso}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
-
-              <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #ccc', fontSize: '12px', color: '#666' }}>
-                <p>Documento gerado em: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR')}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '1000px', background: 'white', padding: '30px' }}>
-        <div ref={comparativoPdfRef}>
+      {/* Elemento oculto para impressão - Comparativo */}
+      <div style={{ display: 'none' }}>
+        <div ref={comparativoPrintRef}>
           {profModal && modoComparativo && (
-            <div style={{ fontFamily: 'Arial, sans-serif' }}>
+            <div style={{ padding: '30px', fontFamily: 'Arial, sans-serif', maxWidth: '1000px', margin: '0 auto' }}>
               <h1 style={{ fontSize: '24px', marginBottom: '20px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
                 Comparativo de Evolução
               </h1>
@@ -1115,6 +1026,8 @@ export default function PlanoDesenvolvimento() {
                 const comparativoFiltrado = montarComparativoCategorias(fichasParaComparativo);
                 const linhas = Object.entries(comparativoFiltrado);
                 const evolucaoConsolidada = calcularEvolucaoConsolidada(fichasParaComparativo);
+                const { dadosGrafico, categorias } = prepararDadosGrafico(fichasParaComparativo);
+                const CORES = ['#2563eb', '#dc2626', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'];
 
                 return (
                   <div>
@@ -1122,6 +1035,40 @@ export default function PlanoDesenvolvimento() {
                       <p style={{ textAlign: 'center', color: '#666' }}>Nenhuma ficha encontrada com os filtros aplicados.</p>
                     ) : (
                       <>
+                        {/* GRÁFICO na impressão */}
+                        {filtroTipoFichaModal !== 'todos' && fichasParaComparativo.length > 1 && dadosGrafico.length > 0 && categorias.length > 0 && (
+                          <div style={{ marginBottom: '25px', padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
+                            <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '10px' }}>
+                              Evolução por Categoria - {filtroTipoFichaModal}
+                            </h4>
+                            <div style={{ width: '100%', height: '300px' }}>
+                              <LineChart
+                                width={900}
+                                height={300}
+                                data={dadosGrafico}
+                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                              >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="nome" label={{ value: 'Fichas', position: 'insideBottom', offset: -5 }} />
+                                <YAxis domain={[0, 5]} label={{ value: 'Nota', angle: -90, position: 'insideLeft' }} />
+                                <Tooltip />
+                                <Legend />
+                                {categorias.map((categoria, index) => (
+                                  <Line
+                                    key={categoria}
+                                    type="monotone"
+                                    dataKey={categoria}
+                                    stroke={CORES[index % CORES.length]}
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                  />
+                                ))}
+                              </LineChart>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Tabela comparativa */}
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                           <thead>
                             <tr style={{ backgroundColor: '#f0f0f0' }}>
@@ -1162,6 +1109,7 @@ export default function PlanoDesenvolvimento() {
                           </tbody>
                         </table>
 
+                        {/* Evolução Consolidada */}
                         {evolucaoConsolidada.length > 0 && (
                           <div style={{ marginTop: '25px' }}>
                             <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '5px' }}>Evolução Consolidada</h2>
