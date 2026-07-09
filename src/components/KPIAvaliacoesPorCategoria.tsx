@@ -286,6 +286,27 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
         ))}
       </div>
 
+        <div className="bg-white rounded-lg border p-6">
+        <h3 className="text-lg font-bold mb-4">Comparativo por Função</h3>
+        <ResponsiveContainer width="100%" height={Math.max(250, dadosPorTipo.length * 90)}>
+          <BarChart data={dadosPorTipo} layout="vertical" margin={{ top: 10, right: 30, left: 40, bottom: 10 }} barSize={35}>
+            <XAxis type="number" allowDecimals={false} />
+            <YAxis type="category" dataKey="tipo" width={120} />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="Bom" stackId="status" fill="#22c55e">
+              <LabelList dataKey="Bom" position="center" fill="#fff" fontWeight="bold" formatter={(v: number) => (v > 0 ? v : "")} />
+            </Bar>
+            <Bar dataKey="Atenção" stackId="status" fill="#f59e0b">
+              <LabelList dataKey="Atenção" position="center" fill="#fff" fontWeight="bold" formatter={(v: number) => (v > 0 ? v : "")} />
+            </Bar>
+            <Bar dataKey="Risco" stackId="status" fill="#ef4444">
+              <LabelList dataKey="Risco" position="center" fill="#fff" fontWeight="bold" formatter={(v: number) => (v > 0 ? v : "")} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
           dadosCards.map((kpi: any) => (
@@ -326,26 +347,6 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
         )}
       </div>
 
-      <div className="bg-white rounded-lg border p-6">
-        <h3 className="text-lg font-bold mb-4">Comparativo por Função</h3>
-        <ResponsiveContainer width="100%" height={Math.max(250, dadosPorTipo.length * 90)}>
-          <BarChart data={dadosPorTipo} layout="vertical" margin={{ top: 10, right: 30, left: 40, bottom: 10 }} barSize={35}>
-            <XAxis type="number" allowDecimals={false} />
-            <YAxis type="category" dataKey="tipo" width={120} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Bom" stackId="status" fill="#22c55e">
-              <LabelList dataKey="Bom" position="center" fill="#fff" fontWeight="bold" formatter={(v: number) => (v > 0 ? v : "")} />
-            </Bar>
-            <Bar dataKey="Atenção" stackId="status" fill="#f59e0b">
-              <LabelList dataKey="Atenção" position="center" fill="#fff" fontWeight="bold" formatter={(v: number) => (v > 0 ? v : "")} />
-            </Bar>
-            <Bar dataKey="Risco" stackId="status" fill="#ef4444">
-              <LabelList dataKey="Risco" position="center" fill="#fff" fontWeight="bold" formatter={(v: number) => (v > 0 ? v : "")} />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
 
       {kpisFiltrados.length > 0 && (
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 mt-8 border border-gray-200">
