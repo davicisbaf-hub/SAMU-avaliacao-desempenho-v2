@@ -126,8 +126,8 @@ export default function InstrucoesPage() {
                     <span className='text-white text-xs font-bold'>360</span>
                   </div>
                   <div>
-                    <p className='text-sm font-semibold text-foreground'>Simulação / bp-TEAM</p>
-                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação em cenário simulado (bp-TEAM/NTS)</p>
+                    <p className='text-sm font-semibold text-foreground'>Avaliação dos Pares</p>
+                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação realizada entre os profissionais da mesma equipe</p>
                   </div>
                 </div>
               </div>
