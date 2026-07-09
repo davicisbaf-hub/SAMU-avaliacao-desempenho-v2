@@ -306,40 +306,33 @@ export default function CadastroPage() {
 
                             {/* Resumo */}
                             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                                {fichas.map((ficha) => (
+                                {fichas
+                                    .filter((ficha) => ficha.nome !== "Liderança > Liderado" && ficha.nome !== "Liderado > Liderança" && ficha.nome !== "Avaliação dos Pares")
+                                    .map((ficha) => (
                                     <button
                                         key={ficha.id}
                                         onClick={() =>
-                                            setFuncaoSelecionada(
-                                                funcaoSelecionada === ficha.nome
-                                                    ? null
-                                                    : ficha.nome
-                                            )
+                                        setFuncaoSelecionada(
+                                            funcaoSelecionada === ficha.nome ? null : ficha.nome
+                                        )
                                         }
                                         className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition
-    ${funcaoSelecionada === ficha.nome
-                                                ? "bg-[#cd0048] text-white"
-                                                : "hover:bg-[#e5ecf1]"
-                                            }`}
+                                        ${
+                                            funcaoSelecionada === ficha.nome
+                                            ? "bg-[#cd0048] text-white"
+                                            : "hover:bg-[#e5ecf1]"
+                                        }`}
                                     >
-                                        <span >
-                                            {ficha.icon}
-                                        </span>
+                                        <span>{ficha.icon}</span>
 
-                                        <span className="text-[16px]">
-                                            {ficha.nome}
-                                        </span>
+                                        <span className="text-[16px]">{ficha.nome}</span>
 
                                         <p className="font-black">
-                                            {
-                                                usuariosFiltrados.filter(
-                                                    (u) => u.funcao === ficha.nome
-                                                ).length
-                                            }
+                                        {usuariosFiltrados.filter((u) => u.funcao === ficha.nome).length}
                                         </p>
                                     </button>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
 
                             {/* Formulário */}
                             <div className="bg-card border border-border rounded-xl overflow-visible">
