@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
-
+import { parse } from "yaml";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // rotas
 import authRoutes from "./routes/auth.js";
@@ -11,16 +15,12 @@ import kpisRoutes from "./routes/kpis.js";
 import auxiliaresRoutes from "./routes/auxiliares.js";
 import { autenticar } from "./middleware/auth.js";
 
-// swaggerUi
 
-import swaggerUi from "swagger-ui-express";
+import { apiReference } from "@scalar/express-api-reference";
 import { readFileSync } from "fs";
-import { parse } from "yaml";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+
+
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -40,11 +40,29 @@ app.use(cors({
   ],
 }));
 
-const swaggerDoc = parse(
-  readFileSync(join(__dirname, "swagger.yaml"), "utf-8")
+const ScalarDocs = parse(
+  readFileSync(join(__dirname, "ScalarDocs.yaml"), "utf-8")
 );
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
+app.get("/openapi.json", (req, res) => {
+  res.json(ScalarDocs);
+});
+
+app.use(
+  "/docs",
+  apiReference({
+    url: "/openapi.json",
+
+    theme: "moon",
+    layout: "modern",
+    title: "API #1",
+    showSidebar: true,
+    defaultOpenFirstTag: true,
+    showDeveloperTools: "never"
+  })
+);
+
+// Rotas da API
 
 app.use("/", authRoutes);
 

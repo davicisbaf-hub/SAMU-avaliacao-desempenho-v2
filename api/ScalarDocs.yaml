@@ -12,9 +12,9 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://localhost:3001
+  - url: http://localhost:3001/api/
     description: Desenvolvimento local
-  - url: https://avaliacao360.cisbaf.org.br
+  - url: https://avaliacao360.cisbaf.org.br/api/
     description: Produção
 
 tags:

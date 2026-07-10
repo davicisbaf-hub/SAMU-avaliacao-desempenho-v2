@@ -16,6 +16,7 @@
     "@fontsource-variable/geist": "^5.2.9",
     "@mui/material": "^9.2.0",
     "@mui/x-charts": "^9.8.0",
+    "@scalar/express-api-reference": "^0.10.9",
     "@tailwindcss/vite": "^4.3.0",
     "bcrypt": "^6.0.0",
     "chart.js": "^4.5.1",
