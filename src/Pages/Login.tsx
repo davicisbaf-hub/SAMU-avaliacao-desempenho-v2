@@ -13,12 +13,10 @@ function App() {
 
   const [cpf, setCpf] = useState("");
 
-  // Se já está logado, redireciona para home
-  useEffect(() => {
+  
     if (user && !isLoading) {
       navigate("/");
     }
-  }, [user, isLoading, navigate]);
 
 
 

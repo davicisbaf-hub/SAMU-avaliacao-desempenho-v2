@@ -1,8 +1,8 @@
 import Header from "../components/Header";
 import Nav from "../components/Nav";
 import { useEffect, useState } from "react";
-import { useUserSession } from "../contexts/UserSession";
 import { useAuthFetch } from "../hooks/useAuthFetch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 
 type Tipo = {
   tipo: string;
@@ -59,7 +59,6 @@ export default function ConfiguracaoPage() {
   const [frequenciaEditando, setFrequenciaEditando] = useState<Frequencia | null>(null);
   const [salvando, setSalvando] = useState(false);
 
-  const { user } = useUserSession();
   const { authFetch } = useAuthFetch();
 
   async function carregarFrequencias() {
@@ -185,7 +184,7 @@ export default function ConfiguracaoPage() {
           criterio,
           peso,
           indicador,
-          
+
           avaliacao: avaliacaoSelecionada,
           tipo: tipoSelecionado,
         }),
@@ -273,300 +272,314 @@ export default function ConfiguracaoPage() {
       <Nav />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header />
+
         <div className="p-8 overflow-y-auto custom-scrollbar">
-          <div className="rounded-xl border p-6 space-y-6 ">
-            {/* HEADER */}
-            <div>
-              <h1 className="text-2xl font-bold">Configuração das Fichas</h1>
-              <p className="text-sm text-gray-500">
-                Adicione e gerencie critérios de avaliação para cada tipo de ficha.
-              </p>
-            </div>
 
-            {/* SELECTS */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-semibold">Tipo de Profissional</label>
-                <select
-                  value={tipoSelecionado}
-                  onChange={(e) => setTipoSelecionado(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
-                >
-                  <option value="">Selecione o tipo</option>
-                  {tipos.map((t) => (
-                    <option key={t.tipo} value={t.tipo}>
-                      {t.tipo}
-                    </option>
-                  ))}
-                </select>
+          <Tabs defaultValue="ficha" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="ficha">Configuração das Fichas</TabsTrigger>
+              <TabsTrigger value="frequencia">Frequência das Avaliações por Nível</TabsTrigger>
+              <TabsTrigger value="pdi" disabled>Plano de desenvolvimento Individual (PDI)</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="ficha">
+              {/* Configuração das fichas */}
+              <div className="rounded-xl border p-6 space-y-6 ">
+                {/* HEADER */}
+                <div>
+                  <h1 className="text-2xl font-bold">Configuração das Fichas</h1>
+                  <p className="text-sm text-gray-500">
+                    Adicione e gerencie critérios de avaliação para cada tipo de ficha.
+                  </p>
+                </div>
+                {/* SELECTS */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-semibold">Tipo de Profissional</label>
+                    <select
+                      value={tipoSelecionado}
+                      onChange={(e) => setTipoSelecionado(e.target.value)}
+                      className="w-full border rounded-lg px-3 py-2 mt-1"
+                    >
+                      <option value="">Selecione o tipo</option>
+                      {tipos.map((t) => (
+                        <option key={t.tipo} value={t.tipo}>
+                          {t.tipo}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-semibold">Tipo de Avaliação</label>
+                    <select
+                      value={avaliacaoSelecionada}
+                      onChange={(e) => setAvaliacaoSelecionada(e.target.value)}
+                      className="w-full border rounded-lg px-3 py-2 mt-1"
+                    >
+                      {tipoAvaliacao.map((t) => (
+                        <option key={t.id} value={t.nome}>
+                          {t.descricao}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* AÇÕES */}
+                <div className="flex justify-between items-center">
+                  <h2 className="font-semibold text-lg">Critérios da Ficha</h2>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={novoCriterio}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                    >
+                      Novo Critério
+                    </button>
+                    <button
+                      onClick={inativarSelecionados}
+                      disabled={selecionados.length === 0}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50 hover:bg-red-700 transition"
+                    >
+                      Inativar ({selecionados.length})
+                    </button>
+                  </div>
+                </div>
+
+                {/* LISTA */}
+                {tipoSelecionado && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-sm">
+                      <thead>
+                        <tr className="border-b bg-gray-100 text-center">
+                          <th className="px-3 py-2 text-left">#</th>
+                          <th className="px-3 py-2 text-center w-12">
+                            <input
+                              type="checkbox"
+                              checked={
+                                criterios.length > 0 &&
+                                selecionados.length === criterios.length
+                              }
+                              onChange={(e) =>
+                                setSelecionados(
+                                  e.target.checked ? criterios.map((c) => c.id) : []
+                                )
+                              }
+                            />
+                          </th>
+
+                          <th className="px-3 py-2">Categoria</th>
+                          <th className="px-3 py-2">Critério</th>
+                          <th className="px-3 py-2">Peso</th>
+                          <th className="px-3 py-2">Indicador</th>
+                          <th className="px-3 py-2">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {criterios.map((item) => (
+                          <tr
+                            key={item.id}
+                            className="border-b hover:bg-gray-50 transition-colors"
+                          >
+                            <td className="px-3 py-3">{item.id}</td>
+                            <td className="px-3 py-3 text-center">
+                              <input
+                                type="checkbox"
+                                checked={selecionados.includes(item.id)}
+                                onChange={() => toggleSelecionado(item.id)}
+                              />
+                            </td>
+                            <td className="px-3 py-3">{item.categoria}</td>
+                            <td className="px-3 py-3 max-w-xs truncate">
+                              {item.criterio}
+                            </td>
+                            <td className="px-3 py-3 text-center">{item.peso}</td>
+                            <td className="px-3 py-3 max-w-xs truncate">
+                              {item.indicador || "-"}
+                            </td>
+                            <td className="px-3 py-3 text-center">
+                              <button
+                                onClick={() => editarCriterio(item)}
+                                className="text-blue-600 hover:text-blue-800 font-medium"
+                              >
+                                Editar
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                        {criterios.length === 0 && (
+                          <tr>
+                            <td colSpan={8} className="px-3 py-6 text-center text-gray-500">
+                              Nenhum critério encontrado para esta seleção.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
+            </TabsContent>
 
-              <div>
-                <label className="text-sm font-semibold">Tipo de Avaliação</label>
-                <select
-                  value={avaliacaoSelecionada}
-                  onChange={(e) => setAvaliacaoSelecionada(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 mt-1"
-                >
-                  {tipoAvaliacao.map((t) => (
-                    <option key={t.id} value={t.nome}>
-                      {t.descricao}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            {/* FREQUÊNCIA DAS AVALIAÇÕES */}
+            <TabsContent value="frequencia">
+              <div className="rounded-lg border p-4 mt-6">
+                <h2 className="font-semibold text-lg mb-4">
+                  Frequência das Avaliações por Nível
+                </h2>
 
-            {/* AÇÕES */}
-            <div className="flex justify-between items-center">
-              <h2 className="font-semibold text-lg">Critérios da Ficha</h2>
-              <div className="flex gap-2">
-                <button
-                  onClick={novoCriterio}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                >
-                  Novo Critério
-                </button>
-                <button
-                  onClick={inativarSelecionados}
-                  disabled={selecionados.length === 0}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg disabled:opacity-50 hover:bg-red-700 transition"
-                >
-                  Inativar ({selecionados.length})
-                </button>
-              </div>
-            </div>
-
-            {/* LISTA */}
-            {tipoSelecionado && (
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-sm">
+                <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b bg-gray-100 text-center">
-                      <th className="px-3 py-2 text-left">#</th>
-                      <th className="px-3 py-2 text-center w-12">
-                        <input
-                          type="checkbox"
-                          checked={
-                            criterios.length > 0 &&
-                            selecionados.length === criterios.length
-                          }
-                          onChange={(e) =>
-                            setSelecionados(
-                              e.target.checked ? criterios.map((c) => c.id) : []
-                            )
-                          }
-                        />
-                      </th>
-
-                      <th className="px-3 py-2">Categoria</th>
-                      <th className="px-3 py-2">Critério</th>
-                      <th className="px-3 py-2">Peso</th>
-                      <th className="px-3 py-2">Indicador</th>
-                      <th className="px-3 py-2">Ações</th>
+                    <tr className="border-b bg-gray-100">
+                      <th className="p-2">ID</th>
+                      <th className="p-2">Nível</th>
+                      <th className="p-2">Dias Mínimos</th>
+                      <th className="p-2">Dias Máximos</th>
+                      <th className="p-2">Dias</th>
+                      <th className="p-2">Semanas</th>
+                      <th className="p-2">Meses</th>
+                      <th className="p-2">Anos</th>
+                      <th className="p-2">Ação</th>
                     </tr>
                   </thead>
+
                   <tbody>
-                    {criterios.map((item) => (
-                      <tr
-                        key={item.id}
-                        className="border-b hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="px-3 py-3">{item.id}</td>
-                        <td className="px-3 py-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={selecionados.includes(item.id)}
-                            onChange={() => toggleSelecionado(item.id)}
-                          />
-                        </td>
-                        <td className="px-3 py-3">{item.categoria}</td>
-                        <td className="px-3 py-3 max-w-xs truncate">
-                          {item.criterio}
-                        </td>
-                        <td className="px-3 py-3 text-center">{item.peso}</td>
-                        <td className="px-3 py-3 max-w-xs truncate">
-                          {item.indicador || "-"}
-                        </td>
-                        <td className="px-3 py-3 text-center">
-                          <button
-                            onClick={() => editarCriterio(item)}
-                            className="text-blue-600 hover:text-blue-800 font-medium"
-                          >
-                            Editar
-                          </button>
-                        </td>
+                    {frequencias.map((item) => (
+                      <tr key={item.id} className="border-b">
+                        {frequenciaEditando?.id === item.id ? (
+                          // Modo edição
+                          <>
+                            <td className="p-2 text-center">{item.id}</td>
+                            <td className="p-2 text-center">
+                              <input
+                                type="text"
+                                value={frequenciaEditando.nivel}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  nivel: e.target.value
+                                })}
+                                className="w-32 border rounded px-2 py-1"
+                                placeholder="Nome do nível"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={frequenciaEditando.dias_minimos}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  dias_minimos: Number(e.target.value)
+                                })}
+                                className="w-16 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={frequenciaEditando.dias_maximos}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  dias_maximos: Number(e.target.value)
+                                })}
+                                className="w-16 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={frequenciaEditando.dias}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  dias: Number(e.target.value)
+                                })}
+                                className="w-16 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={frequenciaEditando.semanas}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  semanas: Number(e.target.value)
+                                })}
+                                className="w-16 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={frequenciaEditando.meses}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  meses: Number(e.target.value)
+                                })}
+                                className="w-16 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={frequenciaEditando.anos}
+                                onChange={(e) => setFrequenciaEditando({
+                                  ...frequenciaEditando,
+                                  anos: Number(e.target.value)
+                                })}
+                                className="w-16 border rounded px-2 py-1"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => salvarFrequencia(frequenciaEditando)}
+                                  disabled={salvando}
+                                  className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 text-xs disabled:opacity-50"
+                                >
+                                  {salvando ? 'Salvando...' : 'Salvar'}
+                                </button>
+                                <button
+                                  onClick={cancelarEdicaoFrequencia}
+                                  className="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400 text-xs"
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </td>
+                          </>
+                        ) : (
+                          // Modo visualização
+                          <>
+                            <td className="p-2 text-center">{item.id}</td>
+                            <td className="p-2 font-medium ">{item.nivel}</td>
+                            <td className="p-2 text-center">{item.dias_minimos}</td>
+                            <td className="p-2 text-center">{item.dias_maximos}</td>
+                            <td className="p-2 text-center">{item.dias}</td>
+                            <td className="p-2 text-center">{item.semanas}</td>
+                            <td className="p-2 text-center">{item.meses}</td>
+                            <td className="p-2 text-center">{item.anos}</td>
+                            <td className="p-2">
+                              <button
+                                onClick={() => editarFrequencia(item)}
+                                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs"
+                              >
+                                Editar
+                              </button>
+                            </td>
+                          </>
+                        )}
                       </tr>
                     ))}
-                    {criterios.length === 0 && (
-                      <tr>
-                        <td colSpan={8} className="px-3 py-6 text-center text-gray-500">
-                          Nenhum critério encontrado para esta seleção.
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>
-            )}
-          </div>
-
-          {/* FREQUÊNCIA DAS AVALIAÇÕES */}
-          <div className="rounded-lg border p-4 mt-6">
-            <h2 className="font-semibold text-lg mb-4">
-              Frequência das Avaliações por Nível
-            </h2>
-
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b bg-gray-100">
-                  <th className="p-2">ID</th>
-                  <th className="p-2">Nível</th>
-                  <th className="p-2">Dias Mínimos</th>
-                  <th className="p-2">Dias Máximos</th>
-                  <th className="p-2">Dias</th>
-                  <th className="p-2">Semanas</th>
-                  <th className="p-2">Meses</th>
-                  <th className="p-2">Anos</th>
-                  <th className="p-2">Ação</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {frequencias.map((item) => (
-                  <tr key={item.id} className="border-b">
-                    {frequenciaEditando?.id === item.id ? (
-                      // Modo edição
-                      <>
-                        <td className="p-2 text-center">{item.id}</td>
-                        <td className="p-2 text-center">
-                          <input
-                            type="text"
-                            value={frequenciaEditando.nivel}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              nivel: e.target.value
-                            })}
-                            className="w-32 border rounded px-2 py-1"
-                            placeholder="Nome do nível"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <input
-                            type="number"
-                            min={0}
-                            value={frequenciaEditando.dias_minimos}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              dias_minimos: Number(e.target.value)
-                            })}
-                            className="w-16 border rounded px-2 py-1"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <input
-                            type="number"
-                            min={0}
-                            value={frequenciaEditando.dias_maximos}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              dias_maximos: Number(e.target.value)
-                            })}
-                            className="w-16 border rounded px-2 py-1"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <input
-                            type="number"
-                            min={0}
-                            value={frequenciaEditando.dias}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              dias: Number(e.target.value)
-                            })}
-                            className="w-16 border rounded px-2 py-1"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <input
-                            type="number"
-                            min={0}
-                            value={frequenciaEditando.semanas}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              semanas: Number(e.target.value)
-                            })}
-                            className="w-16 border rounded px-2 py-1"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <input
-                            type="number"
-                            min={0}
-                            value={frequenciaEditando.meses}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              meses: Number(e.target.value)
-                            })}
-                            className="w-16 border rounded px-2 py-1"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <input
-                            type="number"
-                            min={0}
-                            value={frequenciaEditando.anos}
-                            onChange={(e) => setFrequenciaEditando({
-                              ...frequenciaEditando,
-                              anos: Number(e.target.value)
-                            })}
-                            className="w-16 border rounded px-2 py-1"
-                          />
-                        </td>
-                        <td className="p-2">
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => salvarFrequencia(frequenciaEditando)}
-                              disabled={salvando}
-                              className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 text-xs disabled:opacity-50"
-                            >
-                              {salvando ? 'Salvando...' : 'Salvar'}
-                            </button>
-                            <button
-                              onClick={cancelarEdicaoFrequencia}
-                              className="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400 text-xs"
-                            >
-                              Cancelar
-                            </button>
-                          </div>
-                        </td>
-                      </>
-                    ) : (
-                      // Modo visualização
-                      <>
-                        <td className="p-2 text-center">{item.id}</td>
-                        <td className="p-2 font-medium ">{item.nivel}</td>
-                        <td className="p-2 text-center">{item.dias_minimos}</td>
-                        <td className="p-2 text-center">{item.dias_maximos}</td>
-                        <td className="p-2 text-center">{item.dias}</td>
-                        <td className="p-2 text-center">{item.semanas}</td>
-                        <td className="p-2 text-center">{item.meses}</td>
-                        <td className="p-2 text-center">{item.anos}</td>
-                        <td className="p-2">
-                          <button
-                            onClick={() => editarFrequencia(item)}
-                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-xs"
-                          >
-                            Editar
-                          </button>
-                        </td>
-                      </>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 
