@@ -480,7 +480,7 @@ export default function CadastroPage() {
                                 <div className="divide-y divide-border">
 
                                     {usuariosFiltrados.map((user: any) => (
-                                        <div className="flex items-center justify-between px-5 py-3">
+                                        <div key={user.id} className="flex items-center justify-between px-5 py-3">
                                             <div className="text-left gap-3">
                                                 <p className="text-sm font-semibold">{user.nome}</p>
 

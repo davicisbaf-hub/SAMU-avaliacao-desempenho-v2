@@ -127,7 +127,7 @@ export default function InstrucoesPage() {
                   </div>
                   <div>
                     <p className='text-sm font-semibold text-foreground'>Avaliação dos Pares</p>
-                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação realizada entre os profissionais da mesma equipe</p>
+                    <p className='text-xs [text-#555f69] mt-0.5'>Avaliação realizada entre colegas de mesma hierarquia.</p>
                   </div>
                 </div>
               </div>
@@ -231,7 +231,7 @@ export default function InstrucoesPage() {
               <h2 className='font-semibold text-[#0e1216]'>Frequência e Responsabilidade de Aplicação</h2>
               <div className='space-y-3'>
                 {frequencias.map((item) => (
-                  <div className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
+                  <div key={item.id} className="flex gap-3 items-start bg-[#e5ecf1]/30 rounded-lg p-3">
                     <span className="text-xl shrink-0">{item.icon}</span>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">

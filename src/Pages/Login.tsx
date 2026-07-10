@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useUserSession } from "../contexts/UserSession";
 
@@ -14,10 +14,13 @@ function App() {
   const [cpf, setCpf] = useState("");
 
   // Se já está logado, redireciona para home
-  if (user && !isLoading) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (user && !isLoading) {
+      navigate("/");
+    }
+  }, [user, isLoading, navigate]);
+
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
