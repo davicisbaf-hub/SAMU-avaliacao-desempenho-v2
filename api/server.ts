@@ -20,8 +20,6 @@ import { apiReference } from "@scalar/express-api-reference";
 import { readFileSync } from "fs";
 
 
-
-
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -49,18 +47,17 @@ const ScalarDocs = parse(
   readFileSync(join(__dirname, "ScalarDocs.yaml"), "utf-8")
 );
 
-app.get("/openapi.json", (req, res) => {
+app.get("/api/openapi.json", (req, res) => {
   res.json(ScalarDocs);
 });
 
 app.use(
   "/docs",
   apiReference({
-    url: "/openapi.json",
+    url: "/api/openapi.json",
 
     theme: "moon",
     layout: "modern",
-    title: "API #1",
     showSidebar: true,
     defaultOpenFirstTag: true,
     showDeveloperTools: "never"
