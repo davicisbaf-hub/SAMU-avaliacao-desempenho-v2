@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
+.env
+
 node-v24.16.0-win-x64
