@@ -2,7 +2,7 @@ import Header from '../components/Header'
 import Nav from '../components/Nav'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Eye, Download, Trash } from "lucide-react";
+import { Eye, Download } from "lucide-react";
 import { useUserSession } from "../contexts/UserSession";
 import { useReactToPrint } from "react-to-print";
 
@@ -190,10 +190,17 @@ export default function BaixarFicha() {
 		
 	const avaliacoesFiltradas = avaliacoesPermitidas.filter((avaliacao) => {
 		const dataAvaliacao = new Date(avaliacao.criado_em);
+		
+		const dataAvaliacaoStr = dataAvaliacao.toISOString().split('T')[0];
+		
+		const dataInicioStr = dataInicio ? dataInicio.toISOString().split('T')[0] : null;
+		const dataFimStr = dataFim ? dataFim.toISOString().split('T')[0] : null;
 
 		const passouUsuario =
 			!filtroUsuario ||
-			avaliacao.avaliado_nome === filtroUsuario;
+			avaliacao.avaliado_nome
+				.toLowerCase()
+				.includes(filtroUsuario.toLowerCase());
 
 		const passouFuncao =
 			!filtroFuncao ||
@@ -204,12 +211,12 @@ export default function BaixarFicha() {
 			avaliacao.tipo_avaliacao === filtroTipo;
 
 		const passouDataInicio =
-			!dataInicio ||
-			dataAvaliacao >= dataInicio;
+			!dataInicioStr ||
+			dataAvaliacaoStr >= dataInicioStr;
 
 		const passouDataFim =
-			!dataFim ||
-			dataAvaliacao <= dataFim;
+			!dataFimStr ||
+			dataAvaliacaoStr <= dataFimStr;
 
 		return (
 			passouUsuario &&
@@ -218,12 +225,11 @@ export default function BaixarFicha() {
 			passouDataInicio &&
 			passouDataFim
 		);
-		});
+	});
 
 	
 	const handleDownloadPdf = async (avaliacao: Avaliacao) => {
 		try {
-			// Reconstruir critérios a partir do resultado salvo na avaliação (histórico)
 			const criteriosFromResultado = Object.values(avaliacao.resultado)
 				.filter((item: any) => item.criterio && item.codigo)
 				.map((item: any, idx: number) => ({
@@ -261,33 +267,17 @@ export default function BaixarFicha() {
 								Avaliações Enviadas
 							</h1>
 
-							<div className="bg-white border rounded-xl p-4 grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3">
-								<select
+							<div className="bg-white border rounded-xl p-4 grid grid-cols-1 md:grid-cols-4 grid-rows-1 gap-3">
+								<input
+									type="text"
 									value={filtroUsuario}
 									onChange={(e) => setFiltroUsuario(e.target.value)}
+									placeholder="Avaliado"
 									className="border rounded-lg px-3 py-2"
-								>
-									<option value="">Avaliado</option>
-									{usuarios
-										.filter(u => {
-											if (isAdminGlobal) return true;
+								/>
+									
 
-											return (
-											u.base === userBase &&
-											u.funcao === user?.funcao
-											);
-										})
-										.map(usuario => (
-											<option
-											key={usuario.nome}
-											value={usuario.nome}
-											>
-											{usuario.nome}
-											</option>
-									))}
-								</select>
-
-								<select
+								{/* <select
 									value={filtroFuncao}
 									onChange={(e) => setFiltroFuncao(e.target.value)}
 									className="border rounded-lg px-3 py-2"
@@ -298,14 +288,14 @@ export default function BaixarFicha() {
 											{funcao}
 										</option>
 									))}
-								</select>
+								</select> */}
 
 								<select
 									value={filtroTipo}
 									onChange={(e) => setFiltroTipo(e.target.value)}
 									className="border rounded-lg px-3 py-2"
 								>
-									<option value="">Tipos</option>
+									<option value="">Tipos de ficha</option>
 									{tipos.map(tipo => (
 										<option key={tipo} value={tipo}>
 											{tipo}
