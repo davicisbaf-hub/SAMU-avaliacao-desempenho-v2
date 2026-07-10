@@ -47,7 +47,7 @@ const ScalarDocs = parse(
   readFileSync(join(__dirname, "ScalarDocs.yaml"), "utf-8")
 );
 
-app.get("/api/openapi.json", (req, res) => {
+app.get("/openapi.json", (req, res) => {
   res.json(ScalarDocs);
 });
 
@@ -68,7 +68,7 @@ app.use(
 
 app.use("/", authRoutes);
 
-app.use(autenticar);
+// app.use(autenticar);
 app.use("/", usuariosRoutes);
 app.use("/", avaliacoesRoutes);
 app.use("/", criteriosRoutes);
