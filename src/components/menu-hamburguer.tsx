@@ -76,6 +76,12 @@ export default function MenuHamburguer() {
                             <CommandInput placeholder="Presquisar..." />
                             <CommandList>
                                 <CommandEmpty>No results found.</CommandEmpty>
+                                <CommandGroup heading='Informações'>
+                                    <CommandItem><span className="font-bold">Nome:</span>{user?.nome} - {user?.funcao}</CommandItem>
+                                    <CommandItem><span className="font-bold">Base:</span>{user?.base}</CommandItem>
+                                    <CommandItem><span className="font-bold">Perfil:</span>{user?.perfil}</CommandItem>
+                                </CommandGroup>
+
                                 <CommandGroup heading="Inicio">
                                     <CommandItem>
                                         <HomeIcon />

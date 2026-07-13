@@ -13,7 +13,7 @@ export default function FrequenciaTable({
   dados,
 }: FrequenciaTableProps) {
   return (
-    <div className="bg-card border-[#d2d8de] border-t border-l border-r rounded-xl overflow-hidden">
+    <div className="bg-card border-[#d2d8de] border-t border-l border-r rounded-xl overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-[#e5ecf1]/50 text-xs [text-#555f69] border-b border-border border-[#d2d8de]">

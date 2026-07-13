@@ -185,8 +185,8 @@ export default function Inicio() {
 
             {/* frequencia de aplicação */}
             <div className='mb-8'>
-              <h2 className='text-left font-semibold text-foreground mb-3'>Frequência de Aplicação</h2>
-              <div className='bg-card rounded-xl overflow-hidden'>
+              <h2 className='text-left font-semibold text-foreground mb-3 '>Frequência de Aplicação</h2>
+              <div className='bg-card rounded-xl '>
                 <FrequenciaTable dados={frequencias} />
               </div>
             </div>
