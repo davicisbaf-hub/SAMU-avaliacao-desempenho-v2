@@ -67,13 +67,13 @@ app.use(
 // Rotas da API
 
 app.use("/", authRoutes);
+app.use("/", auxiliaresRoutes);
 
 app.use(autenticar);
 app.use("/", usuariosRoutes);
 app.use("/", avaliacoesRoutes);
 app.use("/", criteriosRoutes);
 app.use("/", kpisRoutes);
-app.use("/", auxiliaresRoutes);
 
 app.listen(port, () => {
   console.log(`listening on port http://localhost:${port}`);
