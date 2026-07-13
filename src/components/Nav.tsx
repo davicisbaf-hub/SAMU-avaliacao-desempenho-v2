@@ -1,12 +1,18 @@
 import { NavLink, useNavigate } from "react-router";
 import { useUserSession } from "../contexts/UserSession";
 import { useEffect, useState } from "react";
-import { Download } from "lucide-react";
 import { useAuthFetch } from "../hooks/useAuthFetch";
+import { 
+    ChartPie, 
+    Download,
+    MonitorCog 
+} 
+
+from "lucide-react";
 type Ficha = {
-  nome: string;
-  link: string;
-  icon: string;
+    nome: string;
+    link: string;
+    icon: string;
 };
 
 export default function Nav() {
@@ -96,7 +102,7 @@ export default function Nav() {
                                     : "70 hover:bg-[#cd0048]/20"
                             }`
                         }>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
+                            <ChartPie />
                             Painel de KPIs
                         </NavLink>
                     )}
@@ -217,7 +223,7 @@ export default function Nav() {
                                             : "70 hover:bg-[#cd0048]/20"
                                     }`
                                 }>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M12 4h9"></path><path d="M4 9h16"></path><path d="M4 15h16"></path></svg>
+                                <MonitorCog />
                                 Configurações
                             </NavLink>
                         )}
