@@ -274,16 +274,11 @@ export default function AvaliacaoPage() {
 									<div className='bg-[#061c31]/50 px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:grid-cols-4'>
 										<div>
 											<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Base de Lotação</label>
-											<select className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] focus:outline-none focus:ring-2 focus:ring-[#cd0048] appearance-none'>
-												<option className='text-black'>
-													Selecione a base…
-												</option>
-												{bases.map((bases) => (
-													<option key={bases.id} value={bases.id} className='text-black'>
-														{bases.nome}
-													</option>
-												))}
-											</select>
+											<input
+												className='w-full bg-[#fcfcfc]/10 border border-secondary-foreground/20 rounded-lg px-3 py-2 text-sm text-[#f8f8f8] placeholder:text-[#f8f8f8]/30 focus:outline-none focus:ring-2 focus:ring-[#cd0048]' placeholder="Ex: Dr. Roberto Alves"
+												value={user?.base || ""}
+												disabled
+											/>
 										</div>
 										<div>
 											<label className='text-[#f8f8f8]/70 text-xs font-medium block mb-1'>Nome do AutoAvaliador</label>

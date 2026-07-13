@@ -13,7 +13,7 @@ import { useAuthFetch } from "../hooks/useAuthFetch";
 
 type Criterios = {
 	categoria: string;
-	codigo: string;
+	codigo: number;
 	criterio: string;
 	peso: number;
 	id: string | number;
@@ -70,6 +70,7 @@ export default function BaixarFicha() {
 	const [filtroUsuario, setFiltroUsuario] = useState("");
 	const [filtroFuncao, setFiltroFuncao] = useState("");
 	const [filtroTipo, setFiltroTipo] = useState("");
+	const [filtroBase, setFiltroBase] = useState("");
 	const [dataInicio, setDataInicio] = useState<Date | null>(null);
 	const [dataFim, setDataFim] = useState<Date | null>(null);
 	const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
@@ -183,7 +184,6 @@ export default function BaixarFicha() {
 		setAvaliacaoSelecionada(avaliacao);
 	};
 	
-	const funcoes = [...new Set(avaliacoesPermitidas.map(a => a.funcao))];
 
 	const tipos = [...new Set(avaliacoesPermitidas.map(a => a.tipo_avaliacao))];
 
@@ -218,12 +218,17 @@ export default function BaixarFicha() {
 			!dataFimStr ||
 			dataAvaliacaoStr <= dataFimStr;
 
+		const usuarioAvaliado = usuarios.find(u => u.nome === avaliacao.avaliado_nome);
+			const passouBase =
+				!isAdminGlobal || !filtroBase || usuarioAvaliado?.base === filtroBase;
+
 		return (
 			passouUsuario &&
 			passouFuncao &&
 			passouTipo &&
 			passouDataInicio &&
-			passouDataFim
+			passouDataFim && 
+			passouBase 
 		);
 	});
 
@@ -276,19 +281,18 @@ export default function BaixarFicha() {
 									className="border rounded-lg px-3 py-2"
 								/>
 									
-
-								{/* <select
-									value={filtroFuncao}
-									onChange={(e) => setFiltroFuncao(e.target.value)}
-									className="border rounded-lg px-3 py-2"
-								>
-									<option value="">Funções</option>
-									{funcoes.map(funcao => (
-										<option key={funcao} value={funcao}>
-											{funcao}
-										</option>
-									))}
-								</select> */}
+								{isAdminGlobal && (
+									<select
+										value={filtroBase}
+										onChange={(e) => setFiltroBase(e.target.value)}
+										className="border rounded-lg px-3 py-2"
+									>
+										<option value="">Todas as bases</option>
+										{bases.map(base => (
+											<option key={base.id} value={base.nome}>{base.nome}</option>
+										))}
+									</select>
+								)}
 
 								<select
 									value={filtroTipo}
@@ -327,6 +331,7 @@ export default function BaixarFicha() {
 										setFiltroTipo("");
 										setDataInicio(null);
 										setDataFim(null);
+										setFiltroBase("");
 									}}
 									className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
 								>
