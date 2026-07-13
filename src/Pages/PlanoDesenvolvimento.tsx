@@ -593,7 +593,7 @@ export default function PlanoDesenvolvimento() {
             <>
               <div className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
                 <h3 className="font-bold text-lg mb-4">Comparativo de Evolução</h3>
-                <div className="border rounded-lg overflow-hidden">
+                <div className="border rounded-lg overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-gray-100">
                       <tr className="text-center">
@@ -647,7 +647,7 @@ export default function PlanoDesenvolvimento() {
                       const totalFichas = fichasTipo.length;
 
                       return (
-                        <div key={tipo} className="border rounded-lg overflow-hidden">
+                        <div key={tipo} className="border rounded-lg overflow-x-auto">
                           <button
                             className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
                             onClick={() => toggleTipo(profKey, tipo)}
@@ -1051,7 +1051,7 @@ export default function PlanoDesenvolvimento() {
       </div>
 
       {/* Elemento oculto para impressão - Comparativo */}
-      <div style={{ display: 'none' }}>
+      <div style={{ display: 'none' }} >
         <div ref={comparativoPrintRef}>
           {profModal && modoComparativo && (
             <div style={{ padding: '30px', fontFamily: 'Arial, sans-serif', maxWidth: '1000px', margin: '0 auto' }}>
@@ -1059,7 +1059,7 @@ export default function PlanoDesenvolvimento() {
                 Comparativo de Evolução
               </h1>
 
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '20px' }} p-4>
                 <p><strong>Profissional:</strong> {profModal.nome}</p>
                 <p><strong>Função:</strong> {profModal.funcao}</p>
                 <p><strong>Status atual:</strong> {profissionalTemPendencia(profModal) ? '⚠️ Com pendências' : '✅ Sem pendências'}</p>

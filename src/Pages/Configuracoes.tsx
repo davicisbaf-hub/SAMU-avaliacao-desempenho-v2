@@ -4,6 +4,16 @@ import { useEffect, useState } from "react";
 import { useAuthFetch } from "../hooks/useAuthFetch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 
+import {
+  Menubar,
+  MenubarContent,
+  MenubarGroup,
+  MenubarItem,
+  MenubarMenu,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "../components/ui/menubar"
+
 type Tipo = {
   tipo: string;
 };
@@ -276,7 +286,34 @@ export default function ConfiguracaoPage() {
         <div className="p-8 overflow-y-auto custom-scrollbar">
 
           <Tabs defaultValue="ficha" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <Menubar className="w-full menu-config">
+              <MenubarMenu>
+                <MenubarTrigger className="w-full">Configurações</MenubarTrigger>
+                  <MenubarContent>
+                    <MenubarGroup>
+                      <MenubarItem>
+                        <TabsList>
+                          <TabsTrigger value="ficha">Configuração das Fichas</TabsTrigger>
+                        </TabsList>
+                      </MenubarItem>
+
+                      <MenubarItem>
+                        <TabsList>
+                          <TabsTrigger value="frequencia">Frequência das Avaliações por Nível</TabsTrigger>
+                        </TabsList>
+                      </MenubarItem>
+
+                      <MenubarItem>
+                        <TabsList>
+                          <TabsTrigger value="pdi" disabled>Plano de desenvolvimento Individual (PDI)</TabsTrigger>
+                        </TabsList>
+                      </MenubarItem>
+                    </MenubarGroup>  
+                  </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+
+            <TabsList className="grid w-full grid-cols-3 tablist">
               <TabsTrigger value="ficha">Configuração das Fichas</TabsTrigger>
               <TabsTrigger value="frequencia">Frequência das Avaliações por Nível</TabsTrigger>
               <TabsTrigger value="pdi" disabled>Plano de desenvolvimento Individual (PDI)</TabsTrigger>
@@ -423,7 +460,7 @@ export default function ConfiguracaoPage() {
 
             {/* FREQUÊNCIA DAS AVALIAÇÕES */}
             <TabsContent value="frequencia">
-              <div className="rounded-lg border p-4 mt-6">
+              <div className="rounded-lg border p-4 mt-6 overflow-x-auto">
                 <h2 className="font-semibold text-lg mb-4">
                   Frequência das Avaliações por Nível
                 </h2>

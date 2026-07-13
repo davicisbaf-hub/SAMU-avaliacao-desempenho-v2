@@ -208,8 +208,9 @@ body{
 }
 
 
-.menu-div {
+.menu-div, .menu-config {
   display: none;
+  
 }
 
 @media screen and (width <= 1326px){
@@ -225,9 +226,13 @@ body{
 
 @media screen and (width < 980px){
 
-  .nome-header, .base-header, .perfil-header {
+  .nome-header, .base-header, .perfil-header, .tablist {
     display: none;
   }    
+
+  .menu-config {
+    display: flex;
+  }
 
 }
 
