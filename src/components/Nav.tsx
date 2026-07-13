@@ -214,7 +214,7 @@ export default function Nav() {
                             </NavLink>
                         )}
                         
-                        {user?.perfil !== "Usuario" && (
+                        {user?.perfil !== "Usuario" && user?.perfil !== "Administrador" && (
                             <NavLink to="/configuracoes" 
                                 className={({ isActive }) =>
                                     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${

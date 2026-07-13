@@ -6,7 +6,7 @@ import App from "./Pages/Login.tsx";
 import Inicio from "./Pages/Inicio.tsx";
 import InstrucoesPage from "./Pages/Como-avaliar.tsx";
 import AvaliacaoPage from "./Pages/Avaliacao.tsx";
-import PrivateRoute from "./components/PrivateRoute";
+import {PrivateRoute, PrivateGlobal } from "./components/PrivateRoute";
 import FichaAvaliacaoCondutor from "./Fichas/FichaAvaliacaoCondutor.tsx";
 import FichaAvaliacaoTecEnf from "./Fichas/FichaAvaliacaoTecEnf.tsx";
 import FichaAvaliacaoEnf from "./Fichas/FichaAvaliacaoEnf.tsx";
@@ -122,9 +122,9 @@ ReactDOM.createRoot(root!).render(
         <Route
           path="/configuracoes"
           element={
-            <PrivateRoute>
+            <PrivateGlobal>
               <Configuracoes />
-            </PrivateRoute>
+            </PrivateGlobal>
           }
         />
 
