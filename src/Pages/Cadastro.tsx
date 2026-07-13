@@ -105,7 +105,7 @@ export default function CadastroPage() {
         await authFetch(`/api/usuarios/${usuarioEditando.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nome, email, cpf, funcao, base, perfil, par: parEdicao }),
+            body: JSON.stringify({ nome, email, funcao, base, perfil, par: parEdicao }),
         });
 
         setModalAberto(false);
@@ -163,8 +163,8 @@ export default function CadastroPage() {
                     body: JSON.stringify({
                         nome,
                         email,
-                        cpf,
                         funcao,
+                        cpf,
                         base,
                         perfil,
                         par
@@ -234,7 +234,7 @@ export default function CadastroPage() {
         setFuncao(usuario.funcao);
         setPerfil(usuario.perfil);
         setBase(usuario.base);
-        setCpf(usuario.cpf);
+        // setCpf(usuario.cpf);
         setParEdicao(Array.isArray(usuario.par) ? usuario.par : (usuario.par ? JSON.parse(usuario.par) : []));
         setModalAberto(true);
     }
@@ -547,12 +547,13 @@ export default function CadastroPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full border rounded-lg px-3 py-2"
                             />
-                            <label className="text-xs font-semibold">CPF</label>
+                            {/* 
                             <input
+                                <label className="text-xs font-semibold">CPF</label>
                                 value={cpf}
                                 onChange={(e) => setCpf(e.target.value)}
                                 className="w-full border rounded-lg px-3 py-2"
-                            />
+                            /> */}
                             <label className="text-xs font-semibold">Base</label>
                             <select
                                 className="w-full border rounded-lg px-3 py-2 text-sm"

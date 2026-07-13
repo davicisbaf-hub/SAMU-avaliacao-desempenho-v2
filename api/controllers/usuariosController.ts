@@ -6,7 +6,7 @@ import validarCpf from "validar-cpf";
 export async function listar(req: Request, res: Response) {
   try {
     const { rows } = await pool.query(`
-      SELECT *
+      SELECT id, nome, email, funcao, perfil, base, ativo, criado_em, par
       FROM usuarios
       WHERE ativo = true
       ORDER BY nome
@@ -59,14 +59,14 @@ export async function cadastrar(req: Request, res: Response) {
 
 export async function atualizar(req: Request, res: Response) {
   const { id } = req.params;
-  const { nome, email, cpf, funcao, perfil, base, par } = req.body;
+  const { nome, email, funcao, perfil, base, par } = req.body;
 
   const parValue = Array.isArray(par) && par.length > 0 ? par : null;
 
   await pool.query(
-    `UPDATE usuarios SET nome=$1, email=$2, cpf=$3, funcao=$4, perfil=$5, base=$6, par=$7
-     WHERE id=$8`,
-    [nome, email, cpf, funcao, perfil, base, JSON.stringify(parValue), id]
+    `UPDATE usuarios SET nome=$1, email=$2, funcao=$3, perfil=$4, base=$5, par=$6
+     WHERE id=$7`,
+    [nome, email, funcao, perfil, base, JSON.stringify(parValue), id]
   );
 
   res.json({ ok: true });
