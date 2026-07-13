@@ -439,7 +439,7 @@ export default function FichaAvaliacaoTecEnf() {
 										onChange={(e) => setPlanoAcao(e.target.value)}
 									/>
 								</div>
-								<div className='bg-card border border-border rounded-xl p-5'>
+								<div className='bg-card border border-border rounded-xl p-5 my-4'>
 									<h3 className='text-sm font-semibold text-[#0e1216] mb-4'>Assinaturas e Ciência</h3>
 									<div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
 										<Assinatura Responsavel="Avaliador" />

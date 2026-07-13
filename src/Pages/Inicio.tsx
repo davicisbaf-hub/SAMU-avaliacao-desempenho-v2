@@ -72,7 +72,7 @@ export default function Inicio() {
   }, []);
 
   return (
-    <div>
+    <div className="overflow-hidden">
       <div className="flex h-screen w-screen bg-white text-black">
         <Nav />
 

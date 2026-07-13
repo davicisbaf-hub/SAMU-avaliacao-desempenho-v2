@@ -62,7 +62,7 @@ components:
           nullable: true
           description: |
             Opcional. Necessário apenas quando o CPF informado está vinculado a mais de
-            uma base simultaneamente — nesse caso, uma primeira chamada sem `base` retorna
+            uma base simultaneamente - nesse caso, uma primeira chamada sem `base` retorna
             `LoginEscolherBase` para que o usuário escolha, e uma segunda chamada deve
             reenviar o `cpf` junto com a `base` escolhida.
           example: "Base Central"
@@ -332,7 +332,7 @@ components:
           example: "2024-06-01T14:00:00Z"
 
     AvaliacaoCriada:
-      description: Retorno do POST /avaliacoes — a avaliação criada, acrescida do nível calculado para o avaliado.
+      description: Retorno do POST /avaliacoes - a avaliação criada, acrescida do nível calculado para o avaliado.
       allOf:
         - $ref: '#/components/schemas/Avaliacao'
         - type: object
@@ -690,7 +690,7 @@ paths:
         Autentica pelo `cpf`. Retorna um token JWT válido por 8 horas.
 
         Se o CPF pertencer a mais de um usuário/base e nenhuma `base` for informada,
-        retorna `LoginEscolherBase` (200) com a lista de opções em vez do token — o
+        retorna `LoginEscolherBase` (200) com a lista de opções em vez do token - o
         frontend deve reenviar o login informando `cpf` + `base` escolhida.
       requestBody:
         required: true
@@ -1153,7 +1153,7 @@ paths:
     delete:
       tags: [Frequência]
       summary: Remover (inativar) nível de frequência
-      description: Não é uma exclusão física — apenas define `ativo = false`.
+      description: Não é uma exclusão física - apenas define `ativo = false`.
       security:
         - bearerAuth: []
       parameters:
