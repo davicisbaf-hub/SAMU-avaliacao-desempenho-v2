@@ -150,3 +150,127 @@ body {
     font-size: 85%;
   }
 }
+
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #555f69;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555f69;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 5mm;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #ficha-pdf {
+    font-size: 75% !important;
+    line-height: 1.1 !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 2px 4px !important;
+  }
+
+  h1 {
+    font-size: 16px !important;
+  }
+
+  h2 {
+    font-size: 14px !important;
+  }
+
+  h3 {
+    font-size: 12px !important;
+  }
+}
+
+
+.menu-div, .menu-config {
+  display: none;
+  
+}
+
+@media screen and (width <= 1326px){
+  aside {
+    display : none
+  }
+
+  .menu-div {
+    display: flex;
+    
+  }
+}
+
+@media screen and (width < 980px){
+
+  .nome-header, .base-header, .perfil-header, .tablist {
+    display: none;
+  }    
+
+  .menu-config {
+    display: flex;
+  }
+
+}
+
+@media screen and (width <= 694px){
+
+  .grid-fluxo-inicio {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+
+  }
+
+  .samuSpan {
+    display: none;
+  }
+}
+
+@media screen and (width > 694px){
+
+  .grid-fluxo-inicio {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+  }
+
+}
+
+@media screen and (width > 1254px){
+
+  .grid-fluxo-inicio {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+  }
+}

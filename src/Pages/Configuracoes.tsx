@@ -10,7 +10,6 @@ import {
   MenubarGroup,
   MenubarItem,
   MenubarMenu,
-  MenubarShortcut,
   MenubarTrigger,
 } from "../components/ui/menubar"
 
@@ -285,7 +284,8 @@ export default function ConfiguracaoPage() {
 
         <div className="p-8 overflow-y-auto custom-scrollbar">
 
-          <Tabs defaultValue="ficha" className="w-full">
+          <Tabs defaultValue="ficha" className="w-full block ">
+            
             <Menubar className="w-full menu-config">
               <MenubarMenu>
                 <MenubarTrigger className="w-full">Configurações</MenubarTrigger>
@@ -313,7 +313,7 @@ export default function ConfiguracaoPage() {
               </MenubarMenu>
             </Menubar>
 
-            <TabsList className="grid w-full grid-cols-3 tablist">
+            <TabsList className="w-full tablist">
               <TabsTrigger value="ficha">Configuração das Fichas</TabsTrigger>
               <TabsTrigger value="frequencia">Frequência das Avaliações por Nível</TabsTrigger>
               <TabsTrigger value="pdi" disabled>Plano de desenvolvimento Individual (PDI)</TabsTrigger>
@@ -321,7 +321,7 @@ export default function ConfiguracaoPage() {
 
             <TabsContent value="ficha">
               {/* Configuração das fichas */}
-              <div className="rounded-xl border p-6 space-y-6 ">
+              <div className="rounded-xl border p-6 space-y-6 mt-6">
                 {/* HEADER */}
                 <div>
                   <h1 className="text-2xl font-bold">Configuração das Fichas</h1>
@@ -330,6 +330,7 @@ export default function ConfiguracaoPage() {
                   </p>
                 </div>
                 {/* SELECTS */}
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-semibold">Tipo de Profissional</label>
