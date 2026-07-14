@@ -12,6 +12,7 @@ type User = {
   id: number;
   nome: string;
   email: string;
+  cpf: string;
   funcao: string;
   perfil: string;
   base: string;

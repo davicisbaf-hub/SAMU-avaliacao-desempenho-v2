@@ -2,6 +2,8 @@ import { NavLink, useNavigate } from "react-router";
 import { useUserSession } from "../contexts/UserSession";
 import { useEffect, useState } from "react";
 import { useAuthFetch } from "../hooks/useAuthFetch";
+
+
 import { 
     ChartPie, 
     Download,
@@ -15,12 +17,27 @@ type Ficha = {
     icon: string;
 };
 
+type Base = {
+  id: number;
+  nome: string;
+  cor: string;
+};
+
+
 export default function Nav() {
 
     const navigate = useNavigate();
     const { logout } = useUserSession();
     const [fichas, setFichas] = useState<Ficha[]>([]);
-    const { user } = useUserSession();
+    const [baseSelecionada, setBaseSelecionada] = useState("");
+    const [base, setBase] = useState<Base[]>([]);
+    const { login, user, isLoading } = useUserSession();
+
+    useEffect(() => {
+    if (user && !isLoading) {
+      navigate("/");
+    }
+  }, [user, isLoading, navigate]);
 
     const handleLogout = () => {
         logout();
@@ -59,6 +76,56 @@ export default function Nav() {
             .then((data) => setFichas(data));
     }, []);
 
+    const handleLogin = async (baseNome?: string) => {
+        const baseParaLogar = baseNome || baseSelecionada;
+
+        if (!baseParaLogar) {
+            console.log("Selecione uma base");
+            return;
+        }
+        
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    cpf: user?.cpf,
+                    base: baseParaLogar
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Erro ao fazer login");
+                return;
+            }
+
+            login(data, data.token);
+            navigate("/");
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+  const carregar = async (url: string, setter: Function) => {
+      try {
+          const res = await fetch(url);
+          const data = await res.json();
+          setter(data);
+      } catch (err) {
+          console.error(err);
+      }
+  };
+
+  useEffect(() => {
+    carregar("/api/bases", setBase);
+  }, []);
+
+
     return (
         
         <aside className="bg-[#0a1a30] lg:flex w-64 flex-col text-white shrink-0 border-r border-sidebar-border">
@@ -75,9 +142,27 @@ export default function Nav() {
                 </div>
 
                 <div className="px-4 py-3 border-b border-sidebar-border">
-                    <div className="rounded-lg px-3 py-2 text-xs text-left bg-[#cd0048]/20">
-                        <span className="text-[[#cd0048]] text-[10px] font-bold uppercase tracking-wide">{user?.perfil}</span>
-                        <p className="font-semibold leading-tight truncate">{user?.nome}</p>
+                    <div className="p-6 space-y-4">
+                        <div className="space-y-2">
+                            <select
+                            value={baseSelecionada}
+                            onChange={(e) => {
+                                setBaseSelecionada(e.target.value);
+                                // Login automático ao escolher
+                                handleLogin(e.target.value);
+                            }}
+                            className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60 appearance-none"
+                            >
+                            <option value="">Selecione seu acesso…</option>
+                            <optgroup label="── Bases ──">
+                                {base.map((base) => (
+                                <option key={base.id} value={base.nome} className="text-black">
+                                    {base.nome}
+                                </option>
+                                ))}
+                            </optgroup>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

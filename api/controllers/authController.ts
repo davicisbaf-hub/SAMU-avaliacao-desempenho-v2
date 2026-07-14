@@ -62,6 +62,7 @@ export async function login(req: Request, res: Response) {
     {
       id: usuario.id,
       nome: usuario.nome,
+      cpf: usuario.cpf,
       email: usuario.email,
       funcao: usuario.funcao,
       perfil: usuario.perfil,
@@ -78,6 +79,7 @@ export async function login(req: Request, res: Response) {
     id: usuario.id,
     nome: usuario.nome,
     email: usuario.email,
+    cpf: usuario.cpf,
     funcao: usuario.funcao,
     perfil: usuario.perfil,
     base: usuario.base,
