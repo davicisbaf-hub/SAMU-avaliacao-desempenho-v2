@@ -1,3 +1,5 @@
+import { NavLink } from "react-router";
+
 type FichasCardProps = {
   icon: string;
   cargo: string;
@@ -14,8 +16,8 @@ export default function FichasCard({
   link
 }: FichasCardProps) {
   return (
-    <a
-      href={link}
+    <NavLink
+      to={link}
       className="block bg-[#f6f6f6] border border-border border-[#d2d8de] rounded-xl p-5 hover:border-[#cd0048]/40 hover:shadow-md transition-all group"
     >
       <div className="flex items-start gap-3">
@@ -46,6 +48,6 @@ export default function FichasCard({
           </span>
         ))}
       </div>
-    </a>
+    </NavLink>
   );
 }

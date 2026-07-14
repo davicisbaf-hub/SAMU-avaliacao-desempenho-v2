@@ -1,61 +1,159 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { useUserSession } from "../contexts/UserSession";
+
 import {
   Shield,
   UserCircle2,
   Eye,
   EyeOff,
   LogIn,
-  KeyRound,
-  ChevronDown,
-  MapPin,
 } from "lucide-react";
 
-const BASES = [
-  { value: "u_sede", label: "Nova Iguaçu" },
-  { value: "u_duque", label: "Duque de Caxias" },
-  { value: "u_saojoao", label: "S. J. de Meriti" },
-  { value: "u_belford", label: "Belford Roxo" },
-  { value: "u_queimados", label: "Queimados" },
-  { value: "u_nilopolis", label: "Nilópolis" },
-  { value: "u_mesquita", label: "Mesquita" },
-  { value: "u_seropedica", label: "Seropédica" },
-  { value: "u_japeri", label: "Japeri" },
-  { value: "u_paracambi", label: "Paracambi" },
-  { value: "u_mage", label: "Magé" },
-  { value: "u_itaguai", label: "Itaguaí" },
-];
 
-export default function Login() {
+type Base = {
+  id: number;
+  nome: string;
+  cor: string;
+};
+
+
+export default function App() {
   const [profile, setProfile] = useState("admin"); // "admin" | "profissional"
-  const [base, setBase] = useState("");
-  const [password, setPassword] = useState("");
+  const [base, setBase] = useState<Base[]>([]);
+  const [email, setEmail] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [baseSelecionada, setBaseSelecionada] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordList, setShowPasswordList] = useState(false);
+
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { login, user, isLoading } = useUserSession();
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      navigate("/");
+    }
+  }, [user, isLoading, navigate]);
+
+  const handleLoginEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!base) {
+    if (profile !== "admin" && !email) {
+      setError("Informe seu email.");
+      return;
+    }
+    if (!baseSelecionada) {
       setError("Selecione seu acesso / base de lotação.");
       return;
     }
-    if (!password) {
+    if (!cpf) {
       setError("Informe a senha de acesso.");
       return;
     }
 
     setSubmitting(true);
-    // Placeholder for real authentication call.
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("/api/login/usuario", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          cpf,
+          base: baseSelecionada
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.erro || "Erro ao fazer login");
+        setSubmitting(false);
+        return;
+      }
+
+      login(data, data.token);
+      navigate("/");
+
+    } catch (error) {
+      console.error(error);
+      setError("Erro ao conectar ao servidor");
+    } finally {
       setSubmitting(false);
-    }, 900);
+    }
   };
 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!baseSelecionada) {
+      setError("Selecione seu acesso / base de lotação.");
+      return;
+    }
+    if (!cpf) {
+      setError("Informe a senha de acesso.");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cpf,
+          base: baseSelecionada
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.erro || "Erro ao fazer login");
+        setSubmitting(false);
+        return;
+      }
+
+      login(data, data.token);
+      navigate("/");
+
+    } catch (error) {
+      console.error(error);
+      setError("Erro ao conectar ao servidor");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+
+  const carregar = async (url: string, setter: Function) => {
+      try {
+          const res = await fetch(url);
+          const data = await res.json();
+          setter(data);
+      } catch (err) {
+          console.error(err);
+      }
+  };
+
+  useEffect(() => {
+    carregar("/api/bases", setBase);
+  }, []);
+
+
   return (
-    <div className="min-h-screen w-[99vw] flex items-center justify-center px-4 py-10 bg-[#061c31]">
+
+    <div className="min-h-screen w-[98.2.9vw] flex items-center justify-center px-4 py-10 bg-[#061c31]">
       <div className="w-full max-w-md">
         {/* Brand header */}
         <div className="text-center mb-8">
@@ -67,7 +165,7 @@ export default function Login() {
             Sistema de Avaliação de Desempenho 360°
           </p>
           <p className="text-slate-400 text-xs mt-0.5">
-            CRUR-BF / CISBAF — Baixada Fluminense
+            CRUR-BF / CISBAF - Baixada Fluminense
           </p>
         </div>
 
@@ -99,7 +197,7 @@ export default function Login() {
               }`}
             >
               <Shield size={18} />
-              <span>Admin / Coordenação</span>
+              <span>Coordenação</span>
               <span className="text-[10px] font-normal opacity-70">
                 Painel completo
               </span>
@@ -115,119 +213,149 @@ export default function Login() {
               }`}
             >
               <UserCircle2 size={18} />
-              <span>Profissional</span>
+              <span>Administradores / Usuarios</span>
               <span className="text-[10px] font-normal opacity-70">
-                Autoavaliação / bp-TEAM
+                Usuarios das bases
               </span>
             </button>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-800">
-                Acesso / Base de Lotação
-              </label>
-              <select
-                value={base}
-                onChange={(e) => setBase(e.target.value)}
-                className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60 appearance-none"
-              >
-                <option value="">Selecione seu acesso…</option>
-                <optgroup label="── Administração ──">
-                  <option value="admin">
-                    🔑 Administrador CRUR-BF (todas as bases)
-                  </option>
-                </optgroup>
-                <optgroup label="── Coordenações de Base ──">
-                  {BASES.map((b) => (
-                    <option key={b.value} value={b.value}>
-                      📍 {b.label}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-slate-800">
-                Senha de Acesso
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Digite a senha…"
-                  className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+          {profile !== "admin" ? (
+            <form onSubmit={handleLoginEmail} className="p-6 space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-800">
+                  Acesso / Base de Lotação
+                </label>
+                <select
+                  value={baseSelecionada}
+                  onChange={(e) => setBaseSelecionada(e.target.value)}
+                  className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60 appearance-none"
                 >
-                  {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
-                </button>
+                  <option value="">Selecione seu acesso…</option>
+                  <optgroup label="── Bases ──">
+                    {base.map((base) => (
+                      <option key={base.id} value={base.nome} className="text-black">
+                        {base.nome}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
               </div>
-            </div>
 
-            {error && (
-              <p className="text-xs font-medium text-red-600">{error}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#cd0048] text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              <LogIn size={16} />
-              {submitting ? "Entrando…" : "Entrar"}
-            </button>
-          </form>
-
-          {/* Collapsible password reference */}
-          <div className="px-6 pb-6">
-            <button
-              type="button"
-              onClick={() => setShowPasswordList((v) => !v)}
-              className="w-full flex items-center justify-between gap-2 border border-amber-400/60 bg-amber-50 rounded-xl px-4 py-3 text-amber-700 hover:bg-amber-100 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <KeyRound size={15} />
-                <span className="font-semibold text-sm">
-                  Senhas de Acesso — Todas as Bases
-                </span>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-800">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
+                />
               </div>
-              <ChevronDown
-                size={15}
-                className={`transition-transform ${
-                  showPasswordList ? "rotate-180" : ""
-                }`}
-              />
-            </button>
 
-            {showPasswordList && (
-              <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50/60 p-3 space-y-1.5">
-                <p className="text-xs text-amber-800/80 leading-relaxed">
-                  Por segurança, as senhas de acesso de cada base não ficam
-                  expostas no front-end. Substitua este bloco por uma
-                  chamada ao seu serviço de autenticação (ex.: verificação
-                  de credenciais no backend) para listar ou validar os
-                  acessos por base.
-                </p>
-                <ul className="text-xs text-amber-700 space-y-1 pt-1">
-                  {BASES.map((b) => (
-                    <li key={b.value} className="flex items-center gap-1.5">
-                      <MapPin size={12} />
-                      <span>{b.label}</span>
-                      <span className="text-amber-400">— senha sob consulta ao admin</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-800">
+                  CPF
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value)}
+                    placeholder="Digite a senha…"
+                    className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  >
+                    {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
+
+              {error && (
+                <p className="text-xs font-medium text-red-600">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#cd0048] text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <LogIn size={16} />
+                {submitting ? "Entrando…" : "Entrar"}
+              </button>
+            </form>
+          ): (
+            <form onSubmit={handleLogin} className="p-6 space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-800">
+                  Acesso / Base de Lotação
+                </label>
+                <select
+                  value={baseSelecionada}
+                  onChange={(e) => setBaseSelecionada(e.target.value)}
+                  className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60 appearance-none"
+                >
+                  <option value="">Selecione seu acesso…</option>
+                  <optgroup label="── Administração ──">
+                    <option value="todas as bases">
+                      🔑 Administrador CRUR-BF (todas as bases)
+                    </option>
+                  </optgroup>
+                  <optgroup label="── Bases ──">
+                    {base.map((base) => (
+                      <option key={base.id} value={base.nome} className="text-black">
+                        {base.nome}
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-800">
+                  Senha de Acesso
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value)}
+                    placeholder="Digite a senha…"
+                    className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  >
+                    {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-xs font-medium text-red-600">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#cd0048] text-white font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <LogIn size={16} />
+                {submitting ? "Entrando…" : "Entrar"}
+              </button>
+            </form>
+          )}
         </div>
 
         <p className="text-center text-slate-400 text-xs mt-6">
