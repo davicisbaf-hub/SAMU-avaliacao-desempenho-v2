@@ -59,7 +59,7 @@ export default function App() {
     setSubmitting(true);
 
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("/api/login/usuario", {
         method: "POST",
         credentials: "include",
         headers: {

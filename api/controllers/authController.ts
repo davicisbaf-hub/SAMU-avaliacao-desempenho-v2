@@ -101,7 +101,7 @@ export async function logout(req: Request,  res: Response) {
 }
 
 export async function loginWithEmail(req: Request, res: Response) {
-  let { email, base } = req.body;
+  let { email, cpf, base } = req.body;
 
   if (!email) {
     return res.status(400).json({
@@ -113,8 +113,10 @@ export async function loginWithEmail(req: Request, res: Response) {
   const usuarios = await pool.query(
     `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
      FROM usuarios
-     WHERE email = $1`,
-    [email]
+     WHERE email = $1
+     AND cpf = $2
+     `,
+    [email, cpf]
   );
 
   if (usuarios.rows.length === 0) {
@@ -145,8 +147,9 @@ export async function loginWithEmail(req: Request, res: Response) {
       `SELECT *
        FROM usuarios
        WHERE email = $1
-       AND base = $2 AND perfil !='🔑 Administrador - Todas as bases'`,
-      [email, base]
+       AND cpf = $2
+       AND base = $3`,
+      [email, cpf, base]
     );
 
     if (result.rows.length === 0) {
