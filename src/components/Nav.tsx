@@ -34,8 +34,8 @@ export default function Nav() {
     const { login, user, isLoading } = useUserSession();
 
     useEffect(() => {
-    if (user && !isLoading) {
-      navigate("/");
+    if (!user && !isLoading) {
+      navigate("/login");
     }
   }, [user, isLoading, navigate]);
 
@@ -67,7 +67,6 @@ export default function Nav() {
 
     
 
-    // dentro do componente, antes do useEffect:
     const { authFetch } = useAuthFetch();
 
     useEffect(() => {
@@ -77,33 +76,44 @@ export default function Nav() {
     }, []);
 
     const handleLogin = async (baseNome?: string) => {
-        const baseParaLogar = baseNome || baseSelecionada;
+        const base = baseNome || baseSelecionada;
 
-        if (!baseParaLogar) {
+        if (!base) {
             console.log("Selecione uma base");
             return;
         }
-        
+
+        // Obtenha o CPF a partir do contexto do usuário. Não usar localStorage para dados sensíveis.
+        const cpf: string | undefined = user?.cpf;
+
+        if (!cpf) {
+            // contexto ainda não restaurado — pedir para o usuário logar novamente
+            navigate("/login");
+            return;
+        }
+
         try {
             const response = await fetch("/api/login", {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    cpf: user?.cpf,
-                    base: baseParaLogar
+                    cpf: cpf,
+                    base: base,
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                console.error("Erro ao fazer login");
+                console.error("Erro ao fazer login", data);
                 return;
             }
 
-            login(data, data.token);
+            // server sets HttpOnly cookie; update user in context
+            login(data);
             navigate("/");
 
         } catch (error) {

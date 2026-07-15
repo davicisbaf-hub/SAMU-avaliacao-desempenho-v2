@@ -59,8 +59,9 @@ export default function App() {
     setSubmitting(true);
 
     try {
-      const response = await fetch("/api/login/usuario", {
+      const response = await fetch("/api/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -70,16 +71,16 @@ export default function App() {
           base: baseSelecionada
         }),
       });
-
+      
       const data = await response.json();
-
+      
       if (!response.ok) {
         setError(data.erro || "Erro ao fazer login");
         setSubmitting(false);
         return;
       }
 
-      login(data, data.token);
+      login(data);
       navigate("/");
 
     } catch (error) {
@@ -108,6 +109,7 @@ export default function App() {
     try {
       const response = await fetch("/api/login", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -125,7 +127,7 @@ export default function App() {
         return;
       }
 
-      login(data, data.token);
+      login(data);
       navigate("/");
 
     } catch (error) {

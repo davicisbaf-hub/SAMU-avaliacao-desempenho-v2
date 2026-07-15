@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { parse } from "yaml";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -41,7 +42,10 @@ app.use(cors({
     "http://127.0.0.1:8765",
     "https://avaliacao360.cisbaf.org.br",
   ],
+  credentials: true,
 }));
+
+app.use(cookieParser());
 
 const ScalarDocs = parse(
   readFileSync(join(__dirname, "ScalarDocs.yaml"), "utf-8")

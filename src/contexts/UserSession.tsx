@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext,
   useContext,
   useState,
@@ -23,8 +23,8 @@ type User = {
 
 type UserSessionType = {
   user: User | null;
-  token: string | null;
-  login: (user: User, token: string) => void;
+  token?: string | null;
+  login: (user: User) => void;
   logout: () => void;
   isLoading: boolean;
 };
@@ -33,32 +33,21 @@ const UserSession = createContext<UserSessionType | null>(null);
 
 export function UserSessionProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null); // token is kept server-side as HttpOnly cookie
   const [isLoading, setIsLoading] = useState(true);
 
-  // Na inicialização, tenta recuperar o token do localStorage
-  // e valida ele no backend para trazer os dados atualizados do usuário
+  // On init, try to restore session by calling /api/me with credentials
   useEffect(() => {
     async function inicializar() {
       try {
-        const savedToken = localStorage.getItem("token");
-        
-        if (savedToken) {
-          const res = await fetch("/api/me", {
-            headers: {
-              Authorization: `Bearer ${savedToken}`,
-            },
-          });
+        const res = await fetch("/api/me", { credentials: "include" });
 
-          if (res.ok) {
-            const userData = await res.json();
-            setUser(userData);
-            setToken(savedToken);
-          } else {
-            localStorage.removeItem("token");
-            setUser(null);
-            setToken(null);
-          }
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+        } else {
+          setUser(null);
+          setToken(null);
         }
       } catch (error) {
         console.error("Erro ao inicializar sessão:", error);
@@ -72,16 +61,16 @@ export function UserSessionProvider({ children }: { children: ReactNode }) {
     inicializar();
   }, []);
 
-  const login = (userData: User, userToken: string) => {
+  const login = (userData: User) => {
+    // server sets HttpOnly cookie; just store user in context
     setUser(userData);
-    setToken(userToken);
-    localStorage.setItem("token", userToken);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("token");
+    // request server to clear cookie
+    fetch("/api/logout", { method: "POST", credentials: "include" }).catch(() => {});
   };
 
   return (

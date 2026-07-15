@@ -2,24 +2,20 @@ import { useUserSession } from "../contexts/UserSession";
 import { useNavigate } from "react-router";
 
 export function useAuthFetch() {
-  const { token, logout } = useUserSession();
+  const { logout } = useUserSession();
   const navigate = useNavigate();
 
   async function authFetch(
     input: string,
     init?: RequestInit
   ): Promise<Response> {
-    if (!token) {
-      navigate("/login");
-      throw new Error("Token não disponível");
-    }
-
+    // rely on HttpOnly cookie for auth; include credentials so cookie is sent
     const res = await fetch(input, {
       ...init,
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        ...init?.headers,
+        ...(init?.headers || {}),
       },
     });
 

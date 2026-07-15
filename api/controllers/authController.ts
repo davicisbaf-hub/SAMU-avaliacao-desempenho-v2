@@ -9,7 +9,7 @@ export async function login(req: Request, res: Response) {
 
   // Busca todos os usuários com o CPF informado
   const usuarios = await pool.query(
-    `SELECT id, nome, email, funcao, perfil, base, ativo, criado_em, par
+    `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
      FROM usuarios
      WHERE cpf = $1`,
     [cpf]
@@ -40,7 +40,7 @@ export async function login(req: Request, res: Response) {
 
   if (base) {
     const result = await pool.query(
-      `SELECT *
+      `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
        FROM usuarios
        WHERE cpf = $1
        AND base = $2 AND perfil='🔑 Administrador - Todas as bases'`,
@@ -74,8 +74,14 @@ export async function login(req: Request, res: Response) {
     }
   );
 
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 8 * 60 * 60 * 1000, // 8 horas
+  });
+
   return res.json({
-    token,
     id: usuario.id,
     nome: usuario.nome,
     email: usuario.email,
@@ -89,6 +95,12 @@ export async function login(req: Request, res: Response) {
   });
 }
 
+export async function logout(req: Request, res: Response) {
+  // clear the auth cookie
+  res.clearCookie('token');
+  return res.json({ ok: true });
+}
+
 export async function loginWithEmail(req: Request, res: Response) {
   let { email, base } = req.body;
 
@@ -100,7 +112,7 @@ export async function loginWithEmail(req: Request, res: Response) {
 
 
   const usuarios = await pool.query(
-    `SELECT id, nome, email, funcao, perfil, base, ativo, criado_em, par
+    `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
      FROM usuarios
      WHERE email = $1`,
     [email]
@@ -134,7 +146,7 @@ export async function loginWithEmail(req: Request, res: Response) {
       `SELECT *
        FROM usuarios
        WHERE email = $1
-       AND base = $2 AND perfil!='🔑 Administrador - Todas as bases'`,
+       AND base = $2 AND perfil !='🔑 Administrador - Todas as bases'`,
       [email, base]
     );
 
@@ -154,6 +166,7 @@ export async function loginWithEmail(req: Request, res: Response) {
       id: usuario.id,
       nome: usuario.nome,
       email: usuario.email,
+      cpf: usuario.cpf,
       funcao: usuario.funcao,
       perfil: usuario.perfil,
       base: usuario.base,
@@ -164,11 +177,19 @@ export async function loginWithEmail(req: Request, res: Response) {
     }
   );
 
+  // Set token as HttpOnly cookie instead of returning it in the response body
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 8 * 60 * 60 * 1000, // 8 hours
+  });
+
   return res.json({
-    token,
     id: usuario.id,
     nome: usuario.nome,
     email: usuario.email,
+    cpf: usuario.cpf,
     funcao: usuario.funcao,
     perfil: usuario.perfil,
     base: usuario.base,

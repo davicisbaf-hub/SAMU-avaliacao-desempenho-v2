@@ -4,7 +4,10 @@ import type { Request, Response, NextFunction } from "express";
 const JWT_SECRET = process.env.JWT_SECRET || "samu-secret-key";
 
 export function autenticar(req: Request, res: Response, next: NextFunction) {
-  const token = req.headers.authorization?.split(" ")[1];
+  // Try Authorization header first, then cookie
+  const headerToken = req.headers.authorization?.split(" ")[1];
+  const cookieToken = (req as any).cookies?.token;
+  const token = headerToken || cookieToken;
 
   if (!token) {
     return res.status(401).json({ erro: "Token não fornecido" });
