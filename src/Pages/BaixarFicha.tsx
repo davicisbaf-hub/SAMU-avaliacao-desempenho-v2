@@ -45,6 +45,7 @@ type Avaliacao = {
 	avaliador_nome: string;
 	avaliador_funcao: string;
 	avaliado_nome: string;
+	avaliado_base: string;
 	avaliado_funcao: string;
 	funcao: string;
 	tipo_avaliacao: string;
@@ -453,7 +454,7 @@ export default function BaixarFicha() {
 											userName={avaliacaoSelecionada.avaliado_nome}
 											userBase={
 												usuarios.find(
-													u => u.nome === avaliacaoSelecionada.avaliado_nome
+													u => u.base === avaliacaoSelecionada.avaliado_base
 												)?.base || ""
 											}
 											readOnly={true}
