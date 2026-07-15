@@ -34,6 +34,7 @@ type Base = {
 
 type Props = {
 	tipoAvaliacao: string;
+	modalidade: string;
 	criterios: Criterios[];
 	notas: Record<string, number>;
 	escalaLikert: EscalaLikert[];
@@ -61,6 +62,7 @@ const iconByTipo: Record<string, string> = {
 
 export default function FichaAvaliacaoTemplate({
 	tipoAvaliacao,
+	modalidade,
 	criterios,
 	notas,
 	escalaLikert,
@@ -111,7 +113,8 @@ export default function FichaAvaliacaoTemplate({
 						<div className='flex-1'>
 							<div className='flex items-center gap-2 flex-wrap'>
 								<h1 className='text-lg font-bold text-[#f8f8f8]'>Ficha de Avaliação de Desempenho</h1>
-								<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Autoavaliação: {tipoAvaliacao}</span>
+								<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Tipo: {tipoAvaliacao}</span>
+								<span className='bg-[#cd0048]/20 text-white/80 text-xs px-2 py-0.5 rounded-full font-medium border border-[#cd0048]/30'>Modalidade: {modalidade}</span>
 							</div>
 							<p className='text-[#f8f8f8]/70 text-sm mt-0.5'>{tipoAvaliacao} - SAMU 192 / CRUR-BF / CISBAF</p>
 						</div>

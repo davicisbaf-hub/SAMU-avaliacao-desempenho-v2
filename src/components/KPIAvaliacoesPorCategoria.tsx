@@ -295,7 +295,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
         )}
       </div>
       {tiposFiltrados.size > 1 && (
-          <div className="text-center text-gray-500">
+          <div className="text-sm text-gray-500">
             média por categoria = (média_A × avaliações_A + média_B × avaliações_B) / (avaliações_A + avaliações_B)
           </div>
         )}

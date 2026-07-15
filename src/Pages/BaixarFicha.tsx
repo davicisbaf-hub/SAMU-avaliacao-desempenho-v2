@@ -47,6 +47,7 @@ type Avaliacao = {
 	avaliado_nome: string;
 	avaliado_base: string;
 	avaliado_funcao: string;
+	modalidade: string;
 	funcao: string;
 	tipo_avaliacao: string;
 	base?: string;
@@ -443,6 +444,7 @@ export default function BaixarFicha() {
 									return (
 										<FichaAvaliacaoTemplate
 											tipoAvaliacao={avaliacaoSelecionada.tipo_avaliacao}
+											modalidade={avaliacaoSelecionada.modalidade}
 											criterios={criterios}
 											notas={notasMap}
 											escalaLikert={escalaLikert}
@@ -451,7 +453,7 @@ export default function BaixarFicha() {
 											observacoes={avaliacaoSelecionada.observacoes_gerais || ""}
 											pontosMelhorar={avaliacaoSelecionada.pontos_melhorar || ""}
 											planoAcao={avaliacaoSelecionada.plano_acao || ""}
-											userName={avaliacaoSelecionada.avaliado_nome}
+											userName={(avaliacaoSelecionada.avaliado_nome + " - " + avaliacaoSelecionada.avaliado_funcao) }
 											userBase={
 												usuarios.find(
 													u => u.base === avaliacaoSelecionada.avaliado_base
@@ -486,6 +488,7 @@ export default function BaixarFicha() {
 							return (
 								<FichaAvaliacaoTemplate
 									tipoAvaliacao={avaliacaoParaPdf.tipo_avaliacao}
+									modalidade={avaliacaoParaPdf.modalidade}
 									criterios={criteriosParaPdf}
 									notas={notasMap}
 									escalaLikert={escalaLikert}
