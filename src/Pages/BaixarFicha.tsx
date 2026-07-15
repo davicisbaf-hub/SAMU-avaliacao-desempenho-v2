@@ -496,9 +496,7 @@ export default function BaixarFicha() {
 									planoAcao={avaliacaoParaPdf.plano_acao || ""}
 									userName={avaliacaoParaPdf.avaliado_nome}
 									userBase={
-										usuarios.find(
-											u => u.nome === avaliacaoParaPdf.avaliado_nome
-										)?.base || ""
+										usuarios.find(u => u.nome === avaliacaoParaPdf.avaliado_nome)?.base || ""
 									}
 									readOnly={true}
 									criado_em={avaliacaoParaPdf.criado_em}

@@ -43,38 +43,12 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
   const [tiposFiltrados, setTiposFiltrados] = useState<Set<string>>(new Set([`${user?.funcao}`, "Avaliação Par"]));
   const isAdminGlobal = user?.perfil === "🔑 Administrador - Todas as bases";
 
-  const [bases, setBases] = useState<string[]>([]);
-  const [filtroBase, setFiltroBase] = useState(
-    isAdminGlobal ? "" : (user?.base ?? "")
-  );
-
-  useEffect(() => {
-    async function carregarBases() {
-      try {
-        const res = await authFetch("/api/bases");
-        const data = await res.json();
-
-        setBases(data.map((b: any) => b.nome));
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    if (isAdminGlobal) {
-      carregarBases();
-    }
-  }, []);
-
   useEffect(() => {
     async function carregarKPIs() {
       try {
         setCarregando(true);
 
-        const base = isAdminGlobal ? filtroBase : user?.base;
-
-        const url = base
-          ? `/api/kpis/avaliacoes-por-categoria?base=${encodeURIComponent(base)}`
-          : "/api/kpis/avaliacoes-por-categoria";
+        const url = `/api/kpis/avaliacoes-por-categoria?base=${encodeURIComponent(user?.base ?? "")}`;
 
         const res = await authFetch(url);
         const dados = await res.json();
@@ -107,16 +81,12 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
 
     carregarKPIs();
 
-  }, [filtroBase, user?.base]);
+  }, [user?.base]);
 
   useEffect(() => {
     async function carregarAvaliacoes() {
       try {
-        const url = isAdminGlobal
-        ? filtroBase
-          ? `/api/avaliacoes?base=${encodeURIComponent(filtroBase)}`
-          : "/api/avaliacoes"
-        : `/api/avaliacoes?base=${encodeURIComponent(user?.base ?? "")}`;
+        const url = `/api/avaliacoes?base=${encodeURIComponent(user?.base ?? "")}`;
         const res = await authFetch(url);
         const data = await res.json();
         setAvaliacoesFull(Array.isArray(data) ? data : []);
@@ -126,7 +96,7 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
       }
     }
     carregarAvaliacoes();
-  }, [filtroBase]);
+  }, [user?.base]);
 
   const tiposDisponiveis = isAdminGlobal
   ? Array.from(new Set(kpis.map(k => k.tipo_avaliacao)))
@@ -250,27 +220,6 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
             <div className="h-6 w-px bg-gray-300" />
           </>
         )}
-        {isAdminGlobal && (
-          <>
-            <select
-              value={filtroBase}
-              onChange={(e) => setFiltroBase(e.target.value)}
-              className="px-2 py-1 rounded-lg font-medium transition-all bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-pointer outline-none"
-            >
-              <option value="">
-                Todas as Bases
-              </option>
-
-              {bases.map((base) => (
-                <option key={base} value={base}>
-                  {base}
-                </option>
-              ))}
-            </select>
-
-            <div className="h-6 w-px bg-gray-300" />
-          </>
-        )}
         {tiposDisponiveis.map((tipo) => (
           <button
             key={tipo}
@@ -306,7 +255,8 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-
+      
+      
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
           dadosCards.map((kpi: any) => (
@@ -346,7 +296,6 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
           <div className="col-span-full text-center py-12 text-gray-500">Nenhum dado disponível</div>
         )}
       </div>
-
 
       {kpisFiltrados.length > 0 && (
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 mt-8 border border-gray-200">
