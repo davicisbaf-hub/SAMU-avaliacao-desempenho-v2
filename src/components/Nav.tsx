@@ -151,30 +151,32 @@ export default function Nav() {
                     </div>
                 </div>
 
-                <div className="px-4 py-3 border-b border-sidebar-border">
-                    <div className="p-6 space-y-4">
-                        <div className="space-y-2">
-                            <select
-                            value={baseSelecionada}
-                            onChange={(e) => {
-                                setBaseSelecionada(e.target.value);
-                                // Login automático ao escolher
-                                handleLogin(e.target.value);
-                            }}
-                            className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60 appearance-none"
-                            >
-                            <option value="">Selecione seu acesso…</option>
-                            <optgroup label="── Bases ──">
-                                {base.map((base) => (
-                                <option key={base.id} value={base.nome} className="text-black">
-                                    {base.nome}
-                                </option>
-                                ))}
-                            </optgroup>
-                            </select>
+                {user?.perfil === "🔑 Administrador - Todas as bases" && (
+                    <div className="px-4 py-3 border-b border-sidebar-border">
+                        <div className="space-y-4">
+                            <div className="space-y-2 text-left">
+                                <select
+                                value={baseSelecionada}
+                                onChange={(e) => {
+                                    setBaseSelecionada(e.target.value);
+                                    // Login automático ao escolher
+                                    handleLogin(e.target.value);
+                                }}
+                                className="space-y-2 inline-flex items-center gap-1.5 bg-[#cd0048]/30  text-xs  p-2 rounded-full font-medium"
+                                >
+                                <option value="">{user?.base}</option>
+                                
+                                    {base.map((base) => (
+                                    <option key={base.id} value={base.nome} className="text-black font-bold">
+                                        {base.nome}
+                                    </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
+                
 
                 <nav className="custom-scrollbar flex-1 overflow-y-auto px-3 py-2 space-y-0.5 text-left">
                     <NavLink to="/" 
