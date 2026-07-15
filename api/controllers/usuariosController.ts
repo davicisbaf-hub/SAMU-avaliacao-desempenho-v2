@@ -9,6 +9,7 @@ export async function listar(req: Request, res: Response) {
       SELECT id, nome, email, funcao, perfil, base, ativo, criado_em, par
       FROM usuarios
       WHERE ativo = true
+      AND perfil != '🔑 Administrador - Todas as bases'
       ORDER BY nome
     `);
     res.json(rows);

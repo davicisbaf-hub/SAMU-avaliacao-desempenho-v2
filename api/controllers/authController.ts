@@ -95,8 +95,7 @@ export async function login(req: Request, res: Response) {
   });
 }
 
-export async function logout(req: Request, res: Response) {
-  // clear the auth cookie
+export async function logout(res: Response) {
   res.clearCookie('token');
   return res.json({ ok: true });
 }
