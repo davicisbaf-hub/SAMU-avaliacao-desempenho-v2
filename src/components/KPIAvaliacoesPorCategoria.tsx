@@ -233,8 +233,8 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
             {tipo}
           </button>
         ))}
-      </div>
 
+      </div>
         <div className="bg-white rounded-lg border p-6">
         <h3 className="text-lg font-bold mb-4">Comparativo por Função</h3>
         <ResponsiveContainer width="100%" height={Math.max(250, dadosPorTipo.length * 90)}>
@@ -255,8 +255,6 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      
-      
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
         {kpisFiltrados.length > 0 ? (
           dadosCards.map((kpi: any) => (
@@ -296,6 +294,11 @@ export default function KPIAvaliacoesPorCategoria({ onStatusChange }: Props) {
           <div className="col-span-full text-center py-12 text-gray-500">Nenhum dado disponível</div>
         )}
       </div>
+      {tiposFiltrados.size > 1 && (
+          <div className="text-center text-gray-500">
+            média por categoria = (média_A × avaliações_A + média_B × avaliações_B) / (avaliações_A + avaliações_B)
+          </div>
+        )}
 
       {kpisFiltrados.length > 0 && (
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 mt-8 border border-gray-200">
