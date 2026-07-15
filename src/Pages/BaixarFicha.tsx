@@ -378,7 +378,7 @@ export default function BaixarFicha() {
 													
 													<td className="px-4 py-3">
 														<span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
-															{avaliacao.tipo_avaliacao}
+															{avaliacao.modalidade}
 														</span>
 													</td>
 
