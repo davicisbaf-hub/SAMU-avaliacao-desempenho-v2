@@ -26,7 +26,7 @@ export default function BotaoCategoria({
                 </h2>
 
                 <span className="text-xs [text-#555f69]">
-                    {respondidos} / {itens.length} respondidos
+                    {respondidos} / {itens.length} respondidos {respondidos === itens.length && (<span className="text-emerald-600 text-xs font-medium">✓ Completo</span>)}
                 </span>
             </div>
 
