@@ -48,7 +48,7 @@ export default function Header() {
                 )}
 
                 <span className='nome-header hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/10 text-black text-xs font-medium'>
-                    {user?.nome} - {user?.funcao}
+                    {user?.nome} {user?.funcao && (<p>-</p>)} {user?.funcao}
                 </span>
                 <span className='perfil-header hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#cd0048]/10 text-[#cd0048] text-xs font-medium'>
                     {user?.perfil}
