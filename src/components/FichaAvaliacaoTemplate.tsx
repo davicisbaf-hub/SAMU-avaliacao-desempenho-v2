@@ -58,6 +58,7 @@ const iconByTipo: Record<string, string> = {
 	"Técnico de Enfermagem": "💉",
 	"Enfermeiro": "🩺",
 	"Médico": "⚕️",
+	"Avaliação Par": "👥"
 };
 
 export default function FichaAvaliacaoTemplate({
