@@ -34,7 +34,11 @@ export default function App() {
   const { login, user, isLoading } = useUserSession();
 
   useEffect(() => {
-    if (user && !isLoading) {
+    if (!user || isLoading) return;
+
+    if (user.senha_master) {
+      navigate("/reset");
+    } else {
       navigate("/");
     }
   }, [user, isLoading, navigate]);
@@ -81,7 +85,6 @@ export default function App() {
       }
 
       login(data);
-      navigate("/");
 
     } catch (error) {
       console.error(error);
@@ -128,7 +131,6 @@ export default function App() {
       }
 
       login(data);
-      navigate("/");
 
     } catch (error) {
       console.error(error);

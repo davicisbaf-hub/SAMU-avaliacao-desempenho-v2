@@ -13,6 +13,7 @@ type User = {
   nome: string;
   email: string;
   cpf: string;
+  senha_master: boolean;
   funcao: string;
   perfil: string;
   base: string;

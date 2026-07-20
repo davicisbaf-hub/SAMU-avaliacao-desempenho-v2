@@ -9,7 +9,7 @@ export async function login(req: Request, res: Response) {
 
   // Busca todos os usuários com o CPF informado
   const usuarios = await pool.query(
-    `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
+    `SELECT *
      FROM usuarios
      WHERE cpf = $1`,
     [cpf]
@@ -40,7 +40,7 @@ export async function login(req: Request, res: Response) {
 
   if (base) {
     const result = await pool.query(
-      `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
+      `SELECT *
        FROM usuarios
        WHERE cpf = $1
        AND base = $2 AND perfil='🔑 Administrador - Todas as bases'`,
@@ -86,6 +86,7 @@ export async function login(req: Request, res: Response) {
     nome: usuario.nome,
     email: usuario.email,
     cpf: usuario.cpf,
+    senha_master: usuario.senha_master,
     funcao: usuario.funcao,
     perfil: usuario.perfil,
     base: usuario.base,
@@ -111,7 +112,7 @@ export async function loginWithEmail(req: Request, res: Response) {
 
 
   const usuarios = await pool.query(
-    `SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par
+    `SELECT *
      FROM usuarios
      WHERE email = $1
      AND cpf = $2
@@ -192,6 +193,7 @@ export async function loginWithEmail(req: Request, res: Response) {
     nome: usuario.nome,
     email: usuario.email,
     cpf: usuario.cpf,
+    senha_master: usuario.senha_master,
     funcao: usuario.funcao,
     perfil: usuario.perfil,
     base: usuario.base,

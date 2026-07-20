@@ -111,6 +111,7 @@ export async function getMe(req: Request, res: Response) {
       nome: usuario.nome,
       email: usuario.email,
       cpf: usuario.cpf,
+      senha_master: usuario.senha_master,
       funcao: usuario.funcao,
       perfil: usuario.perfil,
       base: usuario.base,
@@ -136,6 +137,27 @@ export async function senhaMaster(req: Request, res: Response) {
         RETURNING *
       `,
       [id]
+    );
+    res.json(rows[0]);
+  } catch (error: any) {
+    res.status(500).json({ erro: error.message });
+  }
+}
+
+export async function resetSenha(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { senha } = req.body;
+    
+    const { rows } = await pool.query(
+      `
+        UPDATE usuarios
+        SET senha = $1,
+        senha_master = false
+        WHERE id = $2
+        RETURNING *
+      `,
+      [senha, id]
     );
     res.json(rows[0]);
   } catch (error: any) {

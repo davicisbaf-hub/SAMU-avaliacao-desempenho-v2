@@ -15,6 +15,7 @@ import FichaAvaliacaoLiderancaLiderado from "./Fichas/FichaAvaliacaoLideranca-li
 import FichaAvaliacaoLideradoLideranca from "./Fichas/FichaAvaliacaoLiderado-lideranca.tsx";
 import FichaAvaliacaoPar from "./Fichas/FichaAvaliacaoPar.tsx";
 import PlanoDesenvolvimento from "./Pages/PlanoDesenvolvimento.tsx";
+import Reset from "./Pages/Reset.tsx";
 import Help from "./Pages/Help.tsx";
 
 import CadastroPage from "./Pages/Cadastro.tsx";
@@ -169,6 +170,14 @@ ReactDOM.createRoot(root!).render(
           element={
             <PrivateRoute>
               <Help/>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/reset"
+          element={
+            <PrivateRoute>
+              <Reset/>
             </PrivateRoute>
           }
         />

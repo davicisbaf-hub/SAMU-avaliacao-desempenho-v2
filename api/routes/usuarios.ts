@@ -6,7 +6,8 @@ import {
   atualizar,
   inativar,
   getMe,
-  senhaMaster
+  senhaMaster,
+  resetSenha
 } from "../controllers/usuariosController.js";
 
 const router = Router();
@@ -18,6 +19,7 @@ router.get("/me", getMe);
 router.post("/usuarios", cadastrar);
 
 router.put("/usuarios/senhaMaster/:id", senhaMaster);
+router.put("/usuarios/resetSenha/:id", resetSenha);
 router.put("/usuarios/:id/inativar", inativar);
 router.put("/usuarios/:id", atualizar);
 
