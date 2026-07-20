@@ -5,34 +5,19 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "samu-secret-key";
 
 export async function login(req: Request, res: Response) {
-  let { cpf, base } = req.body;
+  let { senha, base } = req.body;
 
   // Busca todos os usuários com o CPF informado
   const usuarios = await pool.query(
     `SELECT *
      FROM usuarios
-     WHERE cpf = $1`,
-    [cpf]
+     WHERE senha = $1`,
+    [senha]
   );
 
   if (usuarios.rows.length === 0) {
     return res.status(401).json({
       erro: "Credenciais inválidas",
-    });
-  }
-
-  // Se houver mais de um usuário e nenhuma base foi escolhida,
-  // retorna a lista para o frontend abrir o modal.
-  if (usuarios.rows.length > 1 && !base) {
-    return res.json({
-      escolherBase: true,
-      usuarios: usuarios.rows.map((u) => ({
-        id: u.id,
-        nome: u.nome,
-        funcao: u.funcao,
-        perfil: u.perfil,
-        base: u.base,
-      })),
     });
   }
 
@@ -42,9 +27,9 @@ export async function login(req: Request, res: Response) {
     const result = await pool.query(
       `SELECT *
        FROM usuarios
-       WHERE cpf = $1
+       WHERE senha = $1
        AND base = $2 AND perfil='🔑 Administrador - Todas as bases'`,
-      [cpf, base]
+      [senha, base]
     );
 
     if (result.rows.length === 0) {
@@ -102,11 +87,17 @@ export async function logout(req: Request,  res: Response) {
 }
 
 export async function loginWithEmail(req: Request, res: Response) {
-  let { email, cpf, base } = req.body;
+  let { cpf, senha, base } = req.body;
 
-  if (!email) {
+  if (!cpf) {
     return res.status(400).json({
-      erro: "Email é obrigatório",
+      erro: "CPF é obrigatório",
+    });
+  }
+  
+  if (!senha) {
+    return res.status(400).json({
+      erro: "Senha é obrigatória",
     });
   }
 
@@ -114,30 +105,15 @@ export async function loginWithEmail(req: Request, res: Response) {
   const usuarios = await pool.query(
     `SELECT *
      FROM usuarios
-     WHERE email = $1
-     AND cpf = $2
+     WHERE cpf = $1
+     AND senha = $2
      `,
-    [email, cpf]
+    [cpf, senha]
   );
 
   if (usuarios.rows.length === 0) {
     return res.status(401).json({
       erro: "Credenciais inválidas",
-    });
-  }
-
-  // Se houver mais de um usuário e nenhuma base foi escolhida,
-  // retorna a lista para o frontend abrir o modal.
-  if (usuarios.rows.length > 1 && !base) {
-    return res.json({
-      escolherBase: true,
-      usuarios: usuarios.rows.map((u) => ({
-        id: u.id,
-        nome: u.nome,
-        funcao: u.funcao,
-        perfil: u.perfil,
-        base: u.base,
-      })),
     });
   }
 
@@ -147,10 +123,10 @@ export async function loginWithEmail(req: Request, res: Response) {
     const result = await pool.query(
       `SELECT *
        FROM usuarios
-       WHERE email = $1
-       AND cpf = $2
+       WHERE cpf = $1
+       AND senha = $2
        AND base = $3`,
-      [email, cpf, base]
+      [cpf, senha, base]
     );
 
     if (result.rows.length === 0) {

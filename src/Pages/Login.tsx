@@ -22,10 +22,11 @@ type Base = {
 export default function App() {
   const [profile, setProfile] = useState("admin"); // "admin" | "profissional"
   const [base, setBase] = useState<Base[]>([]);
-  const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
+  const [senha, setSenha] = useState("");
   const [baseSelecionada, setBaseSelecionada] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showSenha, setShowSenha] = useState(false);
+  const [showCpf, setShowCpf] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -47,15 +48,15 @@ export default function App() {
     e.preventDefault();
     setError("");
 
-    if (profile !== "admin" && !email) {
-      setError("Informe seu email.");
-      return;
-    }
     if (!baseSelecionada) {
       setError("Selecione seu acesso / base de lotação.");
       return;
     }
-    if (!cpf) {
+    if (profile !== "admin" && !cpf) {
+      setError("Informe seu CPF.");
+      return;
+    }
+    if (!senha) {
       setError("Informe a senha de acesso.");
       return;
     }
@@ -70,8 +71,8 @@ export default function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email,
           cpf,
+          senha,
           base: baseSelecionada
         }),
       });
@@ -102,7 +103,7 @@ export default function App() {
       setError("Selecione seu acesso / base de lotação.");
       return;
     }
-    if (!cpf) {
+    if (!senha) {
       setError("Informe a senha de acesso.");
       return;
     }
@@ -117,7 +118,7 @@ export default function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          cpf,
+          senha,
           base: baseSelecionada
         }),
       });
@@ -177,17 +178,16 @@ export default function App() {
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Info banner */}
-          <div className="bg-[#cd0048] px-6 py-4">
+          <div className="bg-[#cd0048] px-6 py-4 text-left">
             <div className="flex items-center gap-2">
               <Shield size={16} className="text-[#cd0048]-100" />
               <p className="text-blue-50 font-semibold text-sm">
                 Acesso Restrito por Perfil
               </p>
             </div>
-            <p className="text-blue-100/80 text-xs mt-1">
-              Coordenação/Admin: acesso ao painel completo. Profissional:
-              apenas autoavaliação.
-            </p>
+
+            <p className="text-blue-100/80 text-xs mt-1">Administração: acesso ao painel completo.</p>
+            <p className="text-blue-100/80 text-xs mt-1">Colaborador: apenas autoavaliação.</p>
           </div>
 
           {/* Profile toggle */}
@@ -202,9 +202,9 @@ export default function App() {
               }`}
             >
               <Shield size={18} />
-              <span>Coordenação</span>
+              <span>Administração</span>
               <span className="text-[10px] font-normal opacity-70">
-                Painel completo
+                Acesso completo ao sistema
               </span>
             </button>
 
@@ -218,9 +218,9 @@ export default function App() {
               }`}
             >
               <UserCircle2 size={18} />
-              <span>Administradores / Usuarios</span>
+              <span>Coordenação / Colaborador</span>
               <span className="text-[10px] font-normal opacity-70">
-                Usuarios das bases
+                Avaliações e acompanhamento
               </span>
             </button>
           </div>
@@ -248,38 +248,48 @@ export default function App() {
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-800">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
-                  className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
-                />
-              </div>
-
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-800">
                   CPF
                 </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showCpf ? "text" : "password"}
                     value={cpf}
                     onChange={(e) => setCpf(e.target.value)}
+                    placeholder="Digite o CPF..."
+                    className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCpf((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                    aria-label={showCpf ? "Ocultar senha" : "Mostrar senha"}
+                  >
+                    {showCpf ? <Eye size={16} /> : <EyeOff size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-800">
+                  Senha de Acesso
+                </label>
+                <div className="relative">
+                  <input
+                    type={showSenha ? "text" : "password"}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
                     placeholder="Digite a senha…"
                     className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword((v) => !v)}
+                    onClick={() => setShowSenha((v) => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
-                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
                   >
-                    {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                    {showSenha ? <Eye size={16} /> : <EyeOff size={16} />}
                   </button>
                 </div>
               </div>
@@ -330,19 +340,19 @@ export default function App() {
                 </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
-                    value={cpf}
-                    onChange={(e) => setCpf(e.target.value)}
+                    type={showSenha ? "text" : "password"}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
                     placeholder="Digite a senha…"
                     className="w-full border border-slate-300 bg-white rounded-lg px-3 py-2.5 pr-10 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#cd0048]/60"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword((v) => !v)}
+                    onClick={() => setShowSenha((v) => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
-                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
                   >
-                    {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                    {showSenha ? <Eye size={16} /> : <EyeOff size={16} />}
                   </button>
                 </div>
               </div>
