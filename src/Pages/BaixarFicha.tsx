@@ -164,12 +164,6 @@ export default function BaixarFicha() {
 		const ehAutoavaliacao =
 			avaliacao.avaliador_nome === avaliacao.avaliado_nome;
 
-		// Só filtra por função se o usuário logado tiver uma função definida.
-		// Sem função definida, não restringe (mostra tudo).
-		const passouFuncaoUsuario =
-			!user?.funcao || avaliacao.avaliado_funcao === user.funcao;
-
-		if (isAdminGlobal) return passouFuncaoUsuario;
 
 		// Administrador da base
 		if (isAdmin) {
@@ -177,14 +171,13 @@ export default function BaixarFicha() {
 				u => u.nome === avaliacao.avaliado_nome
 			);
 
-			return usuarioAvaliado?.base === userBase && passouFuncaoUsuario;
+			return usuarioAvaliado?.base === userBase
 		}
 
 		// Usuário comum
 		return (
 			ehAutoavaliacao &&
-			avaliacao.avaliado_nome === user?.nome &&
-			passouFuncaoUsuario
+			avaliacao.avaliado_nome === user?.nome
 		);
 	});
 
