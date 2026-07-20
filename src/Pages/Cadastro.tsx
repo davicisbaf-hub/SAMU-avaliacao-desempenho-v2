@@ -73,6 +73,7 @@ export default function CadastroPage() {
     const [baseSelecionada, setBaseSelecionada] = useState<Base | null>(null);
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
     const [base, setBase] = useState("");
     const [cpf, setCpf] = useState("");
     const [funcao, setFuncao] = useState("");
@@ -192,7 +193,8 @@ export default function CadastroPage() {
             alert("Usuário cadastrado com sucesso!");
 
             setNome("");
-            setEmail("");
+            setEmail("")
+            setSenha("");
             setCpf("");
             setFuncao("");
             setPerfil("");
@@ -240,7 +242,6 @@ export default function CadastroPage() {
     function editarUsuario(usuario: any) {
         setUsuarioEditando(usuario);
         setNome(usuario.nome);
-        setEmail(usuario.email);
         setFuncao(usuario.funcao);
         setPerfil(usuario.perfil);
         setBase(usuario.base);
@@ -388,17 +389,6 @@ export default function CadastroPage() {
                                             />
                                         </div>
                                         <div className="space-y-1">
-                                            <label className="text-xs font-semibold">Email</label>
-                                            <input
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                placeholder="Email do profissional"
-                                                required
-                                                className="w-full border rounded-lg px-3 py-2 text-sm"
-                                            />
-                                        </div>
-                                        <div className="space-y-1">
                                             <label className="text-xs font-semibold">CPF</label>
                                             <input
                                                 type="password"
@@ -409,7 +399,17 @@ export default function CadastroPage() {
                                                 className="w-full border rounded-lg px-3 py-2 text-sm"
                                             />
                                         </div>
-
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold">Senha</label>
+                                            <input
+                                                type="text"
+                                                value={senha}
+                                                onChange={(e) => setSenha(e.target.value)}
+                                                placeholder="Senha do profissional"
+                                                required
+                                                className="w-full border rounded-lg px-3 py-2 text-sm"
+                                            />
+                                        </div>
                                         <div className="space-y-1">
                                             <label className="text-xs font-semibold">Função</label>
                                             <select
@@ -436,6 +436,7 @@ export default function CadastroPage() {
                                                 <option value="">Selecione</option>
                                                 <option value="Administrador">Administrador</option>
                                                 <option value="Usuario">Usuário</option>
+                                                {user?.perfil === "🔑 Administrador - Todas as bases" && (<option value="🔑 Administrador - Todas as bases">🔑 Administrador - Todas as bases</option>)}
                                             </select>
                                         </div>
 
