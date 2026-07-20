@@ -29,6 +29,7 @@ export default function Nav() {
     const navigate = useNavigate();
     const { logout } = useUserSession();
     const [fichas, setFichas] = useState<Ficha[]>([]);
+    const [senhaMe, setSenhaMe] = useState()
     const [baseSelecionada, setBaseSelecionada] = useState("");
     const [base, setBase] = useState<Base[]>([]);
     const { login, user, isLoading } = useUserSession();
@@ -75,6 +76,19 @@ export default function Nav() {
             .then((data) => setFichas(data));
     }, []);
 
+    async function getSenha() {
+        const response = await fetch("/api/me", {
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            return undefined;
+        }
+
+        const data = await response.json();
+        return data.senha;
+    }
+
     const handleLogin = async (baseNome?: string) => {
         const base = baseNome || baseSelecionada;
 
@@ -83,11 +97,9 @@ export default function Nav() {
             return;
         }
 
-        // Obtenha o CPF a partir do contexto do usuário. Não usar localStorage para dados sensíveis.
-        const cpf: string | undefined = user?.cpf;
+        const senha = await getSenha();
 
-        if (!cpf) {
-            // contexto ainda não restaurado — pedir para o usuário logar novamente
+        if (!senha) {
             navigate("/login");
             return;
         }
@@ -100,8 +112,8 @@ export default function Nav() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    cpf: cpf,
-                    base: base,
+                    senha,
+                    base,
                 }),
             });
 
@@ -112,10 +124,8 @@ export default function Nav() {
                 return;
             }
 
-            // server sets HttpOnly cookie; update user in context
             login(data);
             navigate("/");
-
         } catch (error) {
             console.error(error);
         }

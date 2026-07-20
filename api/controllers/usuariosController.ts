@@ -96,7 +96,7 @@ export async function getMe(req: Request, res: Response) {
     const usuarioId = (req as any).usuario.id;
 
     const result = await pool.query(
-      "SELECT id, nome, email, cpf, funcao, perfil, base, ativo, criado_em, par FROM usuarios WHERE id = $1",
+      "SELECT id, nome, senha, cpf, funcao, perfil, base, ativo, criado_em, par FROM usuarios WHERE id = $1",
       [usuarioId]
     );
 
@@ -109,8 +109,8 @@ export async function getMe(req: Request, res: Response) {
     res.json({
       id: usuario.id,
       nome: usuario.nome,
-      email: usuario.email,
       cpf: usuario.cpf,
+      senha: usuario.senha,
       senha_master: usuario.senha_master,
       funcao: usuario.funcao,
       perfil: usuario.perfil,
