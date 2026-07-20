@@ -164,14 +164,17 @@ export default function BaixarFicha() {
 		const ehAutoavaliacao =
 			avaliacao.avaliador_nome === avaliacao.avaliado_nome;
 
+		// Administrador global - vê tudo, de todas as bases
+		if (isAdminGlobal) {
+			return true;
+		}
 
 		// Administrador da base
 		if (isAdmin) {
 			const usuarioAvaliado = usuarios.find(
 				u => u.nome === avaliacao.avaliado_nome
 			);
-
-			return usuarioAvaliado?.base === userBase
+			return usuarioAvaliado?.base === userBase;
 		}
 
 		// Usuário comum
@@ -203,9 +206,7 @@ export default function BaixarFicha() {
 				.toLowerCase()
 				.includes(filtroUsuario.toLowerCase());
 
-		const passouFuncao =
-			!filtroFuncao ||
-			avaliacao.funcao === filtroFuncao;
+		
 
 		const passouTipo =
 			!filtroTipo ||
@@ -225,7 +226,6 @@ export default function BaixarFicha() {
 
 		return (
 			passouUsuario &&
-			passouFuncao &&
 			passouTipo &&
 			passouDataInicio &&
 			passouDataFim && 
