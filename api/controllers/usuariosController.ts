@@ -123,3 +123,22 @@ export async function getMe(req: Request, res: Response) {
     res.status(500).json({ erro: "Erro interno do servidor" });
   }
 }
+
+export async function senhaMaster(req: Request, res: Response) {
+  try {
+    const ano = new Date().getFullYear();
+    const { id } = req.params;
+    const { rows } = await pool.query(
+      `
+        UPDATE usuarios
+        SET senha_master = true, senha = 'Cisbaf@${ano}'
+        WHERE id = $1
+        RETURNING *
+      `,
+      [id]
+    );
+    res.json(rows[0]);
+  } catch (error: any) {
+    res.status(500).json({ erro: error.message });
+  }
+}

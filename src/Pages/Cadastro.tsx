@@ -4,6 +4,14 @@ import { useUserSession } from "../contexts/UserSession";
 import { useEffect, useState } from "react";
 import { useAuthFetch } from "../hooks/useAuthFetch";
 import MultiSelectPar from '../components/select'
+import { Pencil, Trash } from 'lucide-react';
+
+const iconByTipo: Record<string, string> = {
+	"Condutor": "🚑",
+	"Técnico de Enfermagem": "💉",
+	"Enfermeiro": "🩺",
+	"Médico": "⚕️",
+};
 
 type Base = {
     id: number;
@@ -95,7 +103,9 @@ export default function CadastroPage() {
         .filter((u) =>
             u.nome.toLowerCase().includes(busca.toLowerCase()) ||
             String(u.id).includes(busca)
-        );
+        )
+        .filter((u) => u.perfil !== "🔑 Administrador - Todas as bases");
+
     const basesVisiveis = isAdminGlobal ? bases : bases.filter((base) => base.nome === user?.base);
     const { authFetch } = useAuthFetch();
 
@@ -253,6 +263,26 @@ export default function CadastroPage() {
             alert("Erro ao carregar informações do usuário");
         } finally {
             setCarregandoInfo(false);
+        }
+    }
+
+    async function senhaMaster(usuarioId: number) {
+        if (!confirm("Deseja resetar a senha deste usuário para o padrão?")) return;
+
+        try {
+            const res = await authFetch(`/api/usuarios/senhaMaster/${usuarioId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (!res.ok) {
+                throw new Error("Erro ao resetar senha");
+            }
+
+            alert(`Senha resetada com sucesso!`);
+        } catch (error) {
+            console.error("Erro ao resetar senha:", error);
+            alert("Erro ao resetar senha do usuário");
         }
     }
 
@@ -465,9 +495,19 @@ export default function CadastroPage() {
                             <div className="bg-card border border-border rounded-xl overflow-hidden">
 
                                 <div className="px-5 py-3 border-b border-border bg-[#e5ecf1]/30 flex items-center justify-between">
-                                    <h2 className="text-sm font-semibold">
-                                        Profissionais Cadastrados
-                                    </h2>
+                                    <div className='flex'>
+                                        <h2 className="text-sm font-semibold">Profissionais Cadastradosㅤ-ㅤ</h2>
+                                        <p className='text-[#555f69] text-[12px]'>
+                                             
+                                            {usuariosFiltrados.length > 1 ? (
+                                                <span> {usuariosFiltrados.length} registros</span>
+                                            ) : (
+                                                <span> {usuariosFiltrados.length} registro</span>
+                                            )}
+                                        </p>
+                                    </div>
+                                        
+                                        
                                     <input
                                         type="text"
                                         placeholder="Buscar por nome ou ID..."
@@ -477,43 +517,73 @@ export default function CadastroPage() {
                                     />
                                 </div>
 
-                                <div className="divide-y divide-border">
+                                <div>
 
                                     {usuariosFiltrados.map((user: any) => (
-                                        <div key={user.id} className="flex items-center justify-between px-5 py-3">
-                                            <div className="text-left gap-3">
-                                                <p className="text-sm font-semibold">{user.nome}</p>
+                                        <div
+                                            key={user.id}
+                                            className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl border border-gray-100 bg-white shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                {/* Badge do tipo/função */}
+                                                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[#f2f4f7] text-[#555f69] shrink-0">
+                                                    {iconByTipo[user?.funcao]}
+                                                </div>
 
-                                                <p className="text-xs [text-#555f69]">
-                                                    Matrícula: {user.matricula || '-'}
-                                                </p>
-                                                <p className="text-xs [text-#555f69]">
-                                                    Função: {user.funcao}
-                                                </p>
-                                                <p className="text-xs [text-#555f69]">
-                                                    Base: {user.base}
-                                                </p>
+                                                <div className="text-left">
+                                                    <span className="inline-block text-[11px] font-medium uppercase tracking-wide text-[#8a919b] mb-1">
+                                                        {user?.funcao}
+                                                    </span>
+
+                                                    <p className="text-sm font-semibold text-gray-900">
+                                                        {user.nome}
+                                                    </p>
+
+                                                    <div className="flex flex-wrap gap-x-3 mt-0.5">
+                                                        <p className="text-xs text-[#555f69]">
+                                                            Base: <span className="font-medium">{user.base}</span>
+                                                        </p>
+                                                        <p className="text-xs text-[#555f69]">
+                                                            Matrícula:{" "}
+                                                            <span className="font-medium">
+                                                                {user.matricula || "Sem matrícula"}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div className="flex gap-2">
+                                            <div className="flex items-center gap-1.5 text-[16px]">
                                                 <button
                                                     onClick={() => verInfoUsuario(user.id)}
-                                                    className="text-sm px-2 py-1 border rounded bg-blue-50 hover:bg-blue-100 text-blue-700"
+                                                    className="h-8 w-8 flex items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                                                     title="Ver informações de frequência"
                                                 >
                                                     !
                                                 </button>
+
                                                 <button
                                                     onClick={() => editarUsuario(user)}
-                                                    className="text-sm px-2 py-1 border rounded"
+                                                    className="h-8 w-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                                                    title="Editar usuário"
                                                 >
-                                                    Editar
+                                                    <Pencil size={16} />
                                                 </button>
+
+                                                <button
+                                                    onClick={() => senhaMaster(user.id)}
+                                                    className="h-8 px-3 flex items-center justify-center rounded-lg border border-red-100 text-red-500 text-xs font-medium hover:bg-red-50 transition-colors"
+                                                    title="Resetar senha"
+                                                >
+                                                    Resetar Senha
+                                                </button>
+
                                                 <button
                                                     onClick={() => removerUsuario(user.id)}
-                                                    className="text-sm px-2 py-1 border rounded text-red-500"
+                                                    className="h-8 w-8 flex items-center justify-center rounded-lg border border-red-100 text-red-500 hover:bg-red-50 transition-colors"
+                                                    title="Remover usuário"
                                                 >
-                                                    Remover
+                                                    <Trash size={16} />
                                                 </button>
                                             </div>
                                         </div>
@@ -539,12 +609,6 @@ export default function CadastroPage() {
                             <input
                                 value={nome}
                                 onChange={(e) => setNome(e.target.value)}
-                                className="w-full border rounded-lg px-3 py-2"
-                            />
-                            <label className="text-xs font-semibold">Email</label>
-                            <input
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
                                 className="w-full border rounded-lg px-3 py-2"
                             />
                             {/* 
